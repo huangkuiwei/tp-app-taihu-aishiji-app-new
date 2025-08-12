@@ -3,145 +3,234 @@
     <view class="page-title">首页</view>
 
     <view class="banner">
-      <view class="score">
-        <view class="left">
-          <view class="number">
-            <text v-if="isWeightLoss">{{ (homeWeightPlanData && homeWeightPlanData.weight_loss) || 0 }}</text>
-            <text v-else>{{ (homeWeightPlanData && -homeWeightPlanData.weight_loss) || 0 }}</text>
-            <text>公斤</text>
-          </view>
-
-          <view class="tip">{{ isWeightLoss ? '「已减重」' : '「已增肌」' }}</view>
-        </view>
-
-        <view class="right">
-          <view v-if="!isLogin" class="add-plan" @click="addPlan">
-            <text class="add-text">请先登录</text>
-            <view class="tip">
-              <text>登录账号后</text>
-              <text>获取专属减脂方案</text>
-            </view>
-          </view>
-
-          <template v-else-if="homeWeightPlanData">
-            <view v-if="homeWeightPlanData.state === 1" class="detail" @click="goWeightManage">
-              <view class="item">
-                <text>{{ homeWeightPlanData.plan_countdown }}天</text>
-                <text>计划倒计时</text>
-              </view>
-
-              <view class="item">
-                <text>{{ homeWeightPlanData.plan_target_weight }}KG</text>
-                <text>目标体重</text>
-              </view>
-            </view>
-
-            <view v-else-if="homeWeightPlanData.state === 2" class="add-plan" @click="addPlan">
-              <text class="add-icon">+</text>
-
-              <text class="add-text">创建下阶段计划</text>
-              <view class="tip">
-                <text>恭喜达成</text>
-                <text>继续趁热打铁</text>
-              </view>
-            </view>
-
-            <view v-else-if="homeWeightPlanData.state === 3" class="add-plan" @click="addPlan">
-              <text class="add-icon">+</text>
-
-              <text class="add-text">创建下阶段计划</text>
-              <view class="tip">
-                <text>计划已过期</text>
-                <text>请重新创建</text>
-              </view>
-            </view>
+      <view class="banner-card">
+        <view class="options">
+          <template v-if="!isLogin">
+            <view class="btn" @click="$toRouter('/packageLogin/pages/login/login')">请登录</view>
           </template>
 
-          <view v-else class="add-plan" @click="addPlan">
-            <text class="add-icon">+</text>
+          <template v-else-if="homeWeightPlanData">
+            <!-- TODO 修改体重 -->
+            <view class="btn" style="background: #ffffff; color: #5664e5">修改体重</view>
+            <!-- TODO 修改计划 -->
+            <view class="btn">修改计划</view>
+          </template>
 
-            <template v-if="userDetailInfo">
-              <text class="add-text">创建计划</text>
-              <view class="tip">
-                <text>科学合理的计划</text>
-                <text>是减脂成功的第一步哦</text>
+          <template v-else>
+            <view class="btn" @click="addPlan">新建计划</view>
+          </template>
+        </view>
+
+        <view class="data1">
+          <view class="left">
+            <text style="font-size: 100rpx">{{ (homeWeightPlanData && homeWeightPlanData.current_weight) || 0 }}</text>
+            <!-- TODO 最新体重修改时间 -->
+            <text>暂无数据</text>
+          </view>
+
+          <view class="right">
+            <text v-if="isWeightLoss" style="font-size: 60rpx">{{
+              (homeWeightPlanData && homeWeightPlanData.weight_loss) || 0
+            }}</text>
+            <text v-else style="font-size: 60rpx">{{
+              (homeWeightPlanData && -homeWeightPlanData.weight_loss) || 0
+            }}</text>
+            <text>{{ isWeightLoss ? '下降' : '增加' }}</text>
+          </view>
+        </view>
+
+        <view class="data2">
+          <view class="item">
+            <view>BMI</view>
+            <!-- TODO 实时还是目标BMI？ -->
+            <view>-/-</view>
+          </view>
+
+          <view class="item">
+            <view>目标日期</view>
+            <view v-if="homeWeightPlanData && homeWeightPlanData.plan_target_weight">
+              <text style="font-size: 22rpx">剩余</text>
+              <text style="margin: 0 5rpx">{{ countdownDays }}</text>
+              <text style="font-size: 22rpx">天</text>
+            </view>
+            <view v-else>-/-</view>
+          </view>
+
+          <view class="item">
+            <view>目标体重</view>
+            <view v-if="homeWeightPlanData && homeWeightPlanData.plan_target_weight">
+              <text style="margin-right: 5rpx">{{ homeWeightPlanData.plan_target_weight }}</text>
+              <text style="font-size: 22rpx">公斤</text>
+            </view>
+            <view v-else>-/-</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card-container">
+      <view class="calorie-card">
+        <view class="title">热量统计</view>
+
+        <view class="calorie-container">
+          <view class="chart">
+            <view class="left">
+              <view class="data-item data-item1">
+                <view class="line"></view>
+
+                <view class="data">
+                  <view class="chart-title">饮食摄入</view>
+                  <view class="number">
+                    <image
+                      mode="widthFix"
+                      src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/icon1.png"
+                    />
+
+                    <view>
+                      <text>{{ dailyCalorie.calorie_intake || 0 }}</text>
+                      <text>千卡</text>
+                    </view>
+                  </view>
+                </view>
               </view>
-            </template>
 
-            <template v-else>
-              <text class="add-text">补充信息</text>
-              <view class="tip">
-                <text>补充信息后</text>
-                <text>获取专属减脂方案</text>
+              <view class="data-item data-item2">
+                <view class="line"></view>
+
+                <view class="data">
+                  <view class="chart-title">运动消耗</view>
+                  <view class="number">
+                    <image
+                      mode="widthFix"
+                      src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/icon2.png"
+                    />
+
+                    <view>
+                      <text>{{ dailyCalorie.calorie_burn || 0 }}</text>
+                      <text>千卡</text>
+                    </view>
+                  </view>
+                </view>
               </view>
-            </template>
+            </view>
+
+            <view class="right">
+              <l-echart ref="chart1Ref" @finished="init1" />
+
+              <view class="tip">
+                <text>{{ dailyCalorie.remaining || '-/-' }}</text>
+                <text>剩余千卡</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="calorie-type">
+            <view class="calorie-item">
+              <view class="name">碳水</view>
+              <!-- TODO 剩余百分比 -->
+              <view class="progress" style="background: #e5e8ff"></view>
+              <view class="value" v-if="dailyCalorie.carbohydrate_requirement">
+                还剩{{ dailyCalorie.carbohydrate_requirement }}千卡
+              </view>
+              <view class="value" v-else>暂无</view>
+            </view>
+
+            <view class="calorie-item">
+              <view class="name">蛋白质</view>
+              <!-- TODO 剩余百分比 -->
+              <view class="progress" style="background: #ffeaf0"></view>
+              <view class="value" v-if="dailyCalorie.protein_requirement">
+                还剩{{ dailyCalorie.protein_requirement }}千卡
+              </view>
+              <view class="value" v-else>暂无</view>
+            </view>
+
+            <view class="calorie-item">
+              <view class="name">脂肪</view>
+              <!-- TODO 剩余百分比 -->
+              <view class="progress" style="background: #fcf5e4"></view>
+              <view class="value" v-if="dailyCalorie.fat_requirement">
+                还剩{{ dailyCalorie.fat_requirement }}千卡
+              </view>
+              <view class="value" v-else>暂无</view>
+            </view>
           </view>
         </view>
       </view>
 
-      <view class="progress-container" @click="jumpAi(jkzsChat)">
-        <view class="progress">
-          <view class="img">
-            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/doctor2.png" />
-            <image
-              mode="widthFix"
-              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/tip-btn2.png"
-            />
-          </view>
+      <view class="food-card">
+        <view class="title">
+          <view class="left">饮食记录</view>
 
-          <view class="current">当前</view>
-          <view class="target">目标</view>
-        </view>
-
-        <view class="progress-chart">
-          <view style="width: 750rpx">
-            <l-echart ref="chartRef" @finished="initChart" />
+          <view class="right">
+            <!-- TODO 去定制怎么跳转 -->
+            <text>去定制</text>
+            <uni-icons type="arrow-right" size="12" color="#666666" />
           </view>
         </view>
+
+        <view class="food-type">
+          <view class="food-item" v-for="item of foodRecodeList" :key="item.type">
+            <image mode="widthFix" :src="item.icon" />
+            <view
+              class="name"
+              @click="item.foodList.length && $toRouter('/pages/foodAnalysis/foodAnalysis', `type=${item.type}`)"
+            >
+              <text>{{ item.text }}</text>
+              <view class="recode" v-if="item.foodList">{{ item.foodList }}</view>
+            </view>
+            <view class="calorie" v-if="isLogin">建议{{ suggestCalorie(item.type) }}千卡</view>
+            <view class="add" @click.stop="openFoodRecodeDialog(item.type)">
+              <text>+</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="motion-card">
+        <view class="title">
+          <view class="left">运动记录</view>
+
+          <view class="right">
+            <!-- TODO 去定制怎么跳转 -->
+            <text>去定制</text>
+            <uni-icons type="arrow-right" size="12" color="#666666" />
+          </view>
+        </view>
+
+        <view class="motion-detail">
+          <view class="motion-data">
+            <view class="left" v-if="!motionRecodeList.length">运动<text>0</text>千卡</view>
+            <view class="left" v-else>
+              你完成了{{ motionRecodeList.length }}次运动共消耗<text>{{ totalMotion }}</text
+              >千卡
+            </view>
+            <!-- TODO 建议消耗 -->
+            <view class="right">建议消耗0千卡</view>
+          </view>
+
+          <view class="motion-list" v-if="motionRecodeList.length">
+            <view class="motion-item" v-for="(item, index) of motionRecodeList" :key="index">
+              <text>·{{ item.name }}</text>
+              <text>{{ item.quantity }}分钟</text>
+              <text>-{{ item.calorie }}千卡</text>
+            </view>
+          </view>
+
+          <view v-else style="margin-bottom: 137rpx"></view>
+        </view>
+
+        <view class="add-motion" @click="openMotionRecodeDialog">+添加运动</view>
       </view>
     </view>
 
-    <view class="get-way-btn" @click="goWeightManage">
-      <image
-        v-if="homeWeightPlanData && homeWeightPlanData.state === 1"
-        mode="widthFix"
-        src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/get-way-btn2.png"
-      />
-
-      <image
-        v-else
-        mode="widthFix"
-        src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/get-way-btn.png"
-      />
+    <view class="adv1">
+      <!-- TODO -->
+      <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/adv1.png" />
     </view>
 
-    <view class="ai">
-      <view class="ai-title">
-        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/ai-icon.png" />
-      </view>
-
-      <view class="ai-list">
-        <view class="item1">
-          <view
-            :style="{
-              background: `url(${item.logo}) left top/100% auto no-repeat`,
-            }"
-            v-for="item of aiChartList.slice(0, 3)"
-            :key="item.id"
-            @click="jumpAi(item)"
-          >
-            <text>{{ item.name }}</text>
-          </view>
-        </view>
-
-        <view class="item2">
-          <view v-for="item of aiChartList.slice(3)" :key="item.id" @click="jumpAi(item)">
-            <text>{{ item.name }}</text>
-            <image mode="widthFix" :src="item.logo" />
-          </view>
-        </view>
-      </view>
-    </view>
+    <add-food-recode-dialog ref="addFoodRecodeDialog" @addRecode="addRecode" />
+    <add-motion-recode-dialog ref="addMotionRecodeDialog" @addRecode="addMotionRecode" />
   </view>
 </template>
 
@@ -150,24 +239,24 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
 import $http from '@/utils/http';
 import { verifyIsLogin } from '@/utils';
+import AddFoodRecodeDialog from '@/pages/recode/addFoodRecodeDialog.vue';
+import AddMotionRecodeDialog from '@/pages/recode/addMotionRecodeDialog.vue';
 
-let chart = null;
+let chart1 = null;
 
 export default {
   name: 'indexPage',
+  components: { AddMotionRecodeDialog, AddFoodRecodeDialog },
 
   data() {
     return {
-      aiChartList: [],
-      jkzsChat: {},
       homeWeightPlanData: null,
-      recordData: null,
-      option: {
+      option1: {
         series: [
           {
             type: 'gauge',
-            startAngle: 210,
-            endAngle: -30,
+            startAngle: 60,
+            endAngle: -300,
             min: 0,
             max: 100,
             splitNumber: 12,
@@ -175,11 +264,11 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: '#0ABF92', // 起始颜色
+                  color: '#5168E6', // 起始颜色
                 },
                 {
                   offset: 1,
-                  color: '#9AE9CC', // 结束颜色
+                  color: '#6B57E3', // 结束颜色
                 },
               ]),
               shadowColor: 'transparent',
@@ -190,7 +279,7 @@ export default {
             progress: {
               show: true,
               roundCap: true,
-              width: 16,
+              width: 7,
             },
             pointer: {
               show: false,
@@ -198,8 +287,8 @@ export default {
             axisLine: {
               roundCap: true,
               lineStyle: {
-                width: 16,
-                color: [[1, '#9AE9CC']],
+                width: 2,
+                color: [[1, '#DBDCEC']],
               },
             },
             radius: '100%',
@@ -226,11 +315,35 @@ export default {
           },
         ],
       },
+      dailyCalorie: {},
+      foodRecodeList: [
+        {
+          type: 1,
+          icon: 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/food-type1.png',
+          text: '早餐',
+          foodList: [],
+        },
+        {
+          type: 3,
+          icon: 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/food-type2.png',
+          text: '午餐',
+          foodList: [],
+        },
+        {
+          type: 5,
+          icon: 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/food-type3.png',
+          text: '晚餐',
+          foodList: [],
+        },
+      ],
+      motionRecodeList: [],
     };
   },
 
   onShow() {
     this.initData();
+    this.getDailyCalorie();
+    this.getDailyFoods();
   },
 
   computed: {
@@ -243,6 +356,42 @@ export default {
       }
 
       return this.homeWeightPlanData.plan_initial_weight - this.homeWeightPlanData.plan_target_weight > 0;
+    },
+
+    countdownDays() {
+      if (this.homeWeightPlanData && this.homeWeightPlanData.end_date) {
+        let time = new Date(this.homeWeightPlanData.end_date.replace(/-/g, '/')) - new Date();
+        return Math.ceil(time / (60 * 60 * 24 * 1000));
+      }
+
+      return 0;
+    },
+
+    suggestCalorie() {
+      return (type) => {
+        if (!this.dailyCalorie.calorie_requirement) {
+          return 0;
+        }
+
+        let ratio = 0;
+
+        if (type === 1 || type === 5) {
+          ratio = 0.3;
+        } else {
+          ratio = 0.4;
+        }
+
+        return Math.round(this.dailyCalorie.calorie_requirement * ratio);
+      };
+    },
+
+    totalMotion() {
+      let totalMotion = 0;
+      this.motionRecodeList.forEach((item) => {
+        totalMotion += item.calorie;
+      });
+
+      return Math.round(totalMotion);
     },
   },
 
@@ -257,6 +406,11 @@ export default {
   methods: {
     ...mapActions('app', ['_getUserDetailInfo']),
 
+    async init1() {
+      chart1 = await this.$refs.chart1Ref.init(echarts);
+      chart1.setOption(this.option1);
+    },
+
     /**
      * 初始化数据
      */
@@ -266,20 +420,10 @@ export default {
         mask: true,
       });
 
-      this.getAiChartList();
       await this.getHomeWeightPlan().catch(() => {});
       await this._getUserDetailInfo().catch(() => {});
 
       uni.hideLoading();
-    },
-
-    /**
-     * 初始化进度条图表数据
-     */
-    async initChart() {
-      // chart 图表实例不能存在data里
-      chart = await this.$refs.chartRef.init(echarts);
-      chart.setOption(this.option);
     },
 
     /**
@@ -288,52 +432,163 @@ export default {
     getHomeWeightPlan() {
       return $http.get('api/diet-info/weight-plan/home').then((res) => {
         this.homeWeightPlanData = res.data;
-
-        if (this.homeWeightPlanData) {
-          // 更新图表
-          let allWeight = this.homeWeightPlanData.plan_initial_weight - this.homeWeightPlanData.plan_target_weight;
-          let yetWeight = this.homeWeightPlanData.weight_loss;
-          let ratio = Math.floor((yetWeight / allWeight) * 100);
-
-          if (ratio < 0) {
-            ratio = 0;
-          } else if (ratio > 100) {
-            ratio = 100;
-          }
-
-          this.option.series[0].data[0].value = ratio;
-
-          setTimeout(() => {
-            chart.setOption(this.option);
-          }, 500);
-        } else {
-          this.option.series[0].data[0].value = 0;
-
-          setTimeout(() => {
-            chart.setOption(this.option);
-          }, 500);
-        }
       });
     },
 
-    /**
-     * 获取 ai 搭子列表
-     */
-    getAiChartList() {
-      $http
-        .get('api/baseai/agent-list')
+    getDailyCalorie() {
+      return $http
+        .post(
+          'api/diet-info/daily-calorie',
+          {
+            date: new Date().format(),
+          },
+          {
+            hiddenErrorMessage: true,
+          },
+        )
         .then((res) => {
-          let jkzsChatIndex = res.data.findIndex((item) => item.id === 10000);
+          let total = res.data.calorie_requirement + res.data.calorie_burn;
+          let remaining = total - res.data.calorie_intake;
+          let ratio = Number(((remaining / total) * 100).toFixed(2));
 
-          if (jkzsChatIndex !== -1) {
-            this.jkzsChat = res.data[jkzsChatIndex];
+          if (ratio > 100) {
+            ratio = 100;
+          } else if (ratio < 0) {
+            ratio = 0;
           }
 
-          res.data.splice(jkzsChatIndex, 1);
-          this.aiChartList = res.data;
+          res.data.ratio = ratio;
+          res.data.remaining = remaining < 0 ? 0 : Math.round(remaining);
+          this.dailyCalorie = res.data;
+
+          this.option1.series[0].data[0].value = ratio;
+
+          setTimeout(() => {
+            chart1.setOption(this.option1);
+          }, 500);
         })
-        .catch(() => {
-          this.aiChartList = [];
+        .catch((err) => {
+          if (err.Msg === '未找到健康档案，请先完成健康评估') {
+            this.dailyCalorie = {};
+          } else {
+            if (err.Code !== -100) {
+              uni.showToast({
+                title: err.Msg,
+                icon: 'none',
+                mask: true,
+              });
+            }
+          }
+        });
+    },
+
+    getDailyFoods() {
+      return $http
+        .post('api/diet-info/daily-list', {
+          date: new Date().format(),
+        })
+        .then((res) => {
+          this.foodRecodeList.forEach((item) => {
+            let current = res.data.find((item1) => item1.type === item.type);
+            item.foodList = (current && current.die_list) || [];
+            item.foodList = item.foodList.map((x) => x.name).join(' ');
+          });
+
+          let motionItem = res.data.find((item1) => item1.type === 7);
+
+          this.motionRecodeList = (motionItem && motionItem.die_list) || [];
+        });
+    },
+
+    openFoodRecodeDialog() {
+      if (!this.isLogin) {
+        this.$toRouter('/packageLogin/pages/login/login');
+        return;
+      }
+
+      this.$refs.addFoodRecodeDialog.open();
+    },
+
+    addRecode(event) {
+      this.$refs.addFoodRecodeDialog.close();
+
+      this.$toRouter(
+        '/pages/dietaryRecord/dietaryRecord',
+        `text=${encodeURIComponent(event.text)}&type=${event.type}&input_type=${
+          event.input_type
+        }&date_time=${new Date().format()}`,
+      );
+    },
+
+    openMotionRecodeDialog() {
+      if (!this.isLogin) {
+        this.$toRouter('/packageLogin/pages/login/login');
+        return;
+      }
+
+      this.$refs.addMotionRecodeDialog.open();
+    },
+
+    addMotionRecode(event) {
+      this.$refs.addMotionRecodeDialog.close();
+
+      uni.showLoading({
+        title: '加载中...',
+        mask: true,
+      });
+
+      $http
+        .post(
+          'api/diet-info/exercise-analysis',
+          {
+            text: event.text,
+            input_type: event.input_type,
+            type: event.type,
+            date_time: new Date().format(),
+          },
+          {
+            timeout: 90000,
+          },
+        )
+        .then((res) => {
+          if (res.data && !res.data.length) {
+            uni.hideLoading();
+
+            uni.showModal({
+              title: '温馨提示',
+              content: '未检出到运动项目，请重新输入',
+              showCancel: false,
+              success: (res) => {
+                if (res.confirm) {
+                  this.$toBack();
+                }
+              },
+            });
+
+            return;
+          }
+
+          $http
+            .post(
+              'api/diet-info/create-batch',
+              {
+                food_batch: res.data,
+              },
+              {
+                timeout: 90000,
+              },
+            )
+            .then(() => {
+              uni.hideLoading();
+
+              uni.showToast({
+                title: '添加成功',
+                icon: 'none',
+              });
+
+              this.getDailyFoods();
+              this.getDailyCalorie();
+            });
         });
     },
 
@@ -351,42 +606,15 @@ export default {
       // 创建计划
       this.$toRouter('/pages/addPlan/addPlan');
     },
-
-    /**
-     * 跳转计划管理页
-     */
-    goWeightManage() {
-      verifyIsLogin();
-
-      if (!this.userDetailInfo) {
-        this.$toRouter('/pages/evaluation/evaluation');
-        return;
-      }
-
-      if (!this.homeWeightPlanData || this.homeWeightPlanData.state !== 1) {
-        this.$toRouter('/pages/addPlan/addPlan');
-        return;
-      }
-
-      this.$toRouter('/pages/weightManagementPlan/weightManagementPlan');
-    },
-
-    /**
-     * 跳转 AI 搭子聊天界面
-     */
-    jumpAi(item) {
-      // verifyIsLogin();
-
-      if (item.id === 10000) {
-        this.$toRouter('/pages/healthAssistant/healthAssistant', `agent_id=${item.id}&name=${item.name}`);
-        return;
-      }
-
-      this.$toRouter('/pages/aiChat/aiChat', `agent_id=${item.id}&name=${item.name}`);
-    },
   },
 };
 </script>
+
+<style>
+page {
+  background: #f6f7fb;
+}
+</style>
 
 <style scoped lang="scss">
 .index-page {
@@ -394,277 +622,457 @@ export default {
   }
 
   .banner {
-    padding: calc(var(--page-title-height) + 35rpx) 0 37rpx;
-    background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/home/banner-bg.png') left top/100% auto
-      no-repeat;
+    padding: calc(var(--page-title-height) + 59rpx) 30rpx 88rpx;
+    background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/banner-bg.png') left top/100%
+      auto no-repeat;
 
-    .score {
-      padding: 0 30rpx;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22rpx;
-
-      .left {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .number {
-          margin-bottom: 20rpx;
-          font-weight: bold;
-          color: #111111;
-
-          text {
-            &:nth-child(1) {
-              font-size: 170rpx;
-            }
-
-            &:nth-child(2) {
-              font-size: 32rpx;
-            }
-          }
-        }
-
-        .tip {
-          font-size: 36rpx;
-          color: #1a1a1a;
-          font-weight: 500;
-        }
-      }
-
-      .right {
-        background: #ffffff;
-        width: 240rpx;
-        height: 240rpx;
-        border-radius: 20rpx;
-        position: relative;
-
-        .login {
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 28rpx;
-          color: #aaaaaa;
-        }
-
-        .detail {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 44rpx;
-
-          .item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            text {
-              &:nth-child(1) {
-                font-size: 28rpx;
-                color: #111111;
-                font-weight: 500;
-                margin-bottom: 16rpx;
-              }
-
-              &:nth-child(2) {
-                font-size: 22rpx;
-                color: #999999;
-              }
-            }
-          }
-        }
-
-        .add-plan {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 24rpx;
-
-          .add-icon {
-            background: #bef054;
-            border-radius: 50%;
-            width: 39rpx;
-            height: 39rpx;
-            font-size: 28rpx;
-            color: #333333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .add-text {
-            font-size: 28rpx;
-            color: #111111;
-            font-weight: 500;
-          }
-
-          .tip {
-            font-size: 22rpx;
-            color: #999999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            text {
-              line-height: 29rpx;
-            }
-          }
-        }
-      }
-    }
-
-    .progress-container {
-      padding: 64rpx 68rpx 0;
+    .banner-card {
+      background: #5664e5;
+      border-radius: 20rpx;
+      padding: 48rpx 20rpx 20rpx;
       position: relative;
 
-      .progress {
-        position: relative;
-        padding-bottom: 14rpx;
+      .options {
+        position: absolute;
+        top: 30rpx;
+        right: 20rpx;
 
-        .img {
+        .btn {
+          width: 120rpx;
+          height: 45rpx;
+          margin-bottom: 20rpx;
+
+          border-radius: 23rpx;
+          font-weight: 500;
+          font-size: 24rpx;
+          background: #fd6896;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .data1 {
+        color: #ffffff;
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 58rpx;
+
+        .left,
+        .right {
+          width: 50%;
+          display: flex;
+          flex-direction: column;
+
+          text {
+            &:nth-child(1) {
+              font-weight: bold;
+              margin-bottom: 47rpx;
+            }
+
+            &:nth-child(2) {
+              font-weight: 500;
+              font-size: 24rpx;
+            }
+          }
+        }
+      }
+
+      .data2 {
+        width: 100%;
+        height: 105rpx;
+        background: #737edd;
+        border-radius: 20rpx;
+        padding: 0 90rpx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .item {
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          gap: 20rpx;
 
-          image {
+          > view {
+            font-weight: 500;
+            color: #fcfcfc;
+
             &:nth-child(1) {
-              width: 284rpx;
+              font-size: 24rpx;
             }
 
             &:nth-child(2) {
-              width: 384rpx;
+              font-size: 30rpx;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .card-container {
+    padding: 0 30rpx 150rpx;
+    position: relative;
+    top: -50rpx;
+
+    .calorie-card {
+      background: #ffffff;
+      box-shadow: 0 3rpx 21rpx 0 rgba(215, 218, 242, 0.29);
+      border-radius: 20rpx;
+      padding: 28rpx 50rpx 30rpx 18rpx;
+      margin-bottom: 21rpx;
+
+      .title {
+        font-weight: 500;
+        font-size: 30rpx;
+        color: #111111;
+        margin-bottom: 43rpx;
+      }
+
+      .calorie-container {
+        padding: 0 36rpx;
+
+        .chart {
+          display: flex;
+          align-items: center;
+          border-bottom: 4rpx solid #eeeeee;
+          padding-bottom: 31rpx;
+          margin-bottom: 30rpx;
+
+          .left {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 32rpx;
+
+            .data-item {
+              display: flex;
+              align-items: center;
+
+              &.data-item1 {
+                .line {
+                  background: #e5e8ff;
+                }
+              }
+
+              &.data-item2 {
+                .line {
+                  background: #ffeaf0;
+                }
+              }
+
+              .line {
+                width: 4rpx;
+                height: 70rpx;
+                border-radius: 2rpx;
+                margin-right: 15rpx;
+              }
+
+              .data {
+                display: flex;
+                flex-direction: column;
+                gap: 21rpx;
+
+                .chart-title {
+                  font-size: 24rpx;
+                  color: #666666;
+                }
+
+                .number {
+                  display: flex;
+                  align-items: center;
+
+                  image {
+                    width: 29rpx;
+                    margin-right: 12rpx;
+                  }
+
+                  view {
+                    text {
+                      &:nth-child(1) {
+                        color: #111111;
+                        font-size: 28rpx;
+                        margin-right: 10rpx;
+                      }
+
+                      &:nth-child(2) {
+                        color: #999999;
+                        font-size: 22rpx;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .right {
+            flex-shrink: 0;
+            width: 190rpx;
+            height: 190rpx;
+            position: relative;
+
+            .tip {
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: 0;
+              bottom: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 10rpx;
+
+              text {
+                &:nth-child(1) {
+                  color: #5664e5;
+                  font-size: 32rpx;
+                }
+
+                &:nth-child(2) {
+                  color: #999999;
+                  font-size: 22rpx;
+                }
+              }
             }
           }
         }
 
-        .current,
-        .target {
-          position: absolute;
-          bottom: 0;
-          width: 96rpx;
-          height: 50rpx;
-          border-radius: 25rpx;
-          font-size: 28rpx;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          &.current {
-            left: 0;
-            color: #111111;
-            background: #9ae9cc;
-          }
-
-          &.target {
-            right: 0;
-            color: #ffffff;
-            background: #0abf92;
-          }
-        }
-      }
-
-      .progress-chart {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-      }
-    }
-  }
-
-  .get-way-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40rpx;
-
-    image {
-      width: 690rpx;
-    }
-  }
-
-  .ai {
-    background: linear-gradient(0deg, #fcfcfc 0%, #f3f7fa 100%);
-    box-shadow: 0 0 40rpx 0 rgba(236, 237, 233, 0.77);
-    border-radius: 50rpx 50rpx 0 0;
-    border: 2px solid #ffffff;
-    padding: 40rpx 52rpx;
-
-    .ai-title {
-      margin-bottom: 38rpx;
-
-      image {
-        width: 180rpx;
-      }
-    }
-
-    .ai-list {
-      font-weight: 500;
-
-      .item1 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20rpx;
-
-        view {
-          width: 202rpx;
-          height: 180rpx;
-          text-align: center;
-
-          text {
-            position: relative;
-            top: 124rpx;
-            font-size: 28rpx;
-            color: #1a1a1a;
-          }
-        }
-      }
-
-      .item2 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-
-        view {
-          width: 314rpx;
-          height: 130rpx;
-          padding: 0 30rpx 0 34rpx;
-          background: #ffffff;
-          border-radius: 20rpx;
-          margin-bottom: 20rpx;
+        .calorie-type {
           display: flex;
           align-items: center;
           justify-content: space-between;
 
-          text {
-            font-size: 28rpx;
-            color: #1a1a1a;
-          }
+          .calorie-item {
+            display: flex;
+            flex-direction: column;
+            gap: 11rpx;
 
-          image {
-            width: 64rpx;
+            .name {
+              font-size: 24rpx;
+              color: #444444;
+            }
+
+            .progress {
+              width: 147rpx;
+              height: 10rpx;
+              border-radius: 5rpx;
+            }
+
+            .value {
+              font-size: 22rpx;
+              color: #999999;
+            }
           }
         }
       }
+    }
+
+    .food-card {
+      background: #ffffff;
+      box-shadow: 0 3rpx 21rpx 0 rgba(215, 218, 242, 0.29);
+      border-radius: 20rpx;
+      padding: 29rpx 21rpx 34rpx 17rpx;
+      margin-bottom: 21rpx;
+
+      .title {
+        margin-bottom: 41rpx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .left {
+          font-weight: 500;
+          font-size: 30rpx;
+          color: #111111;
+        }
+
+        .right {
+          color: #afb6f6;
+          font-size: 24rpx;
+        }
+      }
+
+      .food-type {
+        display: flex;
+        flex-direction: column;
+        gap: 20rpx;
+
+        .food-item {
+          background: #ffffff;
+          box-shadow: 0 3rpx 21rpx 0 rgba(215, 218, 242, 0.29);
+          border-radius: 20rpx;
+          padding: 23rpx 15rpx;
+          display: flex;
+          align-items: center;
+
+          image {
+            flex-shrink: 0;
+            width: 85rpx;
+            margin-right: 29rpx;
+          }
+
+          .name {
+            flex-grow: 1;
+            overflow: hidden;
+            font-weight: 500;
+            font-size: 28rpx;
+            color: #222222;
+
+            .recode {
+              font-size: 22rpx;
+              color: #999999;
+              margin-top: 19rpx;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+
+          .calorie {
+            flex-shrink: 0;
+            font-weight: 500;
+            font-size: 28rpx;
+            color: #333333;
+            margin: 0 21rpx 0 10rpx;
+          }
+
+          .add {
+            flex-shrink: 0;
+            width: 48rpx;
+            height: 48rpx;
+            background: #5664e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34rpx;
+            font-weight: bold;
+            color: #ffffff;
+
+            text {
+              position: relative;
+              top: -4rpx;
+            }
+          }
+        }
+      }
+    }
+
+    .motion-card {
+      background: #ffffff;
+      box-shadow: 0 3rpx 21rpx 0 rgba(215, 218, 242, 0.29);
+      border-radius: 20rpx;
+      padding: 31rpx 19rpx 16rpx 22rpx;
+
+      .title {
+        margin-bottom: 37rpx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .left {
+          font-weight: 500;
+          font-size: 30rpx;
+          color: #111111;
+        }
+
+        .right {
+          color: #afb6f6;
+          font-size: 24rpx;
+        }
+      }
+
+      .motion-detail {
+        padding: 0 17rpx;
+
+        .motion-data {
+          padding: 0 0 30rpx;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 2rpx dashed #eeeeee;
+
+          .left {
+            color: #333333;
+            font-size: 28rpx;
+
+            text {
+              color: #5664e5;
+              font-size: 36rpx;
+            }
+          }
+
+          .right {
+            font-weight: 500;
+            font-size: 22rpx;
+            color: #999999;
+          }
+        }
+
+        .motion-list {
+          padding: 30rpx 0;
+          display: flex;
+          flex-direction: column;
+          gap: 29rpx;
+
+          .motion-item {
+            display: flex;
+            align-items: center;
+
+            text {
+              &:nth-child(1) {
+                color: #333333;
+                font-size: 26rpx;
+                font-weight: 500;
+                margin-right: 10rpx;
+              }
+
+              &:nth-child(2) {
+                color: #666666;
+                font-weight: 500;
+                font-size: 24rpx;
+                flex-grow: 1;
+              }
+
+              &:nth-child(3) {
+                font-size: 22rpx;
+                color: #666666;
+              }
+            }
+          }
+        }
+      }
+
+      .add-motion {
+        width: 158rpx;
+        height: 54rpx;
+        margin: 0 auto;
+        background: #ebedff;
+        border-radius: 27rpx;
+        border: 1px solid #5664e5;
+        font-weight: 500;
+        font-size: 26rpx;
+        color: #5664e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  .adv1 {
+    position: fixed;
+    left: 30rpx;
+    right: 30rpx;
+    bottom: 10rpx;
+
+    image {
+      width: 100%;
     }
   }
 }
