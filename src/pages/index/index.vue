@@ -10,10 +10,18 @@
           </template>
 
           <template v-else-if="homeWeightPlanData">
-            <!-- TODO 修改体重 -->
-            <view class="btn" style="background: #ffffff; color: #5664e5">修改体重</view>
-            <!-- TODO 修改计划 -->
-            <view class="btn">修改计划</view>
+            <view class="btn" style="background: #ffffff; color: #5664e5" @click="showRecodeWeight">体重记录</view>
+            <view
+              class="btn"
+              @click="
+                $toRouter(
+                  '/pages/resetPlan/resetPlan',
+                  `plan_id=${homeWeightPlanData.plan_id}&plan_initial_weight=${homeWeightPlanData.plan_initial_weight}&plan_target_weight=${homeWeightPlanData.plan_target_weight}&start_date=${homeWeightPlanData.start_date}&end_date=${homeWeightPlanData.end_date}`,
+                )
+              "
+            >
+              修改计划
+            </view>
           </template>
 
           <template v-else>
@@ -24,8 +32,7 @@
         <view class="data1">
           <view class="left">
             <text style="font-size: 100rpx">{{ (homeWeightPlanData && homeWeightPlanData.current_weight) || 0 }}</text>
-            <!-- TODO 最新体重修改时间 -->
-            <text>暂无数据</text>
+            <text>{{ updateTime }}</text>
           </view>
 
           <view class="right">
@@ -42,13 +49,21 @@
         <view class="data2">
           <view class="item">
             <view>BMI</view>
-            <!-- TODO 实时还是目标BMI？ -->
-            <view>-/-</view>
+            <view v-if="userDetailInfo">
+              {{
+                Number(
+                  (userDetailInfo.current_weight / ((userDetailInfo.height * userDetailInfo.height) / 10000)).toFixed(
+                    1,
+                  ),
+                )
+              }}
+            </view>
+            <view v-else>-/-</view>
           </view>
 
           <view class="item">
             <view>目标日期</view>
-            <view v-if="homeWeightPlanData && homeWeightPlanData.plan_target_weight">
+            <view v-if="homeWeightPlanData && homeWeightPlanData.end_date">
               <text style="font-size: 22rpx">剩余</text>
               <text style="margin: 0 5rpx">{{ countdownDays }}</text>
               <text style="font-size: 22rpx">天</text>
@@ -127,31 +142,30 @@
           <view class="calorie-type">
             <view class="calorie-item">
               <view class="name">碳水</view>
-              <!-- TODO 剩余百分比 -->
-              <view class="progress" style="background: #e5e8ff"></view>
+              <view class="progress" style="background: #e5e8ff">
+                <text style="background: #5664e5" :style="{ width: dailyCalorie.remainingARatio + '%' }"></text>
+              </view>
               <view class="value" v-if="dailyCalorie.carbohydrate_requirement">
-                还剩{{ dailyCalorie.carbohydrate_requirement }}千卡
+                还剩{{ dailyCalorie.remainingA }}千卡
               </view>
               <view class="value" v-else>暂无</view>
             </view>
 
             <view class="calorie-item">
               <view class="name">蛋白质</view>
-              <!-- TODO 剩余百分比 -->
-              <view class="progress" style="background: #ffeaf0"></view>
-              <view class="value" v-if="dailyCalorie.protein_requirement">
-                还剩{{ dailyCalorie.protein_requirement }}千卡
+              <view class="progress" style="background: #ffeaf0">
+                <text style="background: #fd6896" :style="{ width: dailyCalorie.remainingBRatio + '%' }"></text>
               </view>
+              <view class="value" v-if="dailyCalorie.protein_requirement"> 还剩{{ dailyCalorie.remainingB }}千卡 </view>
               <view class="value" v-else>暂无</view>
             </view>
 
             <view class="calorie-item">
               <view class="name">脂肪</view>
-              <!-- TODO 剩余百分比 -->
-              <view class="progress" style="background: #fcf5e4"></view>
-              <view class="value" v-if="dailyCalorie.fat_requirement">
-                还剩{{ dailyCalorie.fat_requirement }}千卡
+              <view class="progress" style="background: #fcf5e4">
+                <text style="background: #fdcd00" :style="{ width: dailyCalorie.remainingCRatio + '%' }"></text>
               </view>
+              <view class="value" v-if="dailyCalorie.fat_requirement"> 还剩{{ dailyCalorie.remainingC }}千卡 </view>
               <view class="value" v-else>暂无</view>
             </view>
           </view>
@@ -163,8 +177,7 @@
           <view class="left">饮食记录</view>
 
           <view class="right">
-            <!-- TODO 去定制怎么跳转 -->
-            <text>去定制</text>
+            <text @click="goWeightManagementPlan">去定制</text>
             <uni-icons type="arrow-right" size="12" color="#666666" />
           </view>
         </view>
@@ -192,8 +205,7 @@
           <view class="left">运动记录</view>
 
           <view class="right">
-            <!-- TODO 去定制怎么跳转 -->
-            <text>去定制</text>
+            <text @click="goWeightManagementPlan">去定制</text>
             <uni-icons type="arrow-right" size="12" color="#666666" />
           </view>
         </view>
@@ -205,8 +217,9 @@
               你完成了{{ motionRecodeList.length }}次运动共消耗<text>{{ totalMotion }}</text
               >千卡
             </view>
-            <!-- TODO 建议消耗 -->
-            <view class="right">建议消耗0千卡</view>
+            <view class="right" v-if="dailyCalorie.exercise_calorie_requirement">
+              建议消耗{{ dailyCalorie.exercise_calorie_requirement }}千卡
+            </view>
           </view>
 
           <view class="motion-list" v-if="motionRecodeList.length">
@@ -225,9 +238,45 @@
     </view>
 
     <view class="adv1">
-      <!-- TODO -->
-      <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/adv1.png" />
+      <image
+        @click="goWeightManagementPlan"
+        mode="widthFix"
+        src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/adv1.png"
+      />
     </view>
+
+    <uni-popup ref="updateWeightDataDialog">
+      <view class="update-weight-data-dialog">
+        <view class="title">选择当前体重</view>
+
+        <view class="weight-list">
+          <picker-view
+            indicator-style="height: 50px;"
+            style="width: 100%; height: 500rpx"
+            :value="weightValue"
+            @change="weightValue = $event.detail.value"
+          >
+            <picker-view-column>
+              <view
+                class="item"
+                :class="{
+                  active: weightValue[0] === index,
+                  adjacent: weightValue[0] === index - 1 || weightValue[0] === index + 1,
+                  adjacent1: weightValue[0] === index - 2 || weightValue[0] === index + 2,
+                }"
+                v-for="(item, index) in weightList"
+                :key="index"
+              >
+                <text class="value">{{ item }}</text>
+                <text class="unit" v-show="weightValue[0] === index">KG</text>
+              </view>
+            </picker-view-column>
+          </picker-view>
+        </view>
+
+        <view class="btn" @click="recodeWeight">记录</view>
+      </view>
+    </uni-popup>
 
     <add-food-recode-dialog ref="addFoodRecodeDialog" @addRecode="addRecode" />
     <add-motion-recode-dialog ref="addMotionRecodeDialog" @addRecode="addMotionRecode" />
@@ -238,7 +287,6 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
 import $http from '@/utils/http';
-import { verifyIsLogin } from '@/utils';
 import AddFoodRecodeDialog from '@/pages/recode/addFoodRecodeDialog.vue';
 import AddMotionRecodeDialog from '@/pages/recode/addMotionRecodeDialog.vue';
 
@@ -249,14 +297,20 @@ export default {
   components: { AddMotionRecodeDialog, AddFoodRecodeDialog },
 
   data() {
+    let weightList = [];
+
+    for (let i = 300; i < 3000; i++) {
+      weightList.push(Number((i * 0.1).toFixed(1)));
+    }
+
     return {
       homeWeightPlanData: null,
       option1: {
         series: [
           {
             type: 'gauge',
-            startAngle: 60,
-            endAngle: -300,
+            startAngle: 90,
+            endAngle: -270,
             min: 0,
             max: 100,
             splitNumber: 12,
@@ -337,13 +391,13 @@ export default {
         },
       ],
       motionRecodeList: [],
+      weightList: weightList,
+      weightValue: [0],
     };
   },
 
   onShow() {
     this.initData();
-    this.getDailyCalorie();
-    this.getDailyFoods();
   },
 
   computed: {
@@ -393,6 +447,33 @@ export default {
 
       return Math.round(totalMotion);
     },
+
+    updateTime() {
+      if (this.userDetailInfo) {
+        if (this.userDetailInfo.begin_date === this.userDetailInfo.weight_recode_date) {
+          return '暂无数据';
+        }
+
+        let date = new Date().format().slice(0, 10);
+        let day =
+          new Date(date + ' 23:59:59').getTime() -
+          new Date(this.userDetailInfo.weight_recode_date.replace(/-/g, '/')).getTime();
+        let days = Math.ceil(day / (24 * 60 * 60 * 1000));
+
+        if (days === 1) {
+          return `今天 ${this.userDetailInfo.weight_recode_date.slice(11, 16)}`;
+        } else if (days === 1) {
+          return `昨天 ${this.userDetailInfo.weight_recode_date.slice(11, 16)}`;
+        } else {
+          return `${this.userDetailInfo.weight_recode_date.slice(5, 10)} ${this.userDetailInfo.weight_recode_date.slice(
+            11,
+            16,
+          )}`;
+        }
+      }
+
+      return '暂无数据';
+    },
   },
 
   onShareAppMessage() {
@@ -420,6 +501,8 @@ export default {
         mask: true,
       });
 
+      this.getDailyCalorie();
+      this.getDailyFoods();
       await this.getHomeWeightPlan().catch(() => {});
       await this._getUserDetailInfo().catch(() => {});
 
@@ -432,6 +515,11 @@ export default {
     getHomeWeightPlan() {
       return $http.get('api/diet-info/weight-plan/home').then((res) => {
         this.homeWeightPlanData = res.data;
+        let index = this.weightList.findIndex((item) => item === this.homeWeightPlanData.current_weight);
+
+        if (index) {
+          this.weightValue = [index];
+        }
       });
     },
 
@@ -447,6 +535,7 @@ export default {
           },
         )
         .then((res) => {
+          // 卡路里总量、剩余量和比例计算
           let total = res.data.calorie_requirement + res.data.calorie_burn;
           let remaining = total - res.data.calorie_intake;
           let ratio = Number(((remaining / total) * 100).toFixed(2));
@@ -458,14 +547,52 @@ export default {
           }
 
           res.data.ratio = ratio;
-          res.data.remaining = remaining < 0 ? 0 : Math.round(remaining);
+          res.data.remaining = remaining < 0 ? 0 : Number(remaining.toFixed(2));
+
+          // 碳水、蛋白质、脂肪剩余量和比例计算
+          res.data.remainingA = Number((res.data.carbohydrate_requirement - res.data.carbohydrate_intake).toFixed(2));
+          res.data.remainingB = Number((res.data.protein_requirement - res.data.protein_intake).toFixed(2));
+          res.data.remainingC = Number((res.data.fat_requirement - res.data.fat_intake).toFixed(2));
+
+          if (res.data.remainingA < 0) {
+            res.data.remainingA = 0;
+          }
+
+          if (res.data.remainingB < 0) {
+            res.data.remainingB = 0;
+          }
+
+          if (res.data.remainingC < 0) {
+            res.data.remainingC = 0;
+          }
+
+          res.data.remainingARatio = (res.data.carbohydrate_intake / res.data.carbohydrate_requirement) * 100;
+          res.data.remainingBRatio = (res.data.protein_intake / res.data.carbohydrate_requirement) * 100;
+          res.data.remainingCRatio = (res.data.fat_intake / res.data.carbohydrate_requirement) * 100;
+
+          if (res.data.remainingARatio > 100) {
+            res.data.remainingARatio = 100;
+          }
+
+          if (res.data.remainingBRatio > 100) {
+            res.data.remainingBRatio = 100;
+          }
+
+          if (res.data.remainingCRatio > 100) {
+            res.data.remainingCRatio = 100;
+          }
+
           this.dailyCalorie = res.data;
 
+          // 图表数据修改和渲染
           this.option1.series[0].data[0].value = ratio;
 
-          setTimeout(() => {
-            chart1.setOption(this.option1);
-          }, 500);
+          let timer = setInterval(() => {
+            if (chart1) {
+              chart1.setOption(this.option1);
+              clearInterval(timer);
+            }
+          }, 50);
         })
         .catch((err) => {
           if (err.Msg === '未找到健康档案，请先完成健康评估') {
@@ -498,6 +625,61 @@ export default {
 
           this.motionRecodeList = (motionItem && motionItem.die_list) || [];
         });
+    },
+
+    showRecodeWeight() {
+      if (!this.isLogin) {
+        this.$toRouter('/packageLogin/pages/login/login');
+        return;
+      }
+
+      if (!this.userDetailInfo) {
+        this.$toRouter('/pages/evaluation/evaluation');
+        return;
+      }
+
+      this.$refs.updateWeightDataDialog.open();
+    },
+
+    recodeWeight() {
+      uni.showLoading({
+        title: '加载中...',
+        mask: true,
+      });
+
+      $http
+        .post('api/diet-info/user-weight/update', {
+          weight: this.weightList[this.weightValue],
+        })
+        .then(() => {
+          this.$refs.updateWeightDataDialog.close();
+          uni.hideLoading();
+          this.initData();
+
+          uni.showToast({
+            title: '更新成功',
+            icon: 'none',
+          });
+        });
+    },
+
+    goWeightManagementPlan() {
+      if (!this.isLogin) {
+        this.$toRouter('/packageLogin/pages/login/login');
+        return;
+      }
+
+      if (!this.userDetailInfo) {
+        this.$toRouter('/pages/evaluation/evaluation');
+        return;
+      }
+
+      if (!this.homeWeightPlanData) {
+        this.$toRouter('/pages/addPlan/addPlan');
+        return;
+      }
+
+      this.$toRouter('/pages/weightManagementPlan/weightManagementPlan');
     },
 
     openFoodRecodeDialog() {
@@ -586,8 +768,7 @@ export default {
                 icon: 'none',
               });
 
-              this.getDailyFoods();
-              this.getDailyCalorie();
+              this.initData();
             });
         });
     },
@@ -596,7 +777,10 @@ export default {
      * 跳转创建计划页
      */
     addPlan() {
-      verifyIsLogin();
+      if (!this.isLogin) {
+        this.$toRouter('/packageLogin/pages/login/login');
+        return;
+      }
 
       if (!this.userDetailInfo) {
         this.$toRouter('/pages/evaluation/evaluation');
@@ -861,6 +1045,15 @@ page {
               width: 147rpx;
               height: 10rpx;
               border-radius: 5rpx;
+              position: relative;
+
+              text {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                border-radius: 5rpx;
+              }
             }
 
             .value {
@@ -1073,6 +1266,84 @@ page {
 
     image {
       width: 100%;
+    }
+  }
+
+  .update-weight-data-dialog {
+    width: 690rpx;
+    background: #ffffff;
+    border-radius: 30rpx;
+    padding: 31rpx 30rpx 42rpx;
+
+    .title {
+      font-weight: 500;
+      font-size: 30rpx;
+      color: #111111;
+      margin-bottom: 69rpx;
+    }
+
+    .weight-list {
+      picker-view {
+        margin-bottom: 37rpx;
+
+        picker-view-column {
+          .item {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.active {
+              .value {
+                font-weight: bold;
+                font-size: 50rpx;
+                color: #5664e5;
+                margin-right: 17rpx;
+              }
+
+              .unit {
+                font-weight: 500;
+                font-size: 24rpx;
+                color: #5664e5;
+              }
+            }
+
+            &.adjacent {
+              font-size: 40rpx;
+              color: #111111;
+            }
+
+            &.adjacent1 {
+              font-size: 30rpx;
+              color: #999999;
+            }
+
+            .value {
+              margin-right: 17rpx;
+            }
+
+            .unit {
+              position: relative;
+              top: 10rpx;
+            }
+          }
+        }
+      }
+    }
+
+    .btn {
+      width: 420rpx;
+      height: 90rpx;
+      margin: 0 auto;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+      border-radius: 45rpx;
+      font-weight: bold;
+      font-size: 28rpx;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
