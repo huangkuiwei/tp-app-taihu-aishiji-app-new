@@ -1,130 +1,156 @@
 <template>
   <view class="user-center-page">
     <view class="page-title">
-      <text>个人信息</text>
+      <text>我的数据</text>
 
       <view class="back" @click="$toBack">
         <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
       </view>
     </view>
 
-    <view class="banner"> </view>
+    <view class="banner"></view>
 
     <view class="userinfo">
       <view class="box">
         <view class="item">
           <text class="label">性别</text>
 
-          <picker
-            mode="selector"
-            range-key="text"
-            :range="genderList"
-            :value="userDetailInfo.gender"
-            @change="userDetailInfo.gender = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateGenderDialog.open()">
             <view class="value">
               <text class="filed">{{ genderList[userDetailInfo.gender].text }}</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
 
         <view class="item">
           <text class="label">出生年份</text>
 
-          <picker
-            mode="date"
-            fields="year"
-            :value="userDetailInfo.birth_year"
-            @change="userDetailInfo.birth_year = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateBirthDialog.open()">
             <view class="value">
-              <text class="filed">{{ userDetailInfo.birth_year }}年</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <text class="filed">{{ userDetailInfo.birth_year }}</text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
 
         <view class="item">
           <text class="label">身高</text>
 
-          <picker
-            mode="selector"
-            :range="rulerLineList1"
-            :value="userDetailInfo.height"
-            @change="userDetailInfo.height = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateHeightDialog.open()">
             <view class="value">
-              <text class="filed">{{ rulerLineList1[userDetailInfo.height] }}厘米</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <text class="filed">{{ rulerLineList1[userDetailInfo.height] }}cm</text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
+      </view>
 
+      <view class="box">
         <view class="item">
           <text class="label">当前体重</text>
 
-          <picker
-            mode="selector"
-            :range="rulerLineList2"
-            :value="userDetailInfo.current_weight"
-            @change="userDetailInfo.current_weight = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateCurrentWeightDialog.open()">
             <view class="value">
-              <text class="filed">{{ rulerLineList2[userDetailInfo.current_weight] || currentWeight }}公斤</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <text class="filed">{{ rulerLineList2[userDetailInfo.current_weight] || currentWeight }}KG</text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
-      </view>
 
-      <view class="box">
         <view class="item">
           <text class="label">目标体重</text>
 
-          <picker
-            mode="selector"
-            :range="rulerLineList4"
-            :value="userDetailInfo.target_weight"
-            @change="userDetailInfo.target_weight = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateTargetWeightDialog.open()">
             <view class="value">
-              <text class="filed">{{ rulerLineList4[userDetailInfo.target_weight] || targetWeight }}公斤</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <text class="filed">{{ rulerLineList4[userDetailInfo.target_weight] || targetWeight }}KG</text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
       </view>
 
       <view class="box">
         <view class="item">
-          <text class="label">运动习惯</text>
+          <text class="label">运动量</text>
 
-          <picker
-            mode="selector"
-            :range="exerciseHabits.map((item) => item.text)"
-            :value="userDetailInfo.exercise_habits"
-            @change="userDetailInfo.exercise_habits = $event.detail.value"
-          >
+          <view class="picker" @click="$refs.updateHabitsDialog.open()">
             <view class="value">
               <text class="filed">
                 {{ exerciseHabits[userDetailInfo.exercise_habits].text }}
               </text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
             </view>
-          </picker>
+          </view>
         </view>
       </view>
     </view>
+
+    <update-gender-dialog
+      ref="updateGenderDialog"
+      :genderList="genderList"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
+
+    <update-birth-dialog
+      ref="updateBirthDialog"
+      :genderList="genderList"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
+
+    <update-height-dialog
+      ref="updateHeightDialog"
+      :list="rulerLineList1"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
+
+    <update-current-weight-dialog
+      ref="updateCurrentWeightDialog"
+      :list="rulerLineList2"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
+
+    <update-target-weight-dialog
+      ref="updateTargetWeightDialog"
+      :list="rulerLineList4"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
+
+    <update-habits-dialog
+      ref="updateHabitsDialog"
+      :list="exerciseHabits"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
   </view>
 </template>
 
 <script>
-import $http from '@/utils/http';
 import { mapActions } from 'vuex';
+import $http from '@/utils/http';
+import UpdateGenderDialog from '@/pages/userCenter/updateGenderDialog.vue';
+import UpdateBirthDialog from '@/pages/userCenter/updateBirthDialog.vue';
+import UpdateHeightDialog from '@/pages/userCenter/updateHeightDialog.vue';
+import UpdateCurrentWeightDialog from '@/pages/userCenter/updateCurrentWeightDialog.vue';
+import UpdateTargetWeightDialog from '@/pages/userCenter/updateTargetWeightDialog.vue';
+import UpdateHabitsDialog from '@/pages/userCenter/updateHabitsDialog.vue';
 
 export default {
   name: 'userCenter',
+
+  components: {
+    UpdateHabitsDialog,
+    UpdateTargetWeightDialog,
+    UpdateCurrentWeightDialog,
+    UpdateHeightDialog,
+    UpdateBirthDialog,
+    UpdateGenderDialog,
+  },
 
   data() {
     let rulerLineList1 = [];
@@ -136,10 +162,10 @@ export default {
       rulerLineList1.push(i);
     }
 
-    for (let i = 30; i < 301; i++) {
-      rulerLineList2.push(i);
-      rulerLineList3.push(i);
-      rulerLineList4.push(i);
+    for (let i = 300; i < 3000; i++) {
+      rulerLineList2.push(Number((i * 0.1).toFixed(1)));
+      rulerLineList3.push(Number((i * 0.1).toFixed(1)));
+      rulerLineList4.push(Number((i * 0.1).toFixed(1)));
     }
 
     return {
@@ -149,11 +175,11 @@ export default {
       genderList: [
         {
           value: 1,
-          text: '男',
+          text: '男生',
         },
         {
           value: 2,
-          text: '女',
+          text: '女生',
         },
       ],
       rulerLineList1: rulerLineList1,
@@ -349,7 +375,7 @@ page {
   }
 
   .userinfo {
-    padding: 20rpx 30rpx 0;
+    padding: 30rpx;
 
     .box {
       background: #ffffff;
@@ -368,11 +394,12 @@ page {
         }
 
         .label {
+          font-weight: 500;
           font-size: 28rpx;
-          color: #1a1a1a;
+          color: #111111;
         }
 
-        picker {
+        .picker {
           flex-grow: 1;
 
           .value {
@@ -381,9 +408,9 @@ page {
             justify-content: flex-end;
 
             .filed {
-              font-size: 26rpx;
-              color: #666666;
-              margin-right: 10rpx;
+              font-size: 24rpx;
+              color: #555555;
+              margin-right: 15rpx;
             }
           }
         }

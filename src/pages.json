@@ -5,7 +5,7 @@
       "style": {
         "navigationStyle": "custom",
         // #ifndef H5
-        "navigationBarTitleText": "首页",
+        "navigationBarTitleText": "记录",
         // #endif
         "h5": {
           "titleNView": false
@@ -20,7 +20,7 @@
       "style": {
         "navigationStyle": "custom",
         // #ifndef H5
-        "navigationBarTitleText": "记录",
+        "navigationBarTitleText": "发现",
         // #endif
         "h5": {
           "titleNView": false
