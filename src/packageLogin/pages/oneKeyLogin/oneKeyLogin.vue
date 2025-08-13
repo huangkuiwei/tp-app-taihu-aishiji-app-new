@@ -11,7 +11,7 @@
     <view class="banner"> </view>
 
     <view class="container">
-      <view class="title">慧食搭子 记录美好生活</view>
+      <!--<view class="title">慧食搭子 记录美好生活</view>-->
 
       <view class="input-box">
         <text>{{ phone.slice(0, 3) }}****{{ phone.slice(-4) }}</text>
@@ -179,7 +179,7 @@ page {
     .login {
       width: 560rpx;
       height: 90rpx;
-      background: #0abf92;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
       border-radius: 45rpx;
       font-weight: 500;
       font-size: 32rpx;
