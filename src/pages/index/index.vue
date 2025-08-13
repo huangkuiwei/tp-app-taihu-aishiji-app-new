@@ -10,7 +10,7 @@
             <view class="btn" @click="$toRouter('/packageLogin/pages/login/login')">请登录</view>
           </template>
 
-          <template v-else-if="homeWeightPlanData">
+          <template v-else-if="homeWeightPlanData && homeWeightPlanData.state === 1">
             <view class="btn" style="background: #ffffff; color: #5664e5" @click="showRecodeWeight">体重记录</view>
             <view
               class="btn"
