@@ -11,8 +11,6 @@
     <view class="banner"> </view>
 
     <view class="container">
-      <view class="title">慧食搭子 记录美好生活</view>
-
       <view class="input-box">
         <view class="phone">
           <input
@@ -21,18 +19,39 @@
             :value="formState.mobile"
             @input="formState.mobile = $event.detail.value"
           />
-        </view>
 
-        <view class="password">
-          <input
-            type="number"
-            :maxlength="6"
-            placeholder="请输入验证码"
-            :value="formState.sms_code"
-            @input="formState.sms_code = $event.detail.value"
-          />
           <text class="line"></text>
           <text class="get-code" @click="sendCode">{{ codeTip }}</text>
+        </view>
+
+        <view class="sms-code">
+          <view class="code-input-container">
+            <input
+              v-for="(code, index) in 3"
+              :key="index"
+              v-model="codeArray[index].value"
+              :focus="codeArray[index].focus"
+              type="number"
+              class="code-input"
+              :class="{ 'code-input-focused': currentIndex === index }"
+              @focus="currentIndex = index"
+              @input="handleInput(index, $event)"
+            />
+
+            <text class="line"></text>
+
+            <input
+              v-for="(code, index) in 3"
+              :key="index"
+              v-model="codeArray[index + 3].value"
+              :focus="codeArray[index + 3].focus"
+              type="number"
+              class="code-input"
+              :class="{ 'code-input-focused': currentIndex === index + 3 }"
+              @focus="currentIndex = index + 3"
+              @input="handleInput(index + 3, $event)"
+            />
+          </view>
         </view>
       </view>
 
@@ -71,6 +90,16 @@ export default {
 
   data() {
     return {
+      codeLength: 6, // 验证码长度
+      codeArray: [
+        { value: '', focus: false },
+        { value: '', focus: false },
+        { value: '', focus: false },
+        { value: '', focus: false },
+        { value: '', focus: false },
+        { value: '', focus: false },
+      ], // 存储每个输入框的值
+      currentIndex: 0, // 当前聚焦的输入框索引
       formState: {
         mobile: '',
         sms_sign: '',
@@ -94,6 +123,14 @@ export default {
           }
         }
       }, 1000);
+    },
+
+    codeArray: {
+      handler() {
+        this.formState.sms_code = this.codeArray.map((item) => item.value).join('');
+      },
+
+      deep: true,
     },
   },
 
@@ -161,6 +198,34 @@ export default {
           this.formState.sms_sign = res.data.sign;
           this.countdown = 60;
         });
+    },
+
+    handleInput(index, event) {
+      setTimeout(() => {
+        // 获取当前输入框的值
+        const value = event.detail.value;
+
+        if (value.length > 1) {
+          this.codeArray.forEach((item, i) => {
+            item.focus = false;
+            item.value = value[i];
+          });
+        } else if (value.length === 1) {
+          // 如果输入了内容且不是删除操作，并且不是最后一个输入框，则自动聚焦到下一个
+          if (value && index < this.codeLength - 1) {
+            this.codeArray[index + 1].focus = true;
+          } else {
+            this.codeArray.forEach((item) => (item.focus = false));
+          }
+        } else if (value.length === 0) {
+          // 删除操作
+          let index = this.codeArray.findIndex((item) => !item.value);
+
+          if (index > 0) {
+            this.codeArray[index - 1].focus = true;
+          }
+        }
+      });
     },
 
     /**
@@ -285,7 +350,7 @@ page {
 <style scoped lang="scss">
 .login-page {
   height: 100%;
-  background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/login/login-bg.png') top left/100% 100%
+  background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/login/bg.png') top left/100% 100%
     no-repeat;
   padding-bottom: 60rpx;
   display: flex;
@@ -323,6 +388,9 @@ page {
         background: #f6f7fb;
         border-radius: 45rpx;
         font-size: 28rpx;
+        padding-right: 38rpx;
+        display: flex;
+        align-items: center;
         margin-bottom: 30rpx;
 
         input {
@@ -330,29 +398,12 @@ page {
           width: 100%;
           height: 100%;
         }
-      }
-
-      .password {
-        width: 590rpx;
-        height: 90rpx;
-        background: #f6f7fb;
-        border-radius: 45rpx;
-        font-size: 28rpx;
-        padding-right: 38rpx;
-        display: flex;
-        align-items: center;
-
-        input {
-          padding: 0 36rpx;
-          flex-grow: 1;
-          height: 100%;
-        }
 
         .line {
           flex-shrink: 0;
           width: 2rpx;
           height: 50rpx;
-          background: #0abf92;
+          background: #5664e5;
           margin-right: 14rpx;
         }
 
@@ -360,7 +411,33 @@ page {
           flex-shrink: 0;
           white-space: nowrap;
           font-size: 24rpx;
-          color: #0abf92;
+          color: #5068e6;
+        }
+      }
+
+      .sms-code {
+        .code-input-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+
+          .line {
+            font-size: 28rpx;
+            width: 8rpx;
+            height: 2rpx;
+            background: #111111;
+          }
+
+          .code-input {
+            width: 60rpx;
+            height: 90rpx;
+            background: #f2f5ff;
+            border-radius: 15rpx;
+            border: 2rpx solid #5664e5;
+            text-align: center;
+            font-size: 18px;
+            outline: none; /* 移除默认聚焦轮廓 */
+          }
         }
       }
     }
@@ -368,7 +445,7 @@ page {
     .login {
       width: 560rpx;
       height: 90rpx;
-      background: #0abf92;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
       border-radius: 45rpx;
       font-weight: 500;
       font-size: 32rpx;
