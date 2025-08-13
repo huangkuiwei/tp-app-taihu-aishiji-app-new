@@ -34,7 +34,7 @@
           </template>
         </view>
 
-        <view class="setting" v-if="isLogin">
+        <view class="setting">
           <image
             mode="widthFix"
             @click="goProfile"
@@ -69,10 +69,10 @@
       <view class="data">
         <view class="title">
           <text>数据报告</text>
-          <text @click="previewDataPage('/pages/dataReport/dataReport')">查看更多</text>
+          <text v-if="userDetailInfo" @click="previewDataPage('/pages/dataReport/dataReport')">查看更多</text>
         </view>
 
-        <view class="data-box">
+        <view class="data-box" v-if="userDetailInfo">
           <view class="left">
             <view class="left-title">
               {{ isWeightLoss ? '本次减重（公斤）' : '本次增肌（公斤）' }}
@@ -129,6 +129,16 @@
             </view>
           </view>
         </view>
+
+        <view class="add-info-tip" v-else>
+          <view>
+            请先
+            <text class="highlight" v-if="isLogin" @click="$toRouter('/pages/evaluation/evaluation')">
+              完善个人基本信息
+            </text>
+            <text class="highlight" v-else @click="$toRouter('/packageLogin/pages/login/login')">登录</text>
+          </view>
+        </view>
       </view>
 
       <view class="nav-container">
@@ -148,7 +158,7 @@
           <!--  <uni-icons color="#999999" type="right" size="14"></uni-icons>-->
           <!--</view>-->
 
-          <view class="nav-item" @click="showRedemptionDialog">
+          <view class="nav-item" @click="jumpAuthPage('/pages/redemption/redemption')">
             <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu3.png" />
             <text class="nav-title">兑换码</text>
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
@@ -174,16 +184,13 @@
         </view>
       </view>
     </view>
-    <redemption-dialog ref="redemptionDialog" @success="success" />
   </view>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
-import RedemptionDialog from '@/pages/my/redemptionDialog.vue';
 import { verifyIsLogin } from '@/utils';
-import $http from '@/utils/http';
 
 let chart1 = null;
 
@@ -192,7 +199,6 @@ export default {
 
   data() {
     return {
-      recodeSummary: {},
       option1: {
         series: [
           {
@@ -273,6 +279,10 @@ export default {
     },
 
     lossWeightData() {
+      if (!this.userDetailInfo) {
+        return {};
+      }
+
       if (this.isWeightLoss) {
         return {
           a: Number((this.userDetailInfo.initial_weight - this.userDetailInfo.current_weight).toFixed(2)),
@@ -290,7 +300,6 @@ export default {
   onShow() {
     this._getUserInfo();
     this._getUserDetailInfo();
-    this.getRecodeSummary();
   },
 
   onShareAppMessage() {
@@ -301,52 +310,12 @@ export default {
     };
   },
 
-  components: {
-    RedemptionDialog,
-  },
-
   methods: {
     ...mapActions('app', ['_getUserDetailInfo', '_getUserInfo']),
 
     async init1() {
       chart1 = await this.$refs.chart1Ref.init(echarts);
       chart1.setOption(this.option1);
-    },
-
-    /**
-     * 获取用户信息数据
-     */
-    getRecodeSummary() {
-      uni.showLoading({
-        title: '加载中...',
-        mask: true,
-      });
-
-      $http
-        .get(
-          'api/diet-info/record-summary',
-          {},
-          {
-            hiddenErrorMessage: true,
-          },
-        )
-        .then((res) => {
-          uni.hideLoading();
-          this.recodeSummary = res.data;
-        })
-        .catch((err) => {
-          if (err.Msg === '未找到健康档案，请先完成健康评估') {
-            this.recodeSummary = {};
-          } else {
-            if (err.Code !== -100) {
-              uni.showToast({
-                title: err.Msg,
-                icon: 'none',
-                mask: true,
-              });
-            }
-          }
-        });
     },
 
     previewDataPage(url) {
@@ -360,6 +329,7 @@ export default {
       this.$toRouter(url);
     },
 
+    // TODO 客服修改
     openContact() {
       uni.openCustomerServiceChat({
         corpId: 'wwa09afa94a53c191b',
@@ -372,11 +342,6 @@ export default {
     jumpAuthPage(url) {
       verifyIsLogin();
       this.$toRouter(url);
-    },
-
-    showRedemptionDialog() {
-      verifyIsLogin();
-      this.$refs.redemptionDialog.open();
     },
 
     goProfile() {
@@ -393,11 +358,6 @@ export default {
       }
 
       this.$toRouter('/pages/userCenter/userCenter');
-    },
-
-    success() {
-      this._getUserInfo();
-      this._getUserDetailInfo();
     },
   },
 };
@@ -673,6 +633,16 @@ page {
               }
             }
           }
+        }
+      }
+
+      .add-info-tip {
+        font-size: 26rpx;
+        text-align: center;
+        padding: 40rpx 0 20rpx;
+
+        .highlight {
+          color: #5664e5;
         }
       }
     }
