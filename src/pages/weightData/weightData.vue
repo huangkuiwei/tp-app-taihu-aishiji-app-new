@@ -349,6 +349,7 @@ export default {
       }
 
       if (this.hasCompletedPlan) {
+        // TODO 路由已移除，待修改
         this.$toSwitch('/pages/recode/recode');
         return;
       }

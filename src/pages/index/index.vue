@@ -1,9 +1,10 @@
 <template>
   <view class="index-page">
     <view class="page-title">首页</view>
+    <view class="banner"></view>
 
-    <view class="banner">
-      <view class="banner-card">
+    <view class="card-container">
+      <view class="weight-card">
         <view class="options">
           <template v-if="!isLogin">
             <view class="btn" @click="$toRouter('/packageLogin/pages/login/login')">请登录</view>
@@ -81,9 +82,7 @@
           </view>
         </view>
       </view>
-    </view>
 
-    <view class="card-container">
       <view class="calorie-card">
         <view class="title">热量统计</view>
 
@@ -287,8 +286,8 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
 import $http from '@/utils/http';
-import AddFoodRecodeDialog from '@/pages/recode/addFoodRecodeDialog.vue';
-import AddMotionRecodeDialog from '@/pages/recode/addMotionRecodeDialog.vue';
+import AddFoodRecodeDialog from '@/components/addFoodRecodeDialog.vue';
+import AddMotionRecodeDialog from '@/components/addMotionRecodeDialog.vue';
 
 let chart1 = null;
 
@@ -796,7 +795,8 @@ export default {
 
 <style>
 page {
-  background: #f6f7fb;
+  background: #f6f7fb url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/banner-bg.png') left
+    top/100% auto no-repeat;
 }
 </style>
 
@@ -806,15 +806,19 @@ page {
   }
 
   .banner {
-    padding: calc(var(--page-title-height) + 59rpx) 30rpx 88rpx;
-    background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/home/banner-bg.png') left top/100%
-      auto no-repeat;
+    padding: calc(var(--page-title-height) + 39rpx) 0 0;
+  }
 
-    .banner-card {
+  .card-container {
+    padding: 0 30rpx 150rpx;
+    position: relative;
+
+    .weight-card {
       background: #5664e5;
       border-radius: 20rpx;
       padding: 48rpx 20rpx 20rpx;
       position: relative;
+      margin-bottom: 23rpx;
 
       .options {
         position: absolute;
@@ -895,12 +899,6 @@ page {
         }
       }
     }
-  }
-
-  .card-container {
-    padding: 0 30rpx 150rpx;
-    position: relative;
-    top: -50rpx;
 
     .calorie-card {
       background: #ffffff;

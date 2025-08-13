@@ -16,7 +16,7 @@
       }
     },
     {
-      "path": "pages/recode/recode",
+      "path": "pages/discover/discover",
       "style": {
         "navigationStyle": "custom",
         // #ifndef H5
@@ -521,21 +521,21 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/tabBar/home.png",
-        "selectedIconPath": "static/tabBar/home1.png"
+        "text": "记录",
+        "iconPath": "static/tabBar/index.png",
+        "selectedIconPath": "static/tabBar/index1.png"
       },
       {
-        "pagePath": "pages/recode/recode",
-        "text": "记录",
-        "iconPath": "static/tabBar/recode.png",
-        "selectedIconPath": "static/tabBar/recode1.png"
+        "pagePath": "pages/discover/discover",
+        "text": "发现",
+        "iconPath": "static/tabBar/discover.png",
+        "selectedIconPath": "static/tabBar/discover1.png"
       },
       {
         "pagePath": "pages/sunshine/sunshine",
-        "text": "攒阳光",
-        "iconPath": "static/tabBar/sunshine.png",
-        "selectedIconPath": "static/tabBar/sunshine1.png"
+        "text": "福袋",
+        "iconPath": "static/tabBar/blessingBag.png",
+        "selectedIconPath": "static/tabBar/blessingBag1.png"
       },
       {
         "pagePath": "pages/my/my",

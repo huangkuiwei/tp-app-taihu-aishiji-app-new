@@ -469,6 +469,7 @@ export default {
       if (item.task_name === '每日签到') {
         this.signIn();
       } else if (item.task_name === '每日记录') {
+        // TODO 路由已移除，待修改
         this.$toSwitch('/pages/recode/recode');
       } else if (item.task_name === '记录体重') {
         if (!this.userDetailInfo) {
