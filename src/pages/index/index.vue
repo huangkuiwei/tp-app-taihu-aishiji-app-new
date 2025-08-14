@@ -810,7 +810,7 @@ page {
   }
 
   .card-container {
-    padding: 0 30rpx 150rpx;
+    padding: 0 30rpx 200rpx;
     position: relative;
 
     .weight-card {

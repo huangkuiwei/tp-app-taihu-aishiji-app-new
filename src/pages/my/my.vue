@@ -149,14 +149,11 @@
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
           </view>
 
-          <!--<view class="nav-item" @click="jumpAuthPage('/pages/setReminder/setReminder')">-->
-          <!--  <image-->
-          <!--    mode="widthFix"-->
-          <!--    src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu2.png"-->
-          <!--  />-->
-          <!--  <text class="nav-title">提醒设置</text>-->
-          <!--  <uni-icons color="#999999" type="right" size="14"></uni-icons>-->
-          <!--</view>-->
+          <view class="nav-item" @click="jumpAuthPage('/pages/setReminder/setReminder')">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu2.png" />
+            <text class="nav-title">提醒设置</text>
+            <uni-icons color="#999999" type="right" size="14"></uni-icons>
+          </view>
 
           <view class="nav-item" @click="jumpAuthPage('/pages/redemption/redemption')">
             <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu3.png" />

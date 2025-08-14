@@ -12,18 +12,21 @@
 
     <view class="container">
       <view class="reminder-item" v-if="!reminderData.is_wx_subscribed" @click="goWebview">
-        <view class="left">一键开启提醒功能，避免错误登记</view>
-        <view class="right">开启提醒</view>
+        <view class="left">
+          <text>所有提醒</text>
+          <text>你已关闭提醒功能，打开可及时完成记录</text>
+        </view>
+        <view class="right">去打开</view>
       </view>
 
       <view class="reminder-item">
         <view class="left">
           <text>饮食记录提醒</text>
-          <text>早餐、午餐、晚餐未记录时，提醒触发</text>
         </view>
 
         <view @click="toggleSwitch">
           <switch
+            color="#5664E5"
             :disabled="!reminderData.is_wx_subscribed"
             :checked="reminderData.is_diet_remind_enabled"
             @change="onChange1"
@@ -33,18 +36,38 @@
 
       <view class="reminder-item">
         <view class="left">
-          <text>运动提醒</text>
-          <text>到点未记录时，提醒触发</text>
+          <text>运动记录提醒</text>
         </view>
 
         <view @click="toggleSwitch">
           <switch
+            color="#5664E5"
             :disabled="!reminderData.is_wx_subscribed"
             :checked="reminderData.is_exercise_remind_enabled"
             @change="onChange2"
           />
         </view>
       </view>
+
+      <view class="reminder-item">
+        <view class="left">
+          <text>体重记录提醒</text>
+        </view>
+
+        <!-- TODO 体重记录提醒 -->
+        <view @click="toggleSwitch">
+          <switch
+            color="#5664E5"
+            :disabled="!reminderData.is_wx_subscribed"
+            :checked="reminderData.is_exercise_remind_enabled"
+            @change="onChange2"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="submit">
+      <text @click="updateReminderData">确认</text>
     </view>
   </view>
 </template>
@@ -58,6 +81,7 @@ export default {
   data() {
     return {
       reminderData: {},
+      // TODO 推文地址修改
       link: 'https://mp.weixin.qq.com/s/TsRPYgh5yjosYiIGK7_XtA',
     };
   },
@@ -108,12 +132,10 @@ export default {
 
     onChange1($event) {
       this.reminderData.is_diet_remind_enabled = $event.detail.value;
-      this.updateReminderData();
     },
 
     onChange2($event) {
       this.reminderData.is_exercise_remind_enabled = $event.detail.value;
-      this.updateReminderData();
     },
 
     /**
@@ -130,6 +152,10 @@ export default {
             title: '操作成功',
             icon: 'none',
           });
+
+          setTimeout(() => {
+            this.$toBack();
+          }, 1500);
         });
     },
   },
@@ -138,41 +164,53 @@ export default {
 
 <style>
 page {
+  height: 100%;
   background: #f6f7fb;
 }
 </style>
 
 <style scoped lang="scss">
 .set-reminder-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   .page-title {
     background: #ffffff;
+    flex-shrink: 0;
   }
 
   .banner {
     padding: calc(var(--page-title-height)) 0 0;
     background: #ffffff;
+    flex-shrink: 0;
+    margin-bottom: 10rpx;
   }
 
   .container {
-    padding: 20rpx 30rpx;
+    flex-grow: 1;
+    background: #ffffff;
+    padding: 41rpx 30rpx;
     display: flex;
     flex-direction: column;
-    gap: 20rpx;
 
     .reminder-item {
-      background: #ffffff;
-      border-radius: 20rpx;
-      padding: 22rpx 20rpx;
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &:not(:last-child) {
+        margin-bottom: 30rpx;
+        padding-bottom: 30rpx;
+        border-bottom: 2rpx solid #e6e6e6;
+      }
 
       .left {
         font-size: 28rpx;
         color: #1a1a1a;
         display: flex;
         flex-direction: column;
-        gap: 22rpx;
+        gap: 20rpx;
 
         text {
           &:nth-child(2) {
@@ -183,17 +221,44 @@ page {
       }
 
       .right {
-        width: 135rpx;
-        height: 55rpx;
-        background: #f2fff4;
-        border-radius: 28rpx;
-        border: 1px solid #0abf92;
+        width: 137rpx;
+        height: 50rpx;
+        background: #5664e5;
+        border-radius: 25rpx;
+        font-weight: 500;
         font-size: 24rpx;
-        color: #0abf92;
+        color: #ffffff;
+        line-height: 61rpx;
         display: flex;
         align-items: center;
         justify-content: center;
       }
+
+      switch {
+        transform: scale(0.8);
+      }
+    }
+  }
+
+  .submit {
+    background: #ffffff;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 100rpx;
+
+    text {
+      width: 580rpx;
+      height: 100rpx;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+      border-radius: 50rpx;
+      font-weight: bold;
+      font-size: 30rpx;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
