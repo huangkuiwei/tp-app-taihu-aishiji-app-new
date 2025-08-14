@@ -1,35 +1,28 @@
 <template>
-  <uni-popup ref="addRecodePopup" type="bottom" :safe-area="false">
+  <uni-popup ref="addRecodePopup">
     <view class="add-recode-dialog">
       <view class="title">
-        <text class="title-text">饮食记录</text>
-        <uni-icons type="closeempty" color="#999999" size="24" @click="$refs.addRecodePopup.close()" />
+        <text class="title-text">添加食物</text>
+
+        <view class="close">
+          <uni-icons type="closeempty" color="#999999" size="20" @click="$refs.addRecodePopup.close()" />
+        </view>
+        <view class="recording-tip" v-if="recording">说话中</view>
       </view>
 
       <view class="input-box">
-        <view class="recording-tip" v-if="recording">正在说话中</view>
-
         <textarea
           :value="foodText"
           @input="foodText = $event.detail.value"
           :maxlength="-1"
-          placeholder="都吃了些什么？ 例如：1个鸡蛋、1杯豆浆、2片土司"
+          placeholder="快来说说你吃了什么吧！比如200ml豆浆、一个鸡蛋"
         />
 
         <view class="tools">
-          <image
-            class="icon1"
-            mode="widthFix"
-            src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/recode/icon1.png"
-            @click="selectImage"
-          />
-
           <view class="recording">
-            <view class="tip">长按说话</view>
-
             <image
               mode="widthFix"
-              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/recode/icon3.png"
+              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/icon1.png"
               :style="{ width: recording ? '100rpx' : '90rpx' }"
               @touchstart="handleTouchStart"
               @touchend="handleTouchEnd"
@@ -38,41 +31,8 @@
             <view
               v-if="progress"
               class="progress-ring"
-              :style="{ background: `conic-gradient(#0abf92 calc(${progress} * 0.6deg), #0abf9220 0)` }"
+              :style="{ background: `conic-gradient(#5664E5 calc(${progress} * 0.6deg), #0abf9220 0)` }"
             />
-          </view>
-
-          <image
-            class="icon2"
-            mode="widthFix"
-            src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/recode/icon2.png"
-            @click="takePhoto"
-          />
-        </view>
-      </view>
-
-      <view class="recode-list" v-if="!type">
-        <view class="recode-item" v-for="(item, index) in recodeList" :key="index" @click="onTypeChange(item)">
-          <picker
-            v-if="item.type === 2 || item.type === 4 || item.type === 6"
-            mode="selector"
-            range-key="text"
-            :range="addMealList"
-            :value="addMealList.findIndex((x) => x.type === item.type)"
-            @change="onAddMealChange(item, $event)"
-            @cancel="onAddMeaCancel(item)"
-          >
-            <view class="recode-item-content">
-              <image mode="heightFix" :src="item.icon" />
-              <text class="text">{{ item.text }}</text>
-              <text v-if="item.type === selectRecode.type" class="line"></text>
-            </view>
-          </picker>
-
-          <view class="recode-item-content" v-else>
-            <image mode="heightFix" :src="item.icon" />
-            <text class="text">{{ item.text }}</text>
-            <text v-if="item.type === selectRecode.type" class="line"></text>
           </view>
         </view>
       </view>
@@ -173,23 +133,6 @@ export default {
       this.$refs.addRecodePopup.close();
     },
 
-    onTypeChange(item) {
-      if (item.type === 2 || item.type === 4 || item.type === 6) {
-      }
-
-      this.selectRecode = item;
-    },
-
-    onAddMealChange(item, event) {
-      let value = event.detail.value;
-      Object.assign(item, this.addMealList[value]);
-    },
-
-    onAddMeaCancel(item) {
-      let index = this.addMealList.findIndex((x) => x.type === item.type);
-      Object.assign(item, this.addMealList[index]);
-    },
-
     submit() {
       if (!this.selectRecode.type) {
         uni.showToast({
@@ -215,40 +158,6 @@ export default {
         text: this.foodText,
         type: type,
         input_type: 1,
-      });
-    },
-
-    selectImage() {
-      uni.chooseMedia({
-        count: 1,
-        mediaType: ['image'],
-        sourceType: ['album'],
-        success: (res) => {
-          let filePath = res.tempFiles[0].tempFilePath;
-
-          this.$emit('addImageRecode', {
-            url: filePath,
-            type: this.selectRecode.type,
-            input_type: 2,
-          });
-        },
-      });
-    },
-
-    takePhoto() {
-      uni.chooseMedia({
-        count: 1,
-        mediaType: ['image'],
-        sourceType: ['camera'],
-        success: (res) => {
-          let filePath = res.tempFiles[0].tempFilePath;
-
-          this.$emit('addImageRecode', {
-            url: filePath,
-            type: this.selectRecode.type,
-            input_type: 2,
-          });
-        },
       });
     },
 
@@ -342,41 +251,48 @@ export default {
 
 <style scoped lang="scss">
 .add-recode-dialog {
-  width: 100%;
+  width: 690rpx;
   background: #ffffff;
-  border-radius: 30rpx 30rpx 0 0;
-  padding: 40rpx 35rpx 46rpx;
+  border-radius: 30rpx;
+  padding: 34rpx 20rpx 48rpx;
+  position: relative;
 
   .title {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24rpx;
+    justify-content: center;
+    margin-bottom: 35rpx;
 
     .title-text {
-      font-weight: 500;
-      font-size: 32rpx;
+      font-weight: bold;
+      font-size: 30rpx;
       color: #111111;
+    }
+
+    .recording-tip {
+      position: absolute;
+      top: 40rpx;
+      left: 40rpx;
+      font-size: 22rpx;
+      color: #999999;
+    }
+
+    .close {
+      position: absolute;
+      top: 30rpx;
+      right: 40rpx;
     }
   }
 
   .input-box {
-    height: 540rpx;
-    background: #f8f8f8;
+    height: 520rpx;
+    background: #f6f7fb;
     border-radius: 20rpx;
     display: flex;
     flex-direction: column;
-    padding: 32rpx 20rpx 0;
-    margin-bottom: 60rpx;
+    padding: 25rpx 22rpx 0;
+    margin-bottom: 44rpx;
     position: relative;
-
-    .recording-tip {
-      position: absolute;
-      top: -54rpx;
-      left: 140rpx;
-      font-size: 22rpx;
-      color: #999999;
-    }
 
     textarea {
       width: 100%;
@@ -388,13 +304,8 @@ export default {
     .tools {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       padding: 20rpx 10rpx;
-
-      .icon1,
-      .icon2 {
-        width: 50rpx;
-      }
 
       .recording {
         width: 120rpx;
@@ -443,55 +354,14 @@ export default {
     }
   }
 
-  .recode-list {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12rpx;
-
-    .recode-item {
-      width: 25%;
-
-      .recode-item-content {
-        width: 100%;
-        margin-bottom: 40rpx;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-
-        image {
-          height: 48rpx;
-          margin-bottom: 14rpx;
-        }
-
-        .text {
-          font-size: 24rpx;
-          color: #1a1a1a;
-          white-space: nowrap;
-        }
-
-        .line {
-          width: 60rpx;
-          height: 5rpx;
-          background: #0abf92;
-          border-radius: 3rpx;
-          position: absolute;
-          bottom: -12rpx;
-        }
-      }
-    }
-  }
-
   .submit {
-    width: 590rpx;
     margin: 0 auto;
-    height: 100rpx;
-    background: #0abf92;
-    border-radius: 50rpx;
-    font-weight: 500;
-    font-size: 32rpx;
+    width: 420rpx;
+    height: 90rpx;
+    background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+    border-radius: 45rpx;
+    font-weight: bold;
+    font-size: 28rpx;
     color: #ffffff;
     display: flex;
     align-items: center;

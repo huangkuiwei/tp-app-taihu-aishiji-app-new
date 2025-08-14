@@ -277,7 +277,7 @@
       </view>
     </uni-popup>
 
-    <add-food-recode-dialog ref="addFoodRecodeDialog" @addRecode="addRecode" />
+    <add-food-recode-dialog ref="addFoodRecodeDialog" :type="selectFoodType" @addRecode="addRecode" />
     <add-motion-recode-dialog ref="addMotionRecodeDialog" @addRecode="addMotionRecode" />
   </view>
 </template>
@@ -390,6 +390,7 @@ export default {
         },
       ],
       motionRecodeList: [],
+      selectFoodType: undefined,
       weightList: weightList,
       weightValue: [0],
     };
@@ -687,13 +688,17 @@ export default {
       this.$toRouter('/pages/weightManagementPlan/weightManagementPlan');
     },
 
-    openFoodRecodeDialog() {
+    openFoodRecodeDialog(type) {
       if (!this.isLogin) {
         this.$toRouter('/packageLogin/pages/login/login');
         return;
       }
 
-      this.$refs.addFoodRecodeDialog.open();
+      this.selectFoodType = type;
+
+      setTimeout(() => {
+        this.$refs.addFoodRecodeDialog.open();
+      });
     },
 
     addRecode(event) {
