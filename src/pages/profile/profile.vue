@@ -1,7 +1,7 @@
 <template>
   <view class="profile-page">
     <view class="page-title">
-      <text>编辑资料</text>
+      <text>设置</text>
 
       <view class="back" @click="$toBack">
         <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
@@ -10,72 +10,103 @@
 
     <view class="banner"></view>
 
-    <view class="header">
-      <image
-        @click="editHeaderImg"
-        class="header-img"
-        mode="aspectFill"
-        :src="userInfo.avatar_url || 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/my/default_head.png'"
-      />
+    <view class="userinfo">
+      <view class="box-title">基本信息</view>
 
-      <image
-        class="cramer"
-        mode="widthFix"
-        src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/profile/cramer.png"
-      />
+      <view class="box">
+        <view class="item" @click="editHeaderImg">
+          <text class="label">头像</text>
+
+          <view class="picker">
+            <view class="value">
+              <image
+                class="header-img"
+                mode="aspectFill"
+                :src="
+                  userInfo.avatar_url ||
+                  'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/my/default_head.png'
+                "
+              />
+            </view>
+          </view>
+        </view>
+
+        <view class="item">
+          <text class="label">昵称</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed">{{ userInfo.uname }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="box-title">账户</view>
+
+      <view class="box">
+        <view class="item" @click="$toRouter('/pages/changePhone/changePhone')">
+          <text class="label">更换手机号</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed">{{ userInfo.phone }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="box-title">其他</view>
+
+      <view class="box">
+        <view class="item" @click="$toRouter('/pages/protocol/protocol')">
+          <text class="label">用户协议</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed"></text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
+            </view>
+          </view>
+        </view>
+
+        <view class="item" @click="$toRouter('/pages/privacy/privacy')">
+          <text class="label">隐私政策</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed"></text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
 
-    <view class="nav-container">
-      <view class="nav">
-        <view class="nav-item">
-          <view class="nav-title">昵称</view>
-          <view class="name">{{ userInfo.uname }}</view>
+    <view class="account">
+      <view class="box">
+        <view class="item" @click="signOut">
+          <text class="label">退出登录</text>
         </view>
 
-        <view class="nav-item">
-          <view class="nav-title">
-            <text>绑定手机号</text>
-            <text class="phone">{{ userInfo.phone }}</text>
-          </view>
-          <view class="name" @click="$toRouter('/pages/changePhone/changePhone')">更换手机号</view>
+        <view class="item" @click="$toRouter('/packageLogin/pages/logout/logout')">
+          <text class="label" style="color: #eb0000">注销</text>
         </view>
       </view>
-
-      <view class="nav">
-        <view class="nav-item" @click="$toRouter('/pages/privacy/privacy')">
-          <view class="nav-title">隐私协议</view>
-          <view class="name">
-            <uni-icons color="#999999" type="right" size="14"></uni-icons>
-          </view>
-        </view>
-
-        <view class="nav-item" v-if="version" @click="update">
-          <view class="nav-title">
-            <text>检查更新</text>
-          </view>
-          <view class="name">
-            <text class="version">当前版本{{ version }}</text>
-            <uni-icons color="#999999" type="right" size="14"></uni-icons>
-          </view>
-        </view>
-      </view>
-
-      <view class="sign-out" @click="signOut">退出登录</view>
-      <view class="logout" @click="$toRouter('/packageLogin/pages/logout/logout')">注销账号</view>
     </view>
 
     <uni-popup ref="signOutDialog">
       <view class="sign-out-dialog">
-        <view class="title">确认退出登录吗？</view>
+        <view class="title">确认要退出登录么？</view>
 
         <view class="tip">
           <view>退出登录后将无法继续同步数据、</view>
-          <view>无法享受当前权益</view>
+          <view>无法享受已获得的会员权益</view>
         </view>
 
         <view class="options">
           <view class="btn1" @click="$refs.signOutDialog.close()">取消</view>
-          <view class="btn2" @click="submitSignOut">确认</view>
+          <view class="btn2" @click="submitSignOut">确认退出</view>
         </view>
       </view>
     </uni-popup>
@@ -90,20 +121,11 @@ export default {
   name: 'profile',
 
   data() {
-    return {
-      version: '',
-    };
+    return {};
   },
 
   computed: {
     ...mapState('app', ['userInfo']),
-  },
-
-  onLoad() {
-    // #ifdef MP-WEIXIN
-    let { version } = uni.getAccountInfoSync().miniProgram;
-    this.version = version;
-    // #endif
   },
 
   onShareAppMessage() {
@@ -115,48 +137,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('app', ['_getUserInfo']),
-
-    update() {
-      // #ifdef MP-WEIXIN
-      uni.showLoading({
-        title: '加载中...',
-        mask: true,
-      });
-
-      const updateManager = uni.getUpdateManager();
-
-      updateManager.onCheckForUpdate((event) => {
-        uni.hideLoading();
-
-        if (!event.hasUpdate) {
-          uni.showToast({
-            title: '当前已是最新版本',
-            icon: 'none',
-          });
-        }
-      });
-
-      updateManager.onUpdateReady(() => {
-        uni.showModal({
-          title: '更新提示',
-          content: '新版本已经准备好，是否重启小程序？',
-          success(res) {
-            if (res.confirm) {
-              updateManager.applyUpdate();
-            }
-          },
-        });
-      });
-
-      updateManager.onUpdateFailed(() => {
-        uni.showToast({
-          title: '新版本下载失败，请稍后再试',
-          icon: 'none',
-        });
-      });
-      // #endif
-    },
+    ...mapActions('app', ['_getUserDetailInfo']),
 
     editHeaderImg() {
       uni.chooseMedia({
@@ -224,104 +205,97 @@ export default {
 
 <style>
 page {
+  height: 100%;
   background: #f6f7fb;
 }
 </style>
 
 <style scoped lang="scss">
 .profile-page {
-  page-title {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .page-title {
+    flex-shrink: 0;
     background: #ffffff;
   }
 
   .banner {
+    flex-shrink: 0;
     padding: calc(var(--page-title-height)) 0 0;
     background: #ffffff;
   }
 
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 54rpx 0 60rpx;
-    position: relative;
+  .userinfo {
+    flex-grow: 1;
+    padding: 40rpx 30rpx 0;
 
-    .header-img {
-      width: 150rpx;
-      height: 150rpx;
-      border-radius: 50%;
-    }
-
-    .cramer {
-      position: absolute;
-      width: 50rpx;
-      bottom: 50rpx;
-      right: 300rpx;
+    .box-title {
+      padding-left: 21rpx;
+      font-size: 24rpx;
+      color: #999999;
+      margin-bottom: 19rpx;
     }
   }
 
-  .nav-container {
-    padding: 0 30rpx;
-    display: flex;
-    flex-direction: column;
-    gap: 20rpx;
+  .box {
+    background: #ffffff;
+    border-radius: 20rpx;
+    padding: 30rpx 24rpx;
+    margin-bottom: 41rpx;
 
-    .nav {
-      background: #ffffff;
-      border-radius: 20rpx;
-      padding: 32rpx 25rpx;
+    .item {
       display: flex;
-      flex-direction: column;
-      gap: 60rpx;
+      align-items: center;
 
-      .nav-item {
-        display: flex;
-        align-items: center;
+      &:not(:last-child) {
+        padding-bottom: 30rpx;
+        margin-bottom: 30rpx;
+        border-bottom: 1px solid #f6f7fb;
+      }
 
-        .nav-title {
-          font-size: 28rpx;
-          color: #1a1a1a;
-          flex-grow: 1;
+      .label {
+        font-weight: 500;
+        font-size: 28rpx;
+        color: #111111;
+      }
 
-          .phone {
-            margin-left: 20rpx;
+      .picker {
+        flex-grow: 1;
+
+        .value {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          .filed {
             font-size: 24rpx;
-            color: #999999;
+            color: #555555;
+            margin-right: 15rpx;
           }
-        }
 
-        .name {
-          font-size: 24rpx;
-          color: #999999;
-
-          .version {
-            margin-right: 20rpx;
+          .header-img {
+            width: 50rpx;
+            height: 50rpx;
+            border-radius: 50%;
           }
         }
       }
     }
+  }
 
-    .sign-out {
-      height: 103rpx;
-      background: #0abf92;
-      border-radius: 20rpx;
-      font-weight: 500;
-      font-size: 32rpx;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
+  .account {
+    padding: 0 30rpx;
+    margin-bottom: 100rpx;
+
+    .item {
       justify-content: center;
-    }
-
-    .logout {
-      font-size: 28rpx;
-      color: #0abf92;
-      text-align: center;
     }
   }
 
   .sign-out-dialog {
-    width: 589rpx;
+    width: 580rpx;
     background: #ffffff;
     border-radius: 30rpx;
     padding: 40rpx 90rpx;
@@ -333,18 +307,19 @@ page {
 
     .title {
       font-weight: 500;
-      font-size: 32rpx;
-      color: #111111;
+      font-size: 30rpx;
+      color: #000000;
       margin-bottom: 50rpx;
     }
 
     .tip {
-      font-size: 26rpx;
+      font-weight: 500;
+      font-size: 28rpx;
       color: #555555;
       margin-bottom: 35rpx;
 
       view {
-        line-height: 45rpx;
+        line-height: 50rpx;
         text-align: center;
       }
     }
@@ -355,20 +330,28 @@ page {
       .btn1 {
         width: 100%;
         height: 90rpx;
-        background: #0abf92;
+        background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
         border-radius: 45rpx;
+        font-weight: 500;
         font-size: 30rpx;
         color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 22rpx;
+        margin-bottom: 19rpx;
       }
 
       .btn2 {
+        width: 100%;
+        height: 90rpx;
+        background: #f2f5ff;
+        border-radius: 45rpx;
+        font-weight: 500;
         font-size: 30rpx;
-        color: #999999;
-        text-align: center;
+        color: #5664e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
