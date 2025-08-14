@@ -414,7 +414,13 @@ export default {
     countdownDays() {
       if (this.homeWeightPlanData && this.homeWeightPlanData.end_date) {
         let time = new Date(this.homeWeightPlanData.end_date.replace(/-/g, '/')) - new Date();
-        return Math.ceil(time / (60 * 60 * 24 * 1000));
+        let days = Math.ceil(time / (60 * 60 * 24 * 1000));
+
+        if (days < 0) {
+          days = 0;
+        }
+
+        return days;
       }
 
       return 0;

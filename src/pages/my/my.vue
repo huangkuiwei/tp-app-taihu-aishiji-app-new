@@ -172,7 +172,7 @@
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
           </view>
 
-          <view class="nav-item" @click="jumpAuthPage('/pages/about/about')">
+          <view class="nav-item" @click="$toRouter('/pages/about/about')">
             <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu6.png" />
             <text class="nav-title">关于我们</text>
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
@@ -295,7 +295,13 @@ export default {
     countdownDays() {
       if (this.userDetailInfo && this.userDetailInfo.end_date) {
         let time = new Date(this.userDetailInfo.end_date.replace(/-/g, '/')) - new Date();
-        return Math.ceil(time / (60 * 60 * 24 * 1000));
+        let days = Math.ceil(time / (60 * 60 * 24 * 1000));
+
+        if (days < 0) {
+          days = 0;
+        }
+
+        return days;
       }
 
       return 0;
@@ -304,7 +310,21 @@ export default {
 
   onShow() {
     this._getUserInfo();
-    this._getUserDetailInfo();
+    this._getUserDetailInfo().then(() => {
+      let ratio = this.lossWeightData.a / (this.lossWeightData.a + this.lossWeightData.b);
+
+      if (ratio < 0) {
+        ratio = 0;
+      } else if (ratio > 1) {
+        ratio = 1;
+      }
+
+      this.option1.series[0].data[0].value = ratio * 100;
+
+      setTimeout(() => {
+        chart1.setOption(this.option1);
+      }, 500);
+    });
   },
 
   onShareAppMessage() {

@@ -298,7 +298,7 @@ page {
     width: 580rpx;
     background: #ffffff;
     border-radius: 30rpx;
-    padding: 40rpx 90rpx;
+    padding: 40rpx 85rpx;
     display: flex;
     flex-direction: column;
     align-items: center;

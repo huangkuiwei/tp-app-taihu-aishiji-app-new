@@ -216,7 +216,7 @@ page {
         gap: 20rpx;
 
         .ai-item {
-          width: calc(50% - 10rpx);
+          width: calc(50% - 12rpx);
           background: #ffffff;
           border-radius: 15rpx;
           padding: 30rpx 21rpx;
