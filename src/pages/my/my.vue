@@ -122,10 +122,9 @@
               </view>
             </view>
 
-            <!-- TODO 整体目标 剩余天数？ -->
             <view class="right-data right-data2">
               <view class="data-title">剩余天数</view>
-              <view class="data-value">23</view>
+              <view class="data-value">{{ countdownDays }}</view>
             </view>
           </view>
         </view>
@@ -291,6 +290,15 @@ export default {
           b: Number((this.userDetailInfo.target_weight - this.userDetailInfo.current_weight).toFixed(2)),
         };
       }
+    },
+
+    countdownDays() {
+      if (this.userDetailInfo && this.userDetailInfo.end_date) {
+        let time = new Date(this.userDetailInfo.end_date.replace(/-/g, '/')) - new Date();
+        return Math.ceil(time / (60 * 60 * 24 * 1000));
+      }
+
+      return 0;
     },
   },
 
