@@ -12,53 +12,23 @@
 
     <view class="feedback-container">
       <view class="feedback-box">
-        <view class="feedback-title">我要反馈</view>
-
         <view class="input-box">
           <textarea
-            placeholder="你想说点什么？"
-            :maxlength="1000"
+            placeholder="请输入您要反馈的问题或意见（5-500字以内）"
+            :maxlength="500"
             :value="content"
             @input="content = $event.detail.value"
           />
-
-          <view class="upload-box">
-            <uni-file-picker
-              :image-styles="{
-                width: 50,
-                height: 50,
-                border: false,
-              }"
-              :value="imageValue"
-              :auto-upload="false"
-              :limit="5"
-              file-mediatype="image"
-              fileMediatype="image"
-              mode="grid"
-              @select="onSelect"
-            >
-              <view class="add">+</view>
-            </uni-file-picker>
-          </view>
-        </view>
-
-        <view class="feedback-title2">
-          <text>联系方式</text>
-          <text>注：手机号/微信/QQ</text>
-        </view>
-
-        <view class="input-box2">
-          <input
-            type="text"
-            :value="contact_info"
-            @input="contact_info = $event.detail.value"
-            placeholder="请留下任意一个联系方式"
-          />
         </view>
       </view>
-    </view>
 
-    <view class="submit" @click="submit">确认</view>
+      <!-- TODO 客服电话修改 -->
+      <view class="tip">
+        您的反馈和意见我们会尽快解决，但无法保证每一条都能及时反馈，如有紧急咨询可直接拨打客服热线：400-0000-0000
+      </view>
+
+      <view class="submit" @click="submit">提交</view>
+    </view>
   </view>
 </template>
 
@@ -72,7 +42,6 @@ export default {
     return {
       content: '',
       contact_info: '',
-      imageValue: [],
     };
   },
 
@@ -85,17 +54,6 @@ export default {
   },
 
   methods: {
-    onSelect($event) {
-      this.imageValue.push(...$event.tempFiles);
-      this.imageValue.slice(-5);
-    },
-
-    uploadFile(path) {
-      return $http.upload('api/global/fileupload/upload', path, 'file').then((res) => {
-        return res.data;
-      });
-    },
-
     async submit() {
       if (!this.content) {
         uni.showToast({
@@ -106,9 +64,9 @@ export default {
         return;
       }
 
-      if (!this.contact_info) {
+      if (this.content.length < 5) {
         uni.showToast({
-          title: '联系方式不能为空',
+          title: '反馈内容字数不能少于5个',
           icon: 'none',
         });
 
@@ -120,18 +78,12 @@ export default {
         mask: true,
       });
 
-      let images = [];
-
-      for (let i = 0; i < this.imageValue.length; i++) {
-        let url = await this.uploadFile(this.imageValue[i].url);
-        images.push(url);
-      }
-
+      // TODO contact_info 可为空，现在后端提示不能为空
       $http
         .post('api/user/profile/submit-suggestion', {
           content: this.content,
           contact_info: this.contact_info,
-          images: images,
+          images: [],
         })
         .then(() => {
           uni.hideLoading();
@@ -153,119 +105,76 @@ export default {
 
 <style>
 page {
+  height: 100%;
   background: #f6f7fb;
 }
 </style>
 
 <style scoped lang="scss">
 .feedback-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   .page-title {
+    flex-shrink: 0;
     background: #ffffff;
   }
 
   .banner {
+    flex-shrink: 0;
     padding: calc(var(--page-title-height)) 0 0;
     background: #ffffff;
+    margin-bottom: 10rpx;
   }
 
   .feedback-container {
+    background: #ffffff;
+    flex-grow: 1;
     padding: 20rpx 30rpx;
+    display: flex;
+    flex-direction: column;
 
     .feedback-box {
-      padding: 34rpx 22rpx;
+      flex-shrink: 0;
       border-radius: 20rpx;
       background: #ffffff;
-
-      .feedback-title {
-        font-weight: 500;
-        font-size: 30rpx;
-        color: #1a1a1a;
-        margin-bottom: 30rpx;
-      }
+      margin-bottom: 33rpx;
 
       .input-box {
-        background: #f5f6fa;
-        height: 500rpx;
+        background: #f6f7fb;
+        height: 421rpx;
         border-radius: 20rpx;
-        padding: 30rpx 20rpx;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 50rpx;
+        padding: 32rpx 34rpx;
 
         textarea {
-          background: #f5f6fa;
           width: 100%;
-          flex-grow: 1;
-          font-size: 26rpx;
-          margin-bottom: 20rpx;
-        }
-
-        .upload-box {
-          flex-shrink: 0;
-          height: 50px;
-
-          .add {
-            width: 100%;
-            height: 100%;
-            border-radius: 20rpx;
-            border: 1px dashed #bfbfbf;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50rpx;
-            color: #bfbfbf;
-          }
-        }
-      }
-
-      .feedback-title2 {
-        display: flex;
-        align-items: center;
-        gap: 20rpx;
-        margin-bottom: 30rpx;
-
-        text {
-          &:nth-child(1) {
-            font-weight: 500;
-            font-size: 30rpx;
-            color: #1a1a1a;
-          }
-
-          &:nth-child(2) {
-            font-size: 22rpx;
-            color: #999999;
-          }
-        }
-      }
-
-      .input-box2 {
-        background: #f5f6fa;
-        height: 120rpx;
-        border-radius: 20rpx;
-        padding: 30rpx 20rpx;
-        display: flex;
-        align-items: center;
-
-        input {
-          width: 100%;
-          font-size: 26rpx;
+          height: 100%;
+          font-size: 24rpx;
         }
       }
     }
-  }
 
-  .submit {
-    margin: 100rpx auto 0;
-    width: 592rpx;
-    height: 103rpx;
-    background: #0abf92;
-    border-radius: 52rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
-    font-size: 32rpx;
-    color: #ffffff;
+    .tip {
+      flex-grow: 1;
+      font-size: 22rpx;
+      color: #999999;
+      line-height: 45rpx;
+    }
+
+    .submit {
+      width: 580rpx;
+      height: 100rpx;
+      margin: 0 auto 100rpx;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+      border-radius: 50rpx;
+      font-weight: bold;
+      font-size: 30rpx;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>
