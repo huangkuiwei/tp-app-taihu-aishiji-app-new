@@ -333,42 +333,49 @@ export default {
         mask: true,
       });
 
+      let api = '';
+
       if (this.selectChartType.id === 1) {
-        // TODO
-        uni.hideLoading();
+        api = 'api/diet-info/data-report';
       } else {
-        $http
-          .post('api/diet-info/data-statistics', {
-            report_type: this.selectedTime.value,
-          })
-          .then((res) => {
-            uni.hideLoading();
-
-            if (this.selectChartType.id === 2) {
-              this.option1.series[0].data = res.data.map((item) => item.calorie_intake);
-            } else {
-              this.option1.series[0].data = res.data.map((item) => item.exercise_calorie);
-            }
-
-            this.option1.xAxis.data = res.data.map((item) => item.date_time.slice(5, 11));
-
-            this.option1.series[0].label.formatter = (params) => {
-              // params.dataIndex 是当前数据点的索引
-              const index = params.dataIndex;
-              const len = this.option1.xAxis.data.length;
-
-              // 只显示第一个 (index === 0) 和最后一个 (index === len - 1)
-              if (index === 0 || index === len - 1) {
-                return params.value; // 显示数值
-              }
-              return '';
-            };
-
-            setTimeout(() => {
-              chart1.setOption(this.option1);
-            }, 500);
-          });
+        api = 'api/diet-info/data-statistics';
       }
+
+      $http
+        .post(api, {
+          report_type: this.selectedTime.value,
+        })
+        .then((res) => {
+          uni.hideLoading();
+
+          if (this.selectChartType.id === 1) {
+            res.data = res.data.weight_list;
+
+            this.option1.series[0].data = res.data.map((item) => item.weight);
+          } else if (this.selectChartType.id === 2) {
+            this.option1.series[0].data = res.data.map((item) => item.calorie_intake);
+          } else {
+            this.option1.series[0].data = res.data.map((item) => item.exercise_calorie);
+          }
+
+          this.option1.xAxis.data = res.data.map((item) => item.date_time.slice(5, 10));
+
+          this.option1.series[0].label.formatter = (params) => {
+            // params.dataIndex 是当前数据点的索引
+            const index = params.dataIndex;
+            const len = this.option1.xAxis.data.length;
+
+            // 只显示第一个 (index === 0) 和最后一个 (index === len - 1)
+            if (index === 0 || index === len - 1) {
+              return params.value; // 显示数值
+            }
+            return '';
+          };
+
+          setTimeout(() => {
+            chart1.setOption(this.option1);
+          }, 200);
+        });
     },
   },
 };
@@ -486,7 +493,7 @@ page {
         position: absolute;
         left: 0;
         right: 0;
-        top: 0;
+        top: 68rpx;
         bottom: 0;
         display: flex;
         align-items: center;
