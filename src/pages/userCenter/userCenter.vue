@@ -70,6 +70,8 @@
         </view>
       </view>
 
+      <!-- TODO 是否新增开始日期和目标日期是否编辑 -->
+
       <view class="box">
         <view class="item">
           <text class="label">运动量</text>

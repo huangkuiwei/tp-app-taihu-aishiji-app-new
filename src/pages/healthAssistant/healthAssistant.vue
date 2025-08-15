@@ -91,6 +91,15 @@ export default {
 
   onLoad(options) {
     this.agent_id = options.agent_id;
+
+    if (options.questionText) {
+      this.questionText = options.questionText;
+
+      setTimeout(() => {
+        this.sendMessage();
+      }, 200);
+    }
+
     this.aiName = decodeURIComponent(options.name);
     this.getHistoryChat();
   },

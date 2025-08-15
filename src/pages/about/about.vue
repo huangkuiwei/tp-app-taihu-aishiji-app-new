@@ -13,12 +13,14 @@
     <view class="about-container">
       <view class="icon-box">
         <view class="icon1">
+          <!-- TODO 公司logo修改 -->
           <view class="img"></view>
           <view class="name">减肥记录</view>
           <view class="version" v-if="version">当前版本{{ version }}</view>
         </view>
       </view>
 
+      <!-- TODO 公司名称修改 -->
       <view class="company">湖南******有限公司</view>
     </view>
   </view>

@@ -38,6 +38,7 @@
     <view class="kefu">
       <text @click="callPhone">联系客服</text>
       <text class="line">｜</text>
+      <!-- TODO 客服电话修改 -->
       <text>客服电话：4009989759</text>
     </view>
   </view>

@@ -76,6 +76,7 @@
     <view class="kefu">
       <text @click="callPhone">联系客服</text>
       <text class="line">｜</text>
+      <!-- TODO 客服电话修改 -->
       <text>客服电话：4009989759</text>
     </view>
   </view>
@@ -200,6 +201,7 @@ export default {
         });
     },
 
+    // TODO 验证码填入存在bug，待修复
     handleInput(index, event) {
       setTimeout(() => {
         // 获取当前输入框的值

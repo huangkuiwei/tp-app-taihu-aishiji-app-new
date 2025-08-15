@@ -313,7 +313,7 @@ export default {
   },
 
   onLoad() {
-    // TODO
+    // TODO 默认值修改
     this.selectedTime = this.timeList[1];
     this.selectChartType = this.chartList[0];
   },
