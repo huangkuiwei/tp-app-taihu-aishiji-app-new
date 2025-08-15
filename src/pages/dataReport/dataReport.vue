@@ -43,7 +43,7 @@
           <l-echart ref="chart1Ref" @finished="init1" />
         </view>
 
-        <view v-if="dataReport.weight_list && !dataReport.weight_list.length" class="empty-tip">暂无数据</view>
+        <view v-if="!dataReport.weight_list || !dataReport.weight_list.length" class="empty-tip">暂无数据</view>
       </view>
 
       <view class="data-detail">
@@ -54,7 +54,7 @@
             <view class="name">目标体重</view>
 
             <view class="value">
-              <text>{{ userDetailInfo.target_weight }}</text>
+              <text>{{ userDetailInfo && userDetailInfo.target_weight }}</text>
               <text>KG</text>
             </view>
           </view>
@@ -67,7 +67,7 @@
               <text>天</text>
             </view>
 
-            <view class="time" v-if="userDetailInfo.end_date">
+            <view class="time" v-if="userDetailInfo">
               至{{ userDetailInfo.end_date.slice(5, 7) }}月{{ userDetailInfo.end_date.slice(8, 10) }}日
             </view>
           </view>
@@ -127,21 +127,20 @@ export default {
     return {
       dataReport: {},
       timeList: [
-        // TODO 修改周期目标 value
         {
           id: 0,
           name: '周期目标',
-          value: 0,
+          value: 6,
         },
         {
           id: 1,
           name: '近一周',
-          value: 1,
+          value: 7,
         },
         {
           id: 2,
           name: '近一月',
-          value: 2,
+          value: 8,
         },
         {
           id: 3,
@@ -150,7 +149,6 @@ export default {
         },
       ],
       chartList: [
-        // TODO 修改 value
         {
           id: 1,
           name: '体重',
@@ -264,6 +262,10 @@ export default {
     },
 
     weightChange() {
+      if (!this.userDetailInfo) {
+        return {};
+      }
+
       let weight = Number((this.userDetailInfo.initial_weight - this.userDetailInfo.current_weight).toFixed(2));
 
       return {
@@ -273,6 +275,10 @@ export default {
     },
 
     bmiChange() {
+      if (!this.userDetailInfo) {
+        return {};
+      }
+
       let bmi = Number(
         (
           this.userDetailInfo.current_weight /
@@ -296,10 +302,13 @@ export default {
     selectedTime() {
       this.getDataReport();
     },
+
+    selectChartType() {
+      this.getDataReport();
+    },
   },
 
   onLoad() {
-    // TODO 默认值修改
     this.selectedTime = this.timeList[1];
     this.selectChartType = this.chartList[0];
   },
@@ -324,35 +333,42 @@ export default {
         mask: true,
       });
 
-      $http
-        .post('api/diet-info/data-report', {
-          report_type: this.selectedTime.value,
-        })
-        .then((res) => {
-          uni.hideLoading();
+      if (this.selectChartType.id === 1) {
+        // TODO
+        uni.hideLoading();
+      } else {
+        $http
+          .post('api/diet-info/data-statistics', {
+            report_type: this.selectedTime.value,
+          })
+          .then((res) => {
+            uni.hideLoading();
 
-          res.data.weight_list = res.data.weight_list || [];
-          this.dataReport = res.data;
-
-          this.option1.xAxis.data = this.dataReport.weight_list.map((item) => item.date_time.slice(5, 11));
-          this.option1.series[0].data = this.dataReport.weight_list.map((item) => item.weight);
-
-          this.option1.series[0].label.formatter = (params) => {
-            // params.dataIndex 是当前数据点的索引
-            const index = params.dataIndex;
-            const len = this.option1.xAxis.data.length;
-
-            // 只显示第一个 (index === 0) 和最后一个 (index === len - 1)
-            if (index === 0 || index === len - 1) {
-              return params.value; // 显示数值
+            if (this.selectChartType.id === 2) {
+              this.option1.series[0].data = res.data.map((item) => item.calorie_intake);
+            } else {
+              this.option1.series[0].data = res.data.map((item) => item.exercise_calorie);
             }
-            return '';
-          };
 
-          setTimeout(() => {
-            chart1.setOption(this.option1);
-          }, 500);
-        });
+            this.option1.xAxis.data = res.data.map((item) => item.date_time.slice(5, 11));
+
+            this.option1.series[0].label.formatter = (params) => {
+              // params.dataIndex 是当前数据点的索引
+              const index = params.dataIndex;
+              const len = this.option1.xAxis.data.length;
+
+              // 只显示第一个 (index === 0) 和最后一个 (index === len - 1)
+              if (index === 0 || index === len - 1) {
+                return params.value; // 显示数值
+              }
+              return '';
+            };
+
+            setTimeout(() => {
+              chart1.setOption(this.option1);
+            }, 500);
+          });
+      }
     },
   },
 };
