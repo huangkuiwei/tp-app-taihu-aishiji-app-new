@@ -107,20 +107,6 @@
               <uni-icons v-else-if="bmiChange.state === -1" type="arrow-down" size="30" color="#5664E5" />
             </view>
           </view>
-
-          <view class="item">
-            <!-- TODO 肌肉变化计算 -->
-            <view class="name">肌肉变化</view>
-
-            <view class="value">
-              <text>0.5</text>
-              <text>%</text>
-            </view>
-
-            <view class="icon">
-              <uni-icons type="arrow-up" size="30" color="#5664E5" />
-            </view>
-          </view>
         </view>
       </view>
     </view>

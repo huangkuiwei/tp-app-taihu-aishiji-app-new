@@ -1,5 +1,5 @@
 <template>
-  <custom-dialog ref="recodeDialog" title="阳光记录" :shop-close="false">
+  <custom-dialog ref="recodeDialog" title="金豆明细" :shop-close="false">
     <view class="content">
       <view class="recode-list">
         <template v-if="recodeList.length">
@@ -88,23 +88,14 @@ export default {
     .recode-item {
       display: flex;
       align-items: center;
-
-      &:not(:last-child) {
-        padding-bottom: 22rpx;
-        margin-bottom: 22rpx;
-        border-bottom: 1px solid #f5f5f5;
-      }
+      margin-bottom: 30rpx;
 
       text {
-        &:nth-child(1) {
-          font-size: 24rpx;
-          color: #111111;
-          flex-grow: 1;
-        }
+        font-size: 24rpx;
+        color: #1a1a1a;
 
-        &:nth-child(2) {
-          font-size: 22rpx;
-          color: #999999;
+        &:nth-child(1) {
+          flex-grow: 1;
         }
       }
     }
@@ -117,11 +108,13 @@ export default {
   justify-content: center;
 
   text {
-    width: 284rpx;
-    height: 80rpx;
-    background: #0abf92;
+    width: 312rpx;
+    height: 85rpx;
+    background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+    border-radius: 43rpx;
+    font-weight: 500;
+    font-size: 32rpx;
     color: #ffffff;
-    border-radius: 40rpx;
     display: flex;
     align-items: center;
     justify-content: center;

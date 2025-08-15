@@ -3,7 +3,6 @@
     <view class="custom-dialog">
       <view class="title">
         <text>{{ title }}</text>
-        <text class="line"></text>
       </view>
 
       <view class="content-box">
@@ -59,22 +58,12 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 50rpx;
+    margin-bottom: 53rpx;
 
     text {
-      &:nth-child(1) {
-        font-weight: bold;
-        font-size: 32rpx;
-        color: #1a1a1a;
-        margin-bottom: 12rpx;
-      }
-
-      &:nth-child(2) {
-        width: 120rpx;
-        height: 6rpx;
-        background: #0abf92;
-        border-radius: 5rpx;
-      }
+      font-weight: 500;
+      font-size: 30rpx;
+      color: #1a1a1a;
     }
   }
 

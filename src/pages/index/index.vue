@@ -468,7 +468,7 @@ export default {
 
         if (days === 1) {
           return `今天 ${this.userDetailInfo.weight_recode_date.slice(11, 16)}`;
-        } else if (days === 1) {
+        } else if (days === 2) {
           return `昨天 ${this.userDetailInfo.weight_recode_date.slice(11, 16)}`;
         } else {
           return `${this.userDetailInfo.weight_recode_date.slice(5, 10)} ${this.userDetailInfo.weight_recode_date.slice(
