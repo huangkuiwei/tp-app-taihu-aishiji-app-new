@@ -43,7 +43,7 @@
           <l-echart ref="chart1Ref" @finished="init1" />
         </view>
 
-        <view v-if="!dataReport.weight_list || !dataReport.weight_list.length" class="empty-tip">暂无数据</view>
+        <view v-if="!option1.series[0].data.length" class="empty-tip">暂无数据</view>
       </view>
 
       <view class="data-detail">
@@ -523,11 +523,11 @@ page {
           position: relative;
 
           &:nth-child(2n) {
-            width: 30%;
+            width: 40%;
           }
 
           &:nth-child(2n-1) {
-            width: 70%;
+            width: 60%;
           }
 
           .name {
@@ -562,7 +562,7 @@ page {
           .time {
             position: absolute;
             top: 60rpx;
-            left: 90rpx;
+            left: 130rpx;
             white-space: nowrap;
             background: #f2f5ff;
             border-radius: 18rpx 18rpx 18rpx 0;
