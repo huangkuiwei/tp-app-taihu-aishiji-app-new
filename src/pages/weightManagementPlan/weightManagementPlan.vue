@@ -60,7 +60,14 @@
           </view>
 
           <view class="chart-box">
-            <!-- TODO 图表区域 -->
+            <view class="chart">
+              <l-echart ref="chartRef1" @finished="init1" />
+            </view>
+
+            <view class="chart-data">
+              <text>70</text>
+              <text>身体评分</text>
+            </view>
           </view>
 
           <view class="bmi">
@@ -159,7 +166,7 @@
 
           <view class="card-title2">
             预计在
-            <text>{{ lastPlanData.end_date.slice(0, 10) }}</text>
+            <text>{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>
             达到
             <text>{{ lastPlanData.plan_target_weight }}KG</text>
           </view>
@@ -181,7 +188,12 @@
         </view>
 
         <view class="cookbook-list">
-          <view class="cookbook-item" v-for="(item, key) of dateList[selectDateKey]" :key="key">
+          <view
+            class="cookbook-item"
+            :style="{ background: foodBgColorList[key] }"
+            v-for="(item, key) of dateList[selectDateKey]"
+            :key="key"
+          >
             <view class="cookbook-title">
               <text>{{ currentFoodData(item, key).typeName }}</text>
               <text>{{ currentFoodData(item).currentCalorie }}千卡（{{ currentFoodData(item).ratio }}%）</text>
@@ -303,6 +315,7 @@ import $http from '@/utils/http';
 import AddMotionRecodeDialog from '@/components/addMotionRecodeDialog.vue';
 
 let chart = null;
+let chart1 = null;
 
 export default {
   name: 'weightManagementPlan',
@@ -364,6 +377,50 @@ export default {
       },
       exercisesPlanData: [],
       scoreList: ['偏瘦', '正常', '偏胖', '超胖'],
+      foodBgColorList: ['#F2F5FF', '#FEFBEC', '#EEF6E6', '#F2F5FF', '#FEFBEC', '#EEF6E6'],
+      option1: {
+        series: [
+          {
+            type: 'gauge',
+            startAngle: 180,
+            endAngle: 0,
+            min: 0,
+            max: 100,
+            center: ['50%', '100%'], // 水平居中，垂直方向下移一点（默认是 '50%', '50%'）
+            radius: '75%',
+            axisLine: {
+              lineStyle: {
+                width: 15,
+              },
+            },
+            pointer: {
+              show: false,
+            },
+            axisTick: {
+              distance: -17,
+              length: 19,
+              lineStyle: {
+                color: '#fff',
+                width: 4,
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+            data: [
+              {
+                value: 0,
+              },
+            ],
+          },
+        ],
+      },
     };
   },
 
@@ -526,6 +583,11 @@ export default {
       chart.setOption(this.option);
     },
 
+    async init1() {
+      chart1 = await this.$refs.chartRef1.init(echarts);
+      chart1.setOption(this.option1);
+    },
+
     /**
      * 获取最新一次计划数据
      */
@@ -570,6 +632,27 @@ export default {
           }
 
           dateList[dateListKey] = foodList;
+
+          // TODO 图表数据处理
+          let bodyRating = 70;
+
+          this.option1.series[0].data[0].value = bodyRating;
+
+          let color = [];
+
+          for (let i = 0; i < 101; i++) {
+            if (i < bodyRating) {
+              color.push([i / 100, '#5664E5']);
+            } else {
+              color.push([i / 100, '#F2F5FF']);
+            }
+          }
+
+          this.option1.series[0].axisLine.lineStyle.color = color;
+
+          setTimeout(() => {
+            chart1.setOption(this.option1);
+          }, 500);
         });
 
         this.lastPlanData = res.data;
@@ -896,6 +979,42 @@ page {
           margin-bottom: 55rpx;
         }
 
+        .chart-box {
+          height: 280rpx;
+          position: relative;
+
+          .chart {
+            position: relative;
+            top: -350rpx;
+          }
+
+          .chart-data {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 50rpx;
+            z-index: 9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14rpx;
+
+            text {
+              &:nth-child(1) {
+                font-weight: 500;
+                font-size: 76rpx;
+                color: #5664e5;
+              }
+
+              &:nth-child(2) {
+                font-size: 22rpx;
+                color: #999999;
+              }
+            }
+          }
+        }
+
         .bmi {
           width: 580rpx;
           height: 60rpx;
@@ -1185,7 +1304,6 @@ page {
         gap: 20rpx;
 
         .cookbook-item {
-          background: #e1faff;
           border-radius: 20rpx;
           padding: 24rpx;
 
