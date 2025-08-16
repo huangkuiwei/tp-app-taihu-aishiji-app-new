@@ -984,6 +984,7 @@ page {
           position: relative;
 
           .chart {
+            z-index: -1;
             position: relative;
             top: -350rpx;
           }
