@@ -45,14 +45,14 @@
             @change="birth = $event.detail.value"
           >
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in years" :key="index">
+              <view class="column-item" v-for="(item, index) in years" :key="index">
                 <text>{{ item }}</text>
                 <text>年</text>
               </view>
             </picker-view-column>
 
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in months" :key="index">
+              <view class="column-item" v-for="(item, index) in months" :key="index">
                 <text>{{ item }}</text>
                 <text>月</text>
               </view>
@@ -68,7 +68,7 @@
             @change="height = $event.detail.value"
           >
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in rulerLineList1" :key="index">
+              <view class="column-item" v-for="(item, index) in rulerLineList1" :key="index">
                 <text>{{ item }}</text>
                 <text>CM</text>
               </view>
@@ -84,7 +84,7 @@
             @change="initialWeight = $event.detail.value"
           >
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in rulerLineList2" :key="index">
+              <view class="column-item" v-for="(item, index) in rulerLineList2" :key="index">
                 <text>{{ item }}</text>
                 <text>KG</text>
               </view>
@@ -100,7 +100,7 @@
             @change="targetWeight = $event.detail.value"
           >
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in rulerLineList3" :key="index">
+              <view class="column-item" v-for="(item, index) in rulerLineList3" :key="index">
                 <text>{{ item }}</text>
                 <text>KG</text>
               </view>
@@ -108,8 +108,38 @@
           </picker-view>
         </view>
 
-        <!-- TODO -->
-        <view class="evaluation evaluation6" v-if="stepIndex === 5"></view>
+        <view class="evaluation evaluation6" v-if="stepIndex === 5">
+          <picker-view
+            indicator-style="height: 40px;"
+            style="width: 100%; height: 200px"
+            :value="end_date"
+            @change="onPickerChange"
+          >
+            <!-- 年 -->
+            <picker-view-column>
+              <view class="column-item" v-for="year in years1" :key="year">
+                <text>{{ year }}</text>
+                <text>年</text>
+              </view>
+            </picker-view-column>
+
+            <!-- 月 -->
+            <picker-view-column>
+              <view class="column-item" v-for="month in months1" :key="month">
+                <text>{{ month }}</text>
+                <text>月</text>
+              </view>
+            </picker-view-column>
+
+            <!-- 日 -->
+            <picker-view-column>
+              <view class="column-item" v-for="day in days1" :key="day">
+                <text>{{ day }}</text>
+                <text>日</text>
+              </view>
+            </picker-view-column>
+          </picker-view>
+        </view>
 
         <view class="evaluation evaluation7" v-if="stepIndex === 6">
           <picker-view
@@ -119,7 +149,7 @@
             @change="exerciseHabitsIndex = $event.detail.value"
           >
             <picker-view-column>
-              <view class="age-item" v-for="(item, index) in exerciseHabits.map((item) => item.text)" :key="index">
+              <view class="column-item" v-for="(item, index) in exerciseHabits.map((item) => item.text)" :key="index">
                 <text>{{ item }}</text>
               </view>
             </picker-view-column>
@@ -226,10 +256,6 @@ export default {
       initialWeight: [140],
       rulerLineList3: rulerLineList3,
       targetWeight: [120],
-      endYears: [],
-      endMonths: [],
-      endDays: [],
-      end_date: [],
       exerciseHabits: [
         {
           id: 0,
@@ -264,6 +290,14 @@ export default {
       ],
       exerciseHabitsIndex: 0,
       planData: null,
+
+      dateMap: new Map(),
+      years1: [],
+      months1: [],
+      days1: [],
+      end_date: [0, 0, 0],
+      minDateStr: '',
+      selectedDate: '',
     };
   },
 
@@ -275,7 +309,95 @@ export default {
     };
   },
 
+  watch: {
+    minDateStr(value) {
+      const minDate = new Date(value);
+
+      if (isNaN(minDate)) {
+        throw new Error('最小日期格式无效，请使用 yyyy-MM-dd');
+      }
+
+      minDate.setHours(0, 0, 0, 0);
+
+      // 生成从 minDate 开始，到未来几年内的所有合法日期（比如到 2030 年）
+      const validDates = this.generateValidDateRange(minDate, 2030);
+
+      // 构建层级映射：year → month → day（字符串）
+      const dateMap = new Map();
+      const yearSet = new Set();
+
+      validDates.forEach((d) => {
+        const y = String(d.year);
+        const m = d.month < 10 ? `0${d.month}` : `${d.month}`;
+        const dd = d.day < 10 ? `0${d.day}` : `${d.day}`;
+
+        yearSet.add(y);
+        if (!dateMap.has(y)) dateMap.set(y, new Map());
+        if (!dateMap.get(y).has(m)) dateMap.get(y).set(m, new Set());
+        dateMap.get(y).get(m).add(dd);
+      });
+
+      this.dateMap = dateMap;
+
+      // 初始化选项
+      this.years1 = Array.from(yearSet).sort((a, b) => a - b);
+      this.months1 = dateMap.has(this.years1[0]) ? Array.from(dateMap.get(this.years1[0]).keys()).sort() : [];
+      this.days1 = this.months1.length > 0 ? Array.from(dateMap.get(this.years1[0]).get(this.months1[0])).sort() : [];
+    },
+  },
+
   methods: {
+    // 生成从 minDate 到 maxYear 年末的所有合法日期
+    generateValidDateRange(minDate, maxYear = 2030) {
+      const result = [];
+      let currentDate = new Date(minDate);
+
+      while (currentDate.getFullYear() <= maxYear) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+
+        result.push({ year, month, day });
+
+        // 下一天
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return result;
+    },
+
+    // 滚动选择时触发
+    onPickerChange(e) {
+      const [yIdx, mIdx, dIdx] = e.detail.value;
+      const selectedYear = this.years1[yIdx];
+      const selectedMonth = this.months1[mIdx];
+
+      // 获取该年月下的可选日期
+      const daySet = this.dateMap.get(selectedYear)?.get(selectedMonth);
+      const validDays = daySet ? Array.from(daySet).sort() : ['01'];
+
+      // 修正日索引（防止越界）
+      let newDayIdx = dIdx;
+      if (dIdx >= validDays.length) {
+        newDayIdx = 0;
+      }
+      const selectedDay = validDays[newDayIdx];
+
+      // 更新 data
+      this.months1 = Array.from(this.dateMap.get(selectedYear)?.keys() || []).sort();
+      this.days1 = validDays;
+
+      // 修正月份（如果原月份不在新列表中）
+      const actualMonth = this.months1.includes(selectedMonth) ? selectedMonth : this.months1[0];
+      const actualDay = validDays.includes(selectedDay) ? selectedDay : validDays[0];
+
+      // 修正 end_date
+      this.end_date = [yIdx, this.months1.indexOf(actualMonth), validDays.indexOf(actualDay)];
+
+      // 更新显示
+      this.selectedDate = `${selectedYear}/${actualMonth}/${actualDay}`;
+    },
+
     next() {
       if (this.stepIndex === 0) {
         if (!this.gender) {
@@ -290,20 +412,56 @@ export default {
 
       if (this.stepIndex === 4) {
         setTimeout(() => {
-          //  TODO
-          // let weight = Math.abs(this.initialWeight[0] / 2 - this.targetWeight[0] / 2);
-          // let time = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 0.5);
-          //
-          // let currentDate = new Date(time);
-          //
-          // const year = currentDate.getFullYear();
-          // const month = currentDate.getMonth() + 1 > 9 ? currentDate.getMonth() + 1 : `0${currentDate.getMonth() + 1}`;
-          // const date = currentDate.getDate() > 9 ? currentDate.getDate() : `0${currentDate.getDate()}`;
-          //
-          // let startTime = new Date().format().slice(0, 10);
-          // let endTime = `${year}/${month}/${date}`;
-          //
-          // let timePicker = '';
+          let weight = Math.abs(this.initialWeight[0] / 2 - this.targetWeight[0] / 2);
+          let time = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 0.5);
+          let time1 = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 1);
+
+          let currentDate = new Date(time);
+          let currentDate1 = new Date(time1);
+
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth() + 1 > 9 ? currentDate.getMonth() + 1 : `0${currentDate.getMonth() + 1}`;
+          const date = currentDate.getDate() > 9 ? currentDate.getDate() : `0${currentDate.getDate()}`;
+
+          const year1 = currentDate1.getFullYear();
+          const month1 =
+            currentDate1.getMonth() + 1 > 9 ? currentDate1.getMonth() + 1 : `0${currentDate1.getMonth() + 1}`;
+          const date1 = currentDate1.getDate() > 9 ? currentDate1.getDate() : `0${currentDate1.getDate()}`;
+
+          this.minDateStr = `${year1}/${month1}/${date1}`;
+
+          setTimeout(() => {
+            let index1 = this.years1.findIndex((item) => Number(item) === Number(year));
+            this.end_date = [index1, 0, 0];
+
+            this.onPickerChange({
+              detail: {
+                value: this.end_date,
+              },
+            });
+
+            setTimeout(() => {
+              let index2 = this.months1.findIndex((item) => Number(item) === Number(month));
+              this.end_date = [index1, index2, 0];
+
+              this.onPickerChange({
+                detail: {
+                  value: this.end_date,
+                },
+              });
+
+              setTimeout(() => {
+                let index3 = this.days1.findIndex((item) => Number(item) === Number(date));
+                this.end_date = [index1, index2, index3];
+
+                this.onPickerChange({
+                  detail: {
+                    value: this.end_date,
+                  },
+                });
+              }, 0);
+            }, 0);
+          });
         }, 0);
       }
 
@@ -324,7 +482,7 @@ export default {
             target_weight: this.targetWeight[0] / 2,
             exercise_habits: this.exerciseHabits[this.exerciseHabitsIndex].value,
             begin_date: new Date().format(),
-            end_date: new Date(this.$refs.calendarRef.selectedDate).format(),
+            end_date: new Date(this.selectedDate),
           })
           .then(() => {
             uni.hideLoading();
@@ -467,12 +625,13 @@ page {
       .evaluation3,
       .evaluation4,
       .evaluation5,
+      .evaluation6,
       .evaluation7 {
         width: 100%;
         margin-top: 120rpx;
 
         &.evaluation7 {
-          .age-item {
+          .column-item {
             text {
               &:nth-child(1) {
                 font-size: 32rpx;
@@ -484,7 +643,7 @@ page {
         }
 
         picker-view {
-          .age-item {
+          .column-item {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -504,14 +663,6 @@ page {
             }
           }
         }
-      }
-
-      .evaluation6 {
-        width: 100%;
-        margin-top: 120rpx;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
       }
 
       .evaluation-title2 {
