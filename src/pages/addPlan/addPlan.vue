@@ -75,7 +75,7 @@
           <text :class="{ active: stepIndex === 1 }"></text>
         </view>
 
-        <view class="next" @click="next">{{ stepIndex > 0 ? '提交' : '下一步' }}</view>
+        <view class="next" @click="next">{{ stepIndex > 0 ? '获取专属方案' : '下一步' }}</view>
       </view>
     </view>
   </view>
