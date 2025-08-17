@@ -100,6 +100,7 @@
 
             <view class="value">
               <text>{{ bmiChange.bmi }}</text>
+              <text>KG/㎡</text>
             </view>
 
             <view class="icon">
