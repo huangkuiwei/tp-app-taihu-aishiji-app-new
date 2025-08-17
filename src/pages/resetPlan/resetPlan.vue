@@ -1,135 +1,189 @@
 <template>
-  <view class="reset-plan-page">
+  <view class="add-plan-page">
     <view class="page-title">
-      <text>重置方案</text>
+      <text>修改计划</text>
 
       <view class="back" @click="$toBack">
         <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
       </view>
     </view>
 
-    <view class="banner"> </view>
+    <view class="banner"></view>
 
-    <view class="setting-list">
-      <view class="box">
-        <view class="item">
-          <text class="label">目标体重</text>
-
-          <picker mode="selector" :range="rulerLineList" :value="planData.plan_target_weight" @change="onWeightChange">
-            <view class="value">
-              <text class="filed">{{ rulerLineList[planData.plan_target_weight] }}公斤</text>
-              <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
-            </view>
-          </picker>
+    <view class="evaluation-container">
+      <view class="evaluation-box">
+        <view class="evaluation-title">
+          <text>{{ evaluationList[stepIndex].title }}</text>
+          <text>{{ evaluationList[stepIndex].subTitle }}</text>
         </view>
-      </view>
 
-      <view class="evaluation">
-        <calendar
-          ref="calendarRef"
-          :initialWeight="initialWeight"
-          :targetWeight="targetWeight"
-          @selectDayChange="onSelectDayChange"
-        />
-
-        <view class="expected-wrap">
-          <view class="expected" v-if="planData1">
-            <view class="line1">
-              <view class="left">
-                预计
-                <text>{{ planData1.week }}</text>
-                周
+        <view class="evaluation evaluation5" v-if="stepIndex === 0">
+          <picker-view
+            indicator-style="height: 40px;"
+            style="width: 100%; height: 200px"
+            :value="targetWeight"
+            @change="targetWeight = $event.detail.value"
+          >
+            <picker-view-column>
+              <view class="column-item" v-for="(item, index) in rulerLineList3" :key="index">
+                <text>{{ item }}</text>
+                <text>KG</text>
               </view>
-
-              <view class="right">
-                每周{{ isWeightLoss ? '减重' : '增重' }}约
-                <text>{{ planData1.weight }}</text>
-                公斤
-              </view>
-            </view>
-
-            <view class="line2" v-if="planData1.weight > 0.7">
-              <text>困难模式：</text>
-              <text v-if="isWeightLoss">快速减重可能会导致营养不良、肌肉流失和新陈代谢问题</text>
-              <text v-else>增重速度过快，这可能会增加体内脂肪比例，对心脏和代谢健康产生不利影响。</text>
-            </view>
-
-            <view class="line2" v-else-if="planData1.weight > 0.28">
-              <text>适中模式：</text>
-              <text>适合绝大多数人，你一也定可以的！ 加油！</text>
-            </view>
-
-            <view class="line2" v-else>
-              <text>简单模式：</text>
-              <text>适合绝大多数人，你一也定可以的！ 加油！</text>
-            </view>
-          </view>
+            </picker-view-column>
+          </picker-view>
         </view>
+
+        <view class="evaluation evaluation6" v-if="stepIndex === 1">
+          <picker-view
+            indicator-style="height: 40px;"
+            style="width: 100%; height: 200px"
+            :value="end_date"
+            @change="onPickerChange"
+          >
+            <!-- 年 -->
+            <picker-view-column>
+              <view class="column-item" v-for="year in years1" :key="year">
+                <text>{{ year }}</text>
+                <text>年</text>
+              </view>
+            </picker-view-column>
+
+            <!-- 月 -->
+            <picker-view-column>
+              <view class="column-item" v-for="month in months1" :key="month">
+                <text>{{ month }}</text>
+                <text>月</text>
+              </view>
+            </picker-view-column>
+
+            <!-- 日 -->
+            <picker-view-column>
+              <view class="column-item" v-for="day in days1" :key="day">
+                <text>{{ day }}</text>
+                <text>日</text>
+              </view>
+            </picker-view-column>
+          </picker-view>
+        </view>
+
+        <view class="evaluation-title2">
+          <text>{{ evaluationList[stepIndex].subTitle2 }}</text>
+        </view>
+
+        <view class="dot">
+          <text :class="{ active: stepIndex === 0 }"></text>
+          <text :class="{ active: stepIndex === 1 }"></text>
+        </view>
+
+        <view class="next" @click="next">{{ stepIndex > 0 ? '提交' : '下一步' }}</view>
       </view>
     </view>
-
-    <view class="submit-btn" @click="resetPlan">重置计划</view>
   </view>
 </template>
 
 <script>
 import $http from '@/utils/http';
-import Calendar from '@/components/calendar.vue';
+import { mapActions, mapState } from 'vuex';
 
 export default {
-  name: 'resetPlan',
-
-  components: {
-    Calendar,
-  },
+  name: 'addPlan',
 
   data() {
-    let rulerLineList = [];
+    const years = [];
+    const months = [];
 
-    for (let i = 30; i < 301; i++) {
-      rulerLineList.push(i);
+    for (let i = 1925; i < 2025; i++) {
+      years.push(i);
+    }
+
+    for (let i = 1; i <= 12; i++) {
+      months.push(i < 10 ? '0' + i : i);
+    }
+
+    let rulerLineList1 = [];
+    let rulerLineList2 = [];
+    let rulerLineList3 = [];
+
+    for (let i = 0; i < 305; i++) {
+      rulerLineList1.push(i);
+    }
+
+    for (let i = 0; i < 601; i++) {
+      rulerLineList2.push(Number((i * 0.5).toFixed(1)));
+      rulerLineList3.push(Number((i * 0.5).toFixed(1)));
     }
 
     return {
-      targetWeight: null,
-      initialWeight: null,
-      rulerLineList,
-      planData: {},
-      planData1: {},
+      evaluationList: [
+        {
+          title: '你的目标体重',
+          subTitle: '完成数据，为你提供个性化专属方案',
+          subTitle2: '选择你的目标体重，用来估算你的减重周期',
+        },
+        {
+          title: '你的目标日期',
+          subTitle: '完成数据，为你提供个性化专属方案',
+          subTitle2: '选择你的目标日期，用来估算你的减重量',
+        },
+      ],
+      stepIndex: 0,
+      gender: null,
+      years,
+      months,
+      birth: [80, 0],
+      rulerLineList1: rulerLineList1,
+      height: [170],
+      rulerLineList2: rulerLineList2,
+      initialWeight: [140],
+      rulerLineList3: rulerLineList3,
+      targetWeight: [120],
+      exerciseHabits: [
+        {
+          id: 0,
+          value: 1,
+          text: '几乎不运动',
+          active: true,
+        },
+        {
+          id: 1,
+          value: 2,
+          text: '偶尔运动，每周1-2天',
+          active: false,
+        },
+        {
+          id: 2,
+          value: 3,
+          text: '经常运动，每周3-5天',
+          active: false,
+        },
+        {
+          id: 3,
+          value: 4,
+          text: '运动频繁，每周6-7天',
+          active: false,
+        },
+        {
+          id: 4,
+          value: 5,
+          text: '高强度运动，长时间体力运动',
+          active: false,
+        },
+      ],
+      exerciseHabitsIndex: 0,
+      planData: null,
+
+      dateMap: new Map(),
+      years1: [],
+      months1: [],
+      days1: [],
+      end_date: [0, 0, 0],
+      minDateStr: '',
+      selectedDate: '',
     };
   },
 
   computed: {
-    isWeightLoss() {
-      return this.initialWeight - this.targetWeight > 0;
-    },
-  },
-
-  onLoad(options) {
-    let plan_target_weight = this.rulerLineList.findIndex((item) => item === Number(options.plan_target_weight));
-    let end_date = options.end_date.slice(0, 10);
-    let start_date = options.start_date.slice(0, 10);
-
-    this.initialWeight = options.plan_initial_weight;
-    this.targetWeight = options.plan_target_weight;
-
-    this.planData = {
-      plan_id: options.plan_id,
-      plan_initial_weight: options.plan_initial_weight,
-      plan_target_weight: plan_target_weight,
-      end_date: end_date,
-      start_date: start_date,
-    };
-
-    this.$refs.calendarRef.currentDate = new Date(options.end_date.replace(/-/g, '/')).getTime();
-
-    let currentDate = new Date(this.$refs.calendarRef.currentDate);
-
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1 > 9 ? currentDate.getMonth() + 1 : `0${currentDate.getMonth() + 1}`;
-    const date = currentDate.getDate() > 9 ? currentDate.getDate() : `0${currentDate.getDate()}`;
-
-    this.$refs.calendarRef.selectedDate = `${year}/${month}/${date}`;
+    ...mapState('app', ['userDetailInfo']),
   },
 
   onShareAppMessage() {
@@ -140,55 +194,218 @@ export default {
     };
   },
 
-  methods: {
-    onWeightChange($event) {
-      this.planData.plan_target_weight = $event.detail.value;
-      this.targetWeight = this.rulerLineList[this.planData.plan_target_weight];
-      this.onSelectDayChange();
-    },
+  onLoad(options) {
+    options.plan_initial_weight = Number(options.plan_initial_weight);
+    options.plan_target_weight = Number(options.plan_target_weight);
 
-    onSelectDayChange() {
-      if (this.$refs.calendarRef) {
-        let selectedDate = this.$refs.calendarRef.selectedDate;
+    let index1 = this.rulerLineList2.findIndex((item) => item === options.plan_initial_weight);
+    let index2 = this.rulerLineList3.findIndex((item) => item === options.plan_target_weight);
 
-        let now = Date.now();
-        let selectDate = new Date(selectedDate).getTime();
-        let day = Math.ceil((selectDate - now) / (1000 * 60 * 60 * 24));
-        let week = day / 7;
+    if (index1 !== -1) {
+      this.initialWeight = [index1];
+    }
 
-        this.planData1 = {
-          day,
-          week: Number(week.toFixed(1)),
-          weight: Number((Math.abs(this.initialWeight - this.targetWeight) / week).toFixed(2)),
-        };
+    if (index2 !== -1) {
+      this.targetWeight = [index2];
+    }
+
+    this.planData = {
+      plan_id: options.plan_id,
+      plan_initial_weight: options.plan_initial_weight,
+      plan_target_weight: options.plan_target_weight,
+      end_date: options.end_date.slice(0, 10),
+      start_date: options.start_date.slice(0, 10),
+    };
+  },
+
+  watch: {
+    minDateStr(value) {
+      const minDate = new Date(value);
+
+      if (isNaN(minDate)) {
+        throw new Error('最小日期格式无效，请使用 yyyy-MM-dd');
       }
-    },
 
-    resetPlan() {
-      uni.showLoading({
-        title: '加载中...',
-        mask: true,
+      minDate.setHours(0, 0, 0, 0);
+
+      // 生成从 minDate 开始，到未来几年内的所有合法日期（比如到 2027 年）
+      const validDates = this.generateValidDateRange(minDate, 2027);
+
+      // 构建层级映射：year → month → day（字符串）
+      const dateMap = new Map();
+      const yearSet = new Set();
+
+      validDates.forEach((d) => {
+        const y = String(d.year);
+        const m = d.month < 10 ? `0${d.month}` : `${d.month}`;
+        const dd = d.day < 10 ? `0${d.day}` : `${d.day}`;
+
+        yearSet.add(y);
+        if (!dateMap.has(y)) dateMap.set(y, new Map());
+        if (!dateMap.get(y).has(m)) dateMap.get(y).set(m, new Set());
+        dateMap.get(y).get(m).add(dd);
       });
 
-      $http
-        .post('api/diet-info/weight-plan/update', {
-          plan_id: this.planData.plan_id,
-          target_weight: this.rulerLineList[this.planData.plan_target_weight],
-          end_date: new Date(this.$refs.calendarRef.selectedDate).format(),
-        })
-        .then(() => {
-          uni.hideLoading();
+      this.dateMap = dateMap;
 
-          uni.showToast({
-            title: '操作成功',
-            icon: 'none',
-            mask: true,
+      // 初始化选项
+      this.years1 = Array.from(yearSet).sort((a, b) => a - b);
+      this.months1 = dateMap.has(this.years1[0]) ? Array.from(dateMap.get(this.years1[0]).keys()).sort() : [];
+      this.days1 = this.months1.length > 0 ? Array.from(dateMap.get(this.years1[0]).get(this.months1[0])).sort() : [];
+    },
+
+    targetWeight() {
+      setTimeout(() => {
+        let weight = Math.abs(this.initialWeight[0] / 2 - this.targetWeight[0] / 2);
+        let time = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 0.5);
+        let time1 = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 1);
+
+        let currentDate = new Date(time);
+        let currentDate1 = new Date(time1);
+
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1 > 9 ? currentDate.getMonth() + 1 : `0${currentDate.getMonth() + 1}`;
+        const date = currentDate.getDate() > 9 ? currentDate.getDate() : `0${currentDate.getDate()}`;
+
+        const year1 = currentDate1.getFullYear();
+        const month1 =
+          currentDate1.getMonth() + 1 > 9 ? currentDate1.getMonth() + 1 : `0${currentDate1.getMonth() + 1}`;
+        const date1 = currentDate1.getDate() > 9 ? currentDate1.getDate() : `0${currentDate1.getDate()}`;
+
+        this.minDateStr = `${year1}/${month1}/${date1}`;
+
+        setTimeout(() => {
+          let index1 = this.years1.findIndex((item) => Number(item) === Number(year));
+          this.end_date = [index1, 0, 0];
+
+          this.onPickerChange({
+            detail: {
+              value: this.end_date,
+            },
           });
 
           setTimeout(() => {
-            this.$toBack();
-          }, 1000);
+            let index2 = this.months1.findIndex((item) => Number(item) === Number(month));
+            this.end_date = [index1, index2, 0];
+
+            this.onPickerChange({
+              detail: {
+                value: this.end_date,
+              },
+            });
+
+            setTimeout(() => {
+              let index3 = this.days1.findIndex((item) => Number(item) === Number(date));
+              this.end_date = [index1, index2, index3];
+
+              this.onPickerChange({
+                detail: {
+                  value: this.end_date,
+                },
+              });
+            }, 0);
+          }, 0);
         });
+      }, 0);
+    },
+  },
+
+  methods: {
+    ...mapActions('app', ['_getUserDetailInfo']),
+
+    // 生成从 minDate 到 maxYear 年末的所有合法日期
+    generateValidDateRange(minDate, maxYear = 2027) {
+      const result = [];
+      let currentDate = new Date(minDate);
+
+      while (currentDate.getFullYear() <= maxYear) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const day = currentDate.getDate();
+
+        result.push({ year, month, day });
+
+        // 下一天
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return result;
+    },
+
+    // 滚动选择时触发
+    onPickerChange(e) {
+      const [yIdx, mIdx, dIdx] = e.detail.value;
+      const selectedYear = this.years1[yIdx];
+      const selectedMonth = this.months1[mIdx];
+
+      // 获取该年月下的可选日期
+      const daySet = this.dateMap.get(selectedYear)?.get(selectedMonth);
+      const validDays = daySet ? Array.from(daySet).sort() : ['01'];
+
+      // 修正日索引（防止越界）
+      let newDayIdx = dIdx;
+      if (dIdx >= validDays.length) {
+        newDayIdx = 0;
+      }
+      const selectedDay = validDays[newDayIdx];
+
+      // 更新 data
+      this.months1 = Array.from(this.dateMap.get(selectedYear)?.keys() || []).sort();
+      this.days1 = validDays;
+
+      // 修正月份（如果原月份不在新列表中）
+      const actualMonth = this.months1.includes(selectedMonth) ? selectedMonth : this.months1[0];
+      const actualDay = validDays.includes(selectedDay) ? selectedDay : validDays[0];
+
+      // 修正 end_date
+      this.end_date = [yIdx, this.months1.indexOf(actualMonth), validDays.indexOf(actualDay)];
+
+      // 更新显示
+      this.selectedDate = `${selectedYear}/${actualMonth}/${actualDay}`;
+    },
+
+    next() {
+      if (this.stepIndex === 0) {
+        if (this.initialWeight[0] === this.targetWeight[0]) {
+          uni.showToast({
+            title: '目标体重和初始体重不能相同',
+            icon: 'none',
+          });
+
+          return;
+        }
+      }
+
+      if (this.stepIndex === 1) {
+        uni.showLoading({
+          title: '加载中...',
+          mask: true,
+        });
+
+        $http
+          .post('api/diet-info/weight-plan/update', {
+            plan_id: this.planData.plan_id,
+            target_weight: this.targetWeight[0] / 2,
+            end_date: new Date(this.selectedDate).format(),
+          })
+          .then(() => {
+            uni.hideLoading();
+
+            uni.showToast({
+              title: '操作成功',
+              icon: 'none',
+              mask: true,
+            });
+
+            setTimeout(() => {
+              this.$toBack();
+            }, 1000);
+          });
+
+        return;
+      }
+
+      this.stepIndex += 1;
     },
   },
 };
@@ -196,139 +413,201 @@ export default {
 
 <style lang="scss">
 page {
-  background: #f6f7fb;
   height: 100%;
 }
 </style>
 
 <style scoped lang="scss">
-.reset-plan-page {
+.add-plan-page {
   height: 100%;
+  padding-bottom: 80rpx;
   display: flex;
   flex-direction: column;
 
   .page-title {
-    background: #ffffff;
+    flex-shrink: 0;
   }
 
   .banner {
-    flex-shrink: 0;
     padding: calc(var(--page-title-height)) 0 0;
-    background: #ffffff;
+    flex-shrink: 0;
   }
 
-  .setting-list {
+  .evaluation-container {
+    padding: 130rpx 100rpx 0;
     flex-grow: 1;
-    padding: 20rpx 30rpx 0;
+    overflow: hidden;
 
-    .box {
+    .evaluation-box {
+      height: 100%;
       background: #ffffff;
-      border-radius: 20rpx;
-      padding: 30rpx 24rpx;
-      margin-bottom: 20rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-      .item {
+      .evaluation-title {
+        flex-shrink: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
+        gap: 30rpx;
 
-        &:not(:last-child) {
-          padding-bottom: 30rpx;
-          margin-bottom: 30rpx;
-          border-bottom: 1px solid #f6f7fb;
+        text {
+          &:nth-child(1) {
+            font-weight: bold;
+            font-size: 36rpx;
+            color: #111111;
+          }
+
+          &:nth-child(2) {
+            font-size: 28rpx;
+            color: #999999;
+            line-height: 61rpx;
+            text-align: center;
+          }
         }
+      }
 
-        .label {
-          font-size: 28rpx;
-          color: #1a1a1a;
-          flex-grow: 1;
-        }
+      .evaluation {
+        flex-grow: 1;
+      }
 
-        picker {
-          .value {
+      .evaluation1 {
+        margin-top: 150rpx;
+
+        .gender {
+          padding: 0 15rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 110rpx;
+
+          .gender-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 56rpx;
+            position: relative;
 
-            .filed {
-              font-size: 26rpx;
-              color: #666666;
-              margin-right: 10rpx;
+            &.active {
+              image {
+              }
+
+              text {
+                background: #5664e5;
+                border: 1px solid #5664e5;
+                color: #ffffff;
+              }
+            }
+
+            image {
+              width: 198rpx;
+              border-radius: 50%;
+            }
+
+            text {
+              width: 140rpx;
+              height: 56rpx;
+              background: #ffffff;
+              border-radius: 28rpx;
+              border: 1px solid #e0e0e0;
+              font-weight: 500;
+              font-size: 28rpx;
+              color: #111111;
+              display: flex;
+              align-items: center;
+              justify-content: center;
             }
           }
         }
       }
-    }
 
-    .evaluation {
-      width: 100%;
-      background: #ffffff;
-      padding: 40rpx 20rpx;
-      border-radius: 20rpx;
-      margin-top: 20rpx;
+      .evaluation2,
+      .evaluation3,
+      .evaluation4,
+      .evaluation5,
+      .evaluation6,
+      .evaluation7 {
+        width: 100%;
+        margin-top: 120rpx;
 
-      .expected-wrap {
-        .expected {
-          margin-top: 20rpx;
-          background: #ffffff;
-          border-radius: 25rpx;
-          border: 2px solid #0abf92;
-          padding: 32rpx;
-
-          .line1 {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 500;
-            font-size: 28rpx;
-            color: #1a1a1a;
-            margin-bottom: 40rpx;
-
-            view {
-              display: flex;
-              align-items: center;
-
-              text {
-                height: 60rpx;
-                padding: 0 16rpx;
-                background: #0abf92;
-                border-radius: 10rpx;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 42rpx;
-                color: #ffffff;
-                margin: 0 6rpx;
+        &.evaluation7 {
+          .column-item {
+            text {
+              &:nth-child(1) {
+                font-size: 32rpx;
+                color: #111111;
+                margin-right: 20rpx;
               }
             }
           }
+        }
 
-          .line2 {
-            color: #1a1a1a;
-            font-size: 28rpx;
-            line-height: 40rpx;
+        picker-view {
+          .column-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             text {
               &:nth-child(1) {
-                font-weight: 500;
+                font-size: 40rpx;
+                color: #111111;
+                margin-right: 20rpx;
+              }
+
+              &:nth-child(2) {
+                font-size: 24rpx;
+                position: relative;
+                top: 4rpx;
               }
             }
           }
         }
       }
-    }
-  }
 
-  .submit-btn {
-    width: 592rpx;
-    margin: 0 auto 100rpx;
-    height: 103rpx;
-    background: #0abf92;
-    border-radius: 52rpx;
-    font-weight: 500;
-    font-size: 32rpx;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      .evaluation-title2 {
+        font-size: 24rpx;
+        color: #999999;
+        margin-bottom: 100rpx;
+      }
+
+      .dot {
+        margin-bottom: 38rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 41rpx;
+
+        text {
+          width: 15rpx;
+          height: 15rpx;
+          background: #d9d9d9;
+          border-radius: 50%;
+
+          &.active {
+            background: #5664e5;
+          }
+        }
+      }
+
+      .next {
+        flex-shrink: 0;
+        width: 550rpx;
+        height: 100rpx;
+        background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+        border-radius: 50rpx;
+        font-weight: bold;
+        font-size: 30rpx;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 }
 </style>

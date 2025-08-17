@@ -1,5 +1,5 @@
 <template>
-  <view class="evaluation-page">
+  <view class="add-plan-page">
     <view class="page-title">
       <text>创建计划</text>
 
@@ -86,7 +86,7 @@ import $http from '@/utils/http';
 import { mapActions, mapState } from 'vuex';
 
 export default {
-  name: 'evaluation',
+  name: 'addPlan',
 
   data() {
     const years = [];
@@ -209,8 +209,6 @@ export default {
         this.targetWeight = [index2];
       }
     });
-
-    this.onInitWeightChange();
   },
 
   watch: {
@@ -248,12 +246,8 @@ export default {
       this.months1 = dateMap.has(this.years1[0]) ? Array.from(dateMap.get(this.years1[0]).keys()).sort() : [];
       this.days1 = this.months1.length > 0 ? Array.from(dateMap.get(this.years1[0]).get(this.months1[0])).sort() : [];
     },
-  },
 
-  methods: {
-    ...mapActions('app', ['_getUserDetailInfo']),
-
-    onInitWeightChange() {
+    targetWeight() {
       setTimeout(() => {
         let weight = Math.abs(this.initialWeight[0] / 2 - this.targetWeight[0] / 2);
         let time = Date.now() + 7 * 24 * 60 * 60 * 1000 * Math.ceil(weight / 0.5);
@@ -305,8 +299,12 @@ export default {
             }, 0);
           }, 0);
         });
-      }, 500);
+      }, 0);
     },
+  },
+
+  methods: {
+    ...mapActions('app', ['_getUserDetailInfo']),
 
     // 生成从 minDate 到 maxYear 年末的所有合法日期
     generateValidDateRange(minDate, maxYear = 2027) {
@@ -371,8 +369,6 @@ export default {
         }
       }
 
-      this.onInitWeightChange();
-
       if (this.stepIndex === 1) {
         uni.showLoading({
           title: '加载中...',
@@ -407,7 +403,7 @@ page {
 </style>
 
 <style scoped lang="scss">
-.evaluation-page {
+.add-plan-page {
   height: 100%;
   padding-bottom: 80rpx;
   display: flex;
