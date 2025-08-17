@@ -303,7 +303,7 @@ export default {
   data() {
     let weightList = [];
 
-    for (let i = 50; i < 501; i++) {
+    for (let i = 0; i < 601; i++) {
       weightList.push(Number((i * 0.5).toFixed(1)));
     }
 

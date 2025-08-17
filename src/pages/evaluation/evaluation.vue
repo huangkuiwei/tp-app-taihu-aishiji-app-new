@@ -8,7 +8,7 @@
       </view>
     </view>
 
-    <view class="banner"> </view>
+    <view class="banner"></view>
 
     <view class="evaluation-container">
       <view class="evaluation-box">
@@ -202,9 +202,9 @@ export default {
       rulerLineList1.push(i);
     }
 
-    for (let i = 0; i < 305; i += 0.5) {
-      rulerLineList2.push(i);
-      rulerLineList3.push(i);
+    for (let i = 0; i < 601; i++) {
+      rulerLineList2.push(Number((i * 0.5).toFixed(1)));
+      rulerLineList3.push(Number((i * 0.5).toFixed(1)));
     }
 
     return {
@@ -319,8 +319,8 @@ export default {
 
       minDate.setHours(0, 0, 0, 0);
 
-      // 生成从 minDate 开始，到未来几年内的所有合法日期（比如到 2030 年）
-      const validDates = this.generateValidDateRange(minDate, 2030);
+      // 生成从 minDate 开始，到未来几年内的所有合法日期（比如到 2027 年）
+      const validDates = this.generateValidDateRange(minDate, 2027);
 
       // 构建层级映射：year → month → day（字符串）
       const dateMap = new Map();
@@ -348,7 +348,7 @@ export default {
 
   methods: {
     // 生成从 minDate 到 maxYear 年末的所有合法日期
-    generateValidDateRange(minDate, maxYear = 2030) {
+    generateValidDateRange(minDate, maxYear = 2027) {
       const result = [];
       let currentDate = new Date(minDate);
 
@@ -482,7 +482,7 @@ export default {
             target_weight: this.targetWeight[0] / 2,
             exercise_habits: this.exerciseHabits[this.exerciseHabitsIndex].value,
             begin_date: new Date().format(),
-            end_date: new Date(this.selectedDate),
+            end_date: new Date(this.selectedDate).format(),
           })
           .then(() => {
             uni.hideLoading();
