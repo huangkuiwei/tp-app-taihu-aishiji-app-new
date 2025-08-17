@@ -8,50 +8,40 @@
       </view>
     </view>
 
-    <view class="banner">
-      <view class="user-container">
-        <view class="userinfo">
-          <view class="left">
-            <image
-              mode="aspectFill"
-              :src="
-                userInfo.avatar_url || 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/my/default_head.png'
-              "
-            />
-          </view>
+    <view class="banner"></view>
 
-          <view class="right" v-if="isLogin">
-            <text>{{ userInfo.uname }}</text>
-            <text v-if="!isVip">您还未开通会员</text>
-          </view>
+    <view class="user-container">
+      <view class="userinfo">
+        <view class="top">
+          <image
+            mode="aspectFill"
+            :src="
+              userInfo.avatar_url || 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/my/default_head.png'
+            "
+          />
 
-          <view class="right" v-else @click="$toRouter('/packageLogin/pages/login/login')">
-            <text>登录/注册</text>
-            <text>点击登录/注册</text>
-          </view>
+          <text v-if="isLogin">{{ userInfo.uname }}</text>
+          <text v-else>登录/注册</text>
         </view>
+
+        <view class="bottom" v-if="isLogin">
+          <text v-if="!isVip">暂未开通会员，无法享受会员权益</text>
+          <text v-else>会员到期日期：{{ userInfo.vip_info.vip_end_time.slice(0, 10) }}</text>
+        </view>
+
+        <view class="vip-icon" v-if="!isVip">
+          <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon3.png" />
+          <text>未开通</text>
+        </view>
+
+        <view class="renewal" v-else @click="$toRouter('/pages/renewalManage/renewalManage')">关闭自动续费</view>
       </view>
     </view>
 
     <view class="vip-info">
-      <view class="title">
-        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/title-icon.png" />
-        <text>尊享会员权益</text>
-      </view>
-
-      <view class="introduce">
-        <image mode="heightFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/icon1.png" />
-        <image mode="heightFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/icon2.png" />
-        <image mode="heightFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/icon3.png" />
-      </view>
-
-      <view class="vip-title-icon">
-        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/title-icon2.png" />
-        <image
-          @click="$toRouter('/pages/exchangeCenter/exchangeCenter')"
-          mode="widthFix"
-          src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/title-icon3.png"
-        />
+      <view class="vip-title">
+        <text>黄金会员</text>
+        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon1.png" />
       </view>
 
       <view class="vip-shop-list">
@@ -62,54 +52,98 @@
           v-for="item of vipList"
           :key="item.id"
         >
-          <view class="name">{{ item.product_name }}</view>
-          <view class="price">
-            <text>￥</text>
-            <text>{{ item.price }}</text>
-          </view>
-          <view class="tip">{{ Number((item.select_percentage * 100).toFixed(2)) }}%用户选择</view>
+          <view class="top">
+            <view class="name">{{ item.product_name }}</view>
 
-          <view class="vip-icon" v-if="selectedVip.id === item.id">
-            <image
-              mode="widthFix"
-              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/vip-icon1.png"
-            />
-            <text>立省￥{{ Number((item.original_price - item.price).toFixed(2)) }}</text>
+            <view class="price">
+              <text>￥</text>
+              <text>{{ item.price }}</text>
+            </view>
+          </view>
+
+          <view class="bottom">每日低至{{ item.unitPrice }}元</view>
+
+          <!-- TODO 推荐 icon; 新增 recommend 字段 -->
+          <view class="recommend" v-if="item.recommend">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon1.png" />
           </view>
         </view>
       </view>
 
       <view class="rule">
-        <view class="rule-title">以下内容请您知悉</view>
-
-        <view>1.慧食搭子会员服务属于虚拟商品，是一项特殊服务，会员开通成功后概不退款，故请先试用满意后再开通</view>
-        <view>2.会员价格会随着功能的完善会逐步涨价，现在开通最划算</view>
-        <view>3.会员时长到期后不会自动续费</view>
-        <view>4.有任何开通会员问题请联系客服咨询</view>
+        <view>购买说明：</view>
+        <view>1、会员商品包含自动续费和单次购买项目，自动续费商品包括“连续包月”、“年会员”，开通时请按需购买；</view>
+        <view>2、如需取消自动续费可在个人中心页面管理自动续费；</view>
+        <view>2、会员到期前1小时可取消自动续费，超时系统将自动续订；</view>
+        <view>3、如有疑问可咨询在线客服或拨打客服电话：400-0000-0000。</view>
       </view>
-    </view>
 
-    <view class="buy-box">
-      <template v-if="showShopInfo">
-        <view class="btn" style="margin-bottom: 24rpx" @click="submit(selectedVip, openid, userInfo.phone)">
-          立即开通
+      <view class="introduce">
+        <view class="title">会员权益</view>
+
+        <view class="introduce-list">
+          <view class="introduce-item">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <text>专属定制方案</text>
+          </view>
+
+          <view class="introduce-item">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <text>实时饮食建议</text>
+          </view>
+
+          <view class="introduce-item">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <text>定制化健康食谱</text>
+          </view>
+
+          <view class="introduce-item">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <text>每餐食物分析</text>
+          </view>
         </view>
-        <view class="agreement">
-          <checkbox-group @change="agree = $event.detail.value">
-            <label>
-              <checkbox value="1" :checked="agree.includes('1')" />
-            </label>
+      </view>
 
-            <text>我已阅读并同意</text>
-            <text @click="$toRouter('/pages/protocol/protocol')">《会员服务协议》</text>
-          </checkbox-group>
-        </view>
-      </template>
+      <view class="pay-type">
+        <radio-group @change="payType = $event.detail.value">
+          <label>
+            <!-- TODO 微信 icon -->
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <text class="name">微信</text>
+            <radio class="type" value="wx" :checked="payType === 'wx'"></radio>
+          </label>
 
-      <template v-else>
-        <view class="buy-tip">由于相关规定，iOS版小程序暂不支持购买</view>
-        <button class="btn" @click="openContact">联系客服</button>
-      </template>
+          <!--<label>-->
+          <!--  &lt;!&ndash; TODO 支付宝 icon &ndash;&gt;-->
+          <!--  <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />-->
+          <!--  <text class="name">支付宝</text>-->
+          <!--  <radio class="type" value="zfb" :checked="payType === 'zfb'"></radio>-->
+          <!--</label>-->
+        </radio-group>
+      </view>
+
+      <view class="buy-box">
+        <template v-if="showShopInfo">
+          <view class="btn" style="margin-bottom: 24rpx" @click="submit(selectedVip, openid, userInfo.phone)">
+            立即购买
+          </view>
+          <view class="agreement">
+            <checkbox-group @change="agree = $event.detail.value">
+              <label>
+                <checkbox value="1" :checked="agree.includes('1')" />
+              </label>
+
+              <text class="part1">支付即视为阅读并同意</text>
+              <text class="part2" @click="$toRouter('/pages/protocol/protocol')">《会员服务协议》</text>
+            </checkbox-group>
+          </view>
+        </template>
+
+        <template v-else>
+          <view class="buy-tip">由于相关规定，iOS版小程序暂不支持购买</view>
+          <button class="btn" @click="openContact">联系客服</button>
+        </template>
+      </view>
     </view>
   </view>
 </template>
@@ -133,6 +167,7 @@ export default {
       // showShopInfo: false, // 测试
       showShopInfo:
         (process.env.UNI_PLATFORM === 'mp-weixin' && platform !== 'ios') || process.env.UNI_PLATFORM !== 'mp-weixin',
+      payType: 'wx',
     };
   },
 
@@ -177,7 +212,9 @@ export default {
         return;
       }
 
-      onPay(price, openid, mobile);
+      if (this.payType) {
+        onPay(price, openid, mobile, this.payType);
+      }
     },
 
     openContact() {
@@ -201,6 +238,14 @@ export default {
         res.data.forEach((item) => {
           item.price = Number((item.price / 100).toFixed(2));
           item.original_price = Number((item.original_price / 100).toFixed(2));
+
+          if (item.id === 10000) {
+            item.unitPrice = Number((item.price / 31).toFixed(2));
+          } else if (item.id === 10001) {
+            item.unitPrice = Number((item.price / 90).toFixed(2));
+          } else if (item.id === 10002) {
+            item.unitPrice = Number((item.price / 365).toFixed(2));
+          }
         });
 
         this.vipList = res.data;
@@ -211,113 +256,130 @@ export default {
 };
 </script>
 
+<style>
+page {
+  background: #f6f7fb;
+}
+</style>
+
 <style scoped lang="scss">
 .vip-page {
   .page-title {
+    background: #ffffff;
   }
 
   .banner {
     padding: calc(var(--page-title-height)) 0 0;
-    background: linear-gradient(90deg, rgba(206, 238, 250, 0.9) 0%, #e0fae9 100%);
+    background: #ffffff;
+  }
 
-    .user-container {
-      padding: 32rpx 20rpx 0;
+  .user-container {
+    padding: 20rpx 50rpx 0;
 
-      .userinfo {
-        padding: 63rpx 40rpx 150rpx;
-        background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/vip-banner-bg.png') left
-          top/100% 100% no-repeat;
+    .userinfo {
+      padding: 19rpx 20rpx 86rpx;
+      background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/bg1.png') left top/100% 100%
+        no-repeat;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+
+      .top {
+        flex-shrink: 0;
         display: flex;
         align-items: center;
+        margin-bottom: 21rpx;
 
-        .left {
-          flex-shrink: 0;
-          margin-right: 24rpx;
-
-          image {
-            width: 120rpx;
-            height: 120rpx;
-            border-radius: 50%;
-          }
+        image {
+          width: 60rpx;
+          height: 60rpx;
+          border-radius: 50%;
+          margin-right: 15rpx;
         }
 
-        .right {
-          flex-grow: 1;
+        text {
+          font-weight: bold;
+          font-size: 30rpx;
+          color: #ffffff;
+        }
+      }
+
+      .bottom {
+        display: flex;
+
+        text {
+          &:nth-child(1) {
+            font-size: 22rpx;
+            color: #ffffff;
+          }
+        }
+      }
+
+      .vip-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        image {
+          width: 100rpx;
+        }
+
+        text {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
           display: flex;
-          flex-direction: column;
-          gap: 30rpx;
-
-          text {
-            &:nth-child(1) {
-              font-weight: bold;
-              font-size: 32rpx;
-              color: #ffffff;
-            }
-
-            &:nth-child(2) {
-              font-size: 24rpx;
-              color: #ffffff;
-            }
-          }
+          align-items: center;
+          justify-content: center;
+          font-weight: 500;
+          font-size: 22rpx;
+          color: #ffffff;
         }
+      }
+
+      .renewal {
+        position: absolute;
+        top: 45rpx;
+        right: 28rpx;
+        width: 179rpx;
+        height: 60rpx;
+        background: #5664e5;
+        border-radius: 30rpx;
+        font-weight: bold;
+        font-size: 22rpx;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
 
   .vip-info {
-    padding: 50rpx 0 160rpx;
-    background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/vip/vip-info-bg.png') left top/100%
-      auto no-repeat;
+    padding: 32rpx 32rpx 100rpx;
+    background: url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/bg2.png') left top/100% auto
+      no-repeat;
     position: relative;
-    top: -114rpx;
+    top: -60rpx;
 
-    .title {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0 28rpx;
-      margin-bottom: 40rpx;
-
-      image {
-        width: 178rpx;
-        margin-bottom: 16rpx;
-      }
+    .vip-title {
+      font-weight: bold;
+      font-size: 30rpx;
+      color: #111111;
+      position: relative;
 
       text {
-        font-weight: 500;
-        font-size: 24rpx;
-        color: #1a1a1a;
+        position: relative;
+        z-index: 9;
       }
-    }
-
-    .introduce {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 35rpx;
-      padding: 0 28rpx;
-      margin-bottom: 45rpx;
 
       image {
-        height: 158rpx;
-      }
-    }
-
-    .vip-title-icon {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28rpx;
-
-      image {
-        &:nth-child(1) {
-          width: 142rpx;
-        }
-
-        &:nth-child(2) {
-          width: 160rpx;
-        }
+        position: absolute;
+        top: 10rpx;
+        left: 100rpx;
+        width: 49rpx;
       }
     }
 
@@ -325,144 +387,210 @@ export default {
       display: flex;
       align-items: center;
       gap: 20rpx;
-      padding: 56rpx 0 0 28rpx;
+      padding: 56rpx 0 0 0;
       overflow: auto;
-      margin-bottom: 50rpx;
+      margin-bottom: 30rpx;
 
       .item {
         flex-shrink: 0;
-        width: 257rpx;
-        padding: 50rpx 0 28rpx;
+        width: 230rpx;
         border-radius: 20rpx;
-        border: 2px solid #d9d9d9;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        border: 1px solid #baff56;
         position: relative;
 
         &.active {
-          background: #f9faf4;
-          border: 2px solid #333333;
+          .top {
+            background: #f3ffcd;
+          }
         }
 
-        .name {
-          font-weight: 500;
-          font-size: 32rpx;
-          color: #333333;
-          margin-bottom: 34rpx;
-        }
+        .top {
+          background: #ffffff;
+          border-top-left-radius: 20rpx;
+          border-top-right-radius: 20rpx;
+          padding: 32rpx 0 24rpx;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
 
-        .price {
-          margin-bottom: 44rpx;
-
-          text {
+          .name {
+            font-size: 30rpx;
             color: #111111;
+            margin-bottom: 35rpx;
+          }
 
-            &:nth-child(1) {
-              font-size: 24rpx;
-            }
+          .price {
+            text {
+              color: #111111;
 
-            &:nth-child(2) {
-              font-size: 55rpx;
+              &:nth-child(1) {
+                font-size: 30rpx;
+              }
+
+              &:nth-child(2) {
+                font-weight: bold;
+                font-size: 65rpx;
+              }
             }
           }
         }
 
-        .tip {
-          font-size: 24rpx;
-          color: #666666;
+        .bottom {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15rpx 0;
+          font-size: 21rpx;
+          color: #111111;
+          border-bottom-left-radius: 20rpx;
+          border-bottom-right-radius: 20rpx;
+          background: #c8ff80;
         }
 
-        .vip-icon {
+        .recommend {
           position: absolute;
           top: -22rpx;
           left: -6rpx;
 
           image {
-            width: 68rpx;
-            position: absolute;
-            left: -12px;
-            top: -8px;
-          }
-
-          text {
-            width: 171rpx;
-            height: 44rpx;
-            padding-left: 40rpx;
-            background: #0abf92;
-            border-radius: 20rpx 0 20rpx 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 26rpx;
-            color: #3f3f3d;
+            width: 100rpx;
           }
         }
       }
     }
 
     .rule {
-      padding: 0 28rpx;
-      font-size: 22rpx;
+      padding: 0 20rpx;
+      font-size: 20rpx;
       color: #666666;
+      margin-bottom: 16rpx;
 
       view {
-        line-height: 40rpx;
-
-        &.rule-title {
-          font-size: 24rpx;
-          font-weight: 500;
-        }
+        line-height: 35rpx;
       }
     }
-  }
 
-  .buy-box {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 240rpx;
-    padding: 20rpx 0 40rpx;
-    background: #ffffff;
-    box-shadow: 0 2rpx 12rpx 0 rgba(0, 0, 0, 0.05);
-    border-top: 2rpx solid #eeeeee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .introduce {
+      background: #ffffff;
+      border-radius: 20rpx;
+      padding: 30rpx 19rpx;
+      margin-bottom: 30rpx;
 
-    .btn {
-      width: 592rpx;
-      height: 103rpx;
-      background: #0abf92;
-      border-radius: 52rpx;
-      font-weight: 500;
-      font-size: 32rpx;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+      .title {
+        font-weight: bold;
+        font-size: 30rpx;
+        color: #111111;
+        margin-bottom: 36rpx;
+      }
 
-    .agreement {
-      font-size: 24rpx;
-      color: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      .introduce-list {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        padding-left: 79rpx;
+        gap: 26rpx;
 
-      checkbox-group {
-        checkbox {
-          transform: scale(0.7);
+        .introduce-item {
+          width: calc(50% - 14rpx);
+          display: flex;
+          align-items: center;
+
+          image {
+            width: 28rpx;
+            margin-right: 10rpx;
+          }
+
+          text {
+            font-weight: 500;
+            font-size: 26rpx;
+            color: #111111;
+          }
         }
       }
     }
 
-    .buy-tip {
-      font-size: 28rpx;
-      margin-bottom: 24rpx;
+    .pay-type {
+      background: #ffffff;
+      border-radius: 20rpx;
+      padding: 23rpx 0;
+      margin-bottom: 98rpx;
+
+      radio-group {
+        label {
+          padding: 0 25rpx;
+          display: flex;
+          align-items: center;
+
+          &:not(:last-child) {
+            padding-bottom: 22rpx;
+            margin-bottom: 22rpx;
+            border-bottom: 2rpx solid #e6e6e6;
+          }
+
+          image {
+            width: 55rpx;
+            margin-right: 25rpx;
+          }
+
+          .name {
+            flex-grow: 1;
+            font-weight: 500;
+            font-size: 26rpx;
+            color: #111111;
+          }
+
+          radio {
+            transform: scale(0.75);
+          }
+        }
+      }
+    }
+
+    .buy-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .btn {
+        width: 100%;
+        height: 100rpx;
+        background: #111111;
+        border-radius: 20rpx;
+        font-weight: bold;
+        font-size: 30rpx;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .agreement {
+        font-size: 22rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        checkbox-group {
+          checkbox {
+            transform: scale(0.7);
+          }
+        }
+
+        .part1 {
+          color: #999999;
+        }
+
+        .part2 {
+          color: #111111;
+        }
+      }
+
+      .buy-tip {
+        font-size: 28rpx;
+        margin-bottom: 24rpx;
+      }
     }
   }
 }
