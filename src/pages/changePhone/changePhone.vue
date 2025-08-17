@@ -12,14 +12,12 @@
 
     <view class="container">
       <view class="step" v-if="step === 1">
-        <view class="title">安全验证</view>
+        <view class="title">验证手机号</view>
         <view class="sub-title">
-          <view>为了保证您的账号安全，需先验证您的身份，</view>
-          <view>验证成功后可进行下一步</view>
+          <view>请输入发送至{{ userInfo.phone.slice(0, 3) }}****{{ userInfo.phone.slice(-4) }}的6位验证码</view>
+          <view>有效期10分钟</view>
         </view>
-        <view class="phone" v-if="userInfo.phone">
-          {{ userInfo.phone.slice(0, 3) }}****{{ userInfo.phone.slice(-4) }}
-        </view>
+
         <view class="input-box">
           <input
             type="number"
@@ -38,11 +36,9 @@
           <view>当前绑定手机号为{{ userInfo.phone.slice(0, 3) }}****{{ userInfo.phone.slice(-4) }}</view>
         </view>
         <view class="input-box" style="margin-bottom: 20rpx">
-          <text class="suffix">+86</text>
-          <text class="line"></text>
           <input
             type="text"
-            placeholder="输入新的手机号"
+            placeholder="输入新手机号"
             :value="formState.new_mobile"
             @input="formState.new_mobile = $event.detail.value"
           />
@@ -52,7 +48,7 @@
           <input
             type="number"
             :maxlength="6"
-            placeholder="请输入验证码"
+            placeholder="输入验证码"
             :value="formState.new_mobile_sms_code"
             @input="formState.new_mobile_sms_code = $event.detail.value"
           />
@@ -243,54 +239,31 @@ export default {
       justify-content: center;
 
       .title {
-        font-weight: 500;
-        font-size: 32rpx;
+        font-weight: bold;
+        font-size: 43rpx;
         color: #111111;
-        margin-bottom: 36rpx;
+        margin-bottom: 52rpx;
       }
 
       .sub-title {
         font-size: 26rpx;
         color: #999999;
-        margin-bottom: 57rpx;
+        margin-bottom: 52rpx;
 
         view {
-          line-height: 40rpx;
+          line-height: 50rpx;
           text-align: center;
         }
       }
 
-      .phone {
-        font-weight: 500;
-        font-size: 32rpx;
-        color: #111111;
-        margin-bottom: 43rpx;
-      }
-
       .input-box {
         width: 100%;
-        height: 103rpx;
-        background: #ffffff;
-        border-radius: 20rpx;
-        border: 2rpx solid #0abf92;
-        padding: 0 33rpx;
+        height: 100rpx;
+        background: #f2f5ff;
+        border-radius: 50rpx;
+        padding: 0 51rpx;
         display: flex;
         align-items: center;
-
-        .suffix {
-          flex-shrink: 0;
-          font-size: 24rpx;
-          color: #0abf92;
-          margin-right: 20rpx;
-        }
-
-        .line {
-          flex-shrink: 0;
-          width: 1rpx;
-          height: 52rpx;
-          background: #999999;
-          margin-right: 20rpx;
-        }
 
         input {
           flex-grow: 1;
@@ -299,8 +272,8 @@ export default {
 
         .get-code {
           flex-shrink: 0;
-          font-size: 24rpx;
-          color: #0abf92;
+          font-size: 26rpx;
+          color: #5664e5;
         }
       }
     }
@@ -312,7 +285,7 @@ export default {
     right: 30rpx;
     bottom: 100rpx;
     height: 103rpx;
-    background: #0abf92;
+    background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
     border-radius: 20rpx;
     font-weight: 500;
     font-size: 32rpx;

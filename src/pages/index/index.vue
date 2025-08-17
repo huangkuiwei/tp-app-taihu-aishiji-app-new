@@ -12,7 +12,6 @@
 
           <template v-else-if="homeWeightPlanData && homeWeightPlanData.state === 1">
             <view class="btn" style="background: #ffffff; color: #5664e5" @click="showRecodeWeight">体重记录</view>
-            <!-- TODO -->
             <view
               class="btn"
               @click="

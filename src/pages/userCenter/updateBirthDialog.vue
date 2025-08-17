@@ -1,7 +1,7 @@
 <template>
   <uni-popup ref="updateBirthDialog">
     <view class="update-birth-dialog">
-      <view class="title">选择你的出生年份</view>
+      <view class="title">选择你的出生年月</view>
 
       <view class="list">
         <picker-view
@@ -16,7 +16,20 @@
               :class="{
                 active: value[0] === index,
               }"
-              v-for="(item, index) in valueList"
+              v-for="(item, index) in years"
+              :key="index"
+            >
+              <text class="value">{{ item }}</text>
+            </view>
+          </picker-view-column>
+
+          <picker-view-column>
+            <view
+              class="item"
+              :class="{
+                active: value[1] === index,
+              }"
+              v-for="(item, index) in months"
               :key="index"
             >
               <text class="value">{{ item }}</text>
@@ -38,16 +51,22 @@ export default {
   name: 'updateBirthDialog',
 
   data() {
-    let valueList = [];
+    const years = [];
+    const months = [];
 
-    for (let i = 1900; i < 2025; i++) {
-      valueList.push(String(i));
+    for (let i = 1925; i < 2025; i++) {
+      years.push(String(i));
+    }
+
+    for (let i = 1; i <= 12; i++) {
+      months.push(i < 10 ? '0' + i : String(i));
     }
 
     return {
       localUserDetailInfo: {},
-      value: [0],
-      valueList,
+      years,
+      months,
+      value: [0, 0],
     };
   },
 
@@ -61,10 +80,14 @@ export default {
   methods: {
     open() {
       this.localUserDetailInfo = JSON.parse(JSON.stringify(this.userDetailInfo));
-      let index = this.valueList.findIndex((item) => item === this.localUserDetailInfo.birth_year);
+      let year = this.localUserDetailInfo.birth_year.slice(0, 4);
+      let month = this.localUserDetailInfo.birth_year.slice(-2);
 
-      if (index > -1) {
-        this.value = [index];
+      let index1 = this.years.findIndex((item) => item === year);
+      let index2 = this.months.findIndex((item) => item === month);
+
+      if (index1 > -1 && index2 > -1) {
+        this.value = [index1, index2];
       }
 
       this.$refs.updateBirthDialog.open();
@@ -75,8 +98,10 @@ export default {
     },
 
     submit() {
+      let birth_year = this.years[this.value[0]] + '/' + this.months[this.value[1]];
+
       Object.assign(this.localUserDetailInfo, {
-        birth_year: this.valueList[this.value],
+        birth_year: birth_year,
       });
 
       this.$emit('submit', this.localUserDetailInfo);

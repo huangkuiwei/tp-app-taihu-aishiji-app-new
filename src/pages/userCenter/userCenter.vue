@@ -12,10 +12,10 @@
 
     <view class="userinfo">
       <view class="box">
-        <view class="item">
+        <view class="item" @click="$refs.updateGenderDialog.open()">
           <text class="label">性别</text>
 
-          <view class="picker" @click="$refs.updateGenderDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">{{ genderList[userDetailInfo.gender].text }}</text>
               <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
@@ -23,10 +23,10 @@
           </view>
         </view>
 
-        <view class="item">
-          <text class="label">出生年份</text>
+        <view class="item" @click="$refs.updateBirthDialog.open()">
+          <text class="label">出生年月</text>
 
-          <view class="picker" @click="$refs.updateBirthDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">{{ userDetailInfo.birth_year }}</text>
               <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
@@ -34,10 +34,10 @@
           </view>
         </view>
 
-        <view class="item">
+        <view class="item" @click="$refs.updateHeightDialog.open()">
           <text class="label">身高</text>
 
-          <view class="picker" @click="$refs.updateHeightDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">{{ rulerLineList1[userDetailInfo.height] }}cm</text>
               <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
@@ -47,10 +47,10 @@
       </view>
 
       <view class="box">
-        <view class="item">
+        <view class="item" @click="$refs.updateCurrentWeightDialog.open()">
           <text class="label">当前体重</text>
 
-          <view class="picker" @click="$refs.updateCurrentWeightDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">{{ rulerLineList2[userDetailInfo.current_weight] || currentWeight }}KG</text>
               <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
@@ -58,10 +58,10 @@
           </view>
         </view>
 
-        <view class="item">
+        <view class="item" @click="$refs.updateTargetWeightDialog.open()">
           <text class="label">目标体重</text>
 
-          <view class="picker" @click="$refs.updateTargetWeightDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">{{ rulerLineList4[userDetailInfo.target_weight] || targetWeight }}KG</text>
               <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
@@ -73,10 +73,10 @@
       <!-- TODO 是否新增开始日期和目标日期是否编辑 -->
 
       <view class="box">
-        <view class="item">
+        <view class="item" @click="$refs.updateHabitsDialog.open()">
           <text class="label">运动量</text>
 
-          <view class="picker" @click="$refs.updateHabitsDialog.open()">
+          <view class="picker">
             <view class="value">
               <text class="filed">
                 {{ exerciseHabits[userDetailInfo.exercise_habits].text }}
@@ -307,7 +307,7 @@ export default {
         }
 
         if (res.data.birth_year) {
-          res.data.birth_year = res.data.birth_year.slice(0, 4);
+          res.data.birth_year = res.data.birth_year.slice(0, 7);
         }
 
         if (res.data.begin_date && res.data.end_date) {
@@ -382,16 +382,15 @@ page {
     .box {
       background: #ffffff;
       border-radius: 20rpx;
-      padding: 30rpx 24rpx;
+      padding: 0 24rpx;
       margin-bottom: 20rpx;
 
       .item {
+        height: 92rpx;
         display: flex;
         align-items: center;
 
         &:not(:last-child) {
-          padding-bottom: 30rpx;
-          margin-bottom: 30rpx;
           border-bottom: 1px solid #f6f7fb;
         }
 

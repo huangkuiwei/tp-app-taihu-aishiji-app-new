@@ -41,14 +41,21 @@
         </view>
       </view>
     </view>
+
+    <exchange-dialog ref="exchangeDialog" />
   </view>
 </template>
 
 <script>
 import $http from '@/utils/http';
+import ExchangeDialog from '@/pages/exchangeCenter/exchangeDialog.vue';
 
 export default {
   name: 'redemption',
+
+  components: {
+    ExchangeDialog,
+  },
 
   data() {
     return {
@@ -87,8 +94,9 @@ export default {
         });
     },
 
-    // TODO 展示兑换记录
-    showRedemptionDialog() {},
+    showRedemptionDialog() {
+      this.$refs.exchangeDialog.open();
+    },
   },
 };
 </script>
