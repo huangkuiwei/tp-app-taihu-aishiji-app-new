@@ -3,9 +3,9 @@
     <view class="page-title">
       <text></text>
 
-      <!--<view class="back" @click="$toSwitch('/pages/index/index')">-->
-      <!--  <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>-->
-      <!--</view>-->
+      <view class="back" @click="$toSwitch('/pages/index/index')">
+        <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
+      </view>
     </view>
 
     <view class="banner"></view>
@@ -100,6 +100,8 @@
           </view>
         </view>
       </view>
+
+      <view class="submit-btn" @click="submit">马上开始计划</view>
     </view>
   </view>
 </template>
@@ -246,12 +248,10 @@ page {
 <style scoped lang="scss">
 .plan-suggestion-page {
   .page-title {
-    // background: #ffffff;
   }
 
   .banner {
     padding: calc(var(--page-title-height) + 9rpx) 0 0;
-    // background: #ffffff;
   }
 
   .plan-box {
@@ -278,6 +278,8 @@ page {
     }
 
     .card-box {
+      margin-bottom: 50rpx;
+
       .card-item1 {
         background: #ffffff;
         border-radius: 20rpx;
@@ -452,6 +454,20 @@ page {
           }
         }
       }
+    }
+
+    .submit-btn {
+      width: 550rpx;
+      height: 100rpx;
+      margin: 0 auto;
+      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
+      border-radius: 50rpx;
+      font-weight: bold;
+      font-size: 30rpx;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
