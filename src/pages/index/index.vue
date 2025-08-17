@@ -12,6 +12,7 @@
 
           <template v-else-if="homeWeightPlanData && homeWeightPlanData.state === 1">
             <view class="btn" style="background: #ffffff; color: #5664e5" @click="showRecodeWeight">体重记录</view>
+            <!-- TODO -->
             <view
               class="btn"
               @click="
@@ -293,13 +294,17 @@ let chart1 = null;
 
 export default {
   name: 'indexPage',
-  components: { AddMotionRecodeDialog, AddFoodRecodeDialog },
+
+  components: {
+    AddMotionRecodeDialog,
+    AddFoodRecodeDialog,
+  },
 
   data() {
     let weightList = [];
 
-    for (let i = 300; i < 3000; i++) {
-      weightList.push(Number((i * 0.1).toFixed(1)));
+    for (let i = 50; i < 501; i++) {
+      weightList.push(Number((i * 0.5).toFixed(1)));
     }
 
     return {

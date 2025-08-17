@@ -80,7 +80,7 @@ const appStore = {
         )
         .then((res) => {
           commit('_setUserDetailInfo', res.data);
-          return res;
+          return JSON.parse(JSON.stringify(res));
         })
         .catch((err) => {
           if (err.Msg === '未找到健康档案，请先完成健康评估') {

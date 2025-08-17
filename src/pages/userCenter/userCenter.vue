@@ -164,10 +164,10 @@ export default {
       rulerLineList1.push(i);
     }
 
-    for (let i = 300; i < 3000; i++) {
-      rulerLineList2.push(Number((i * 0.1).toFixed(1)));
-      rulerLineList3.push(Number((i * 0.1).toFixed(1)));
-      rulerLineList4.push(Number((i * 0.1).toFixed(1)));
+    for (let i = 50; i < 501; i++) {
+      rulerLineList2.push(Number((i * 0.5).toFixed(1)));
+      rulerLineList3.push(Number((i * 0.5).toFixed(1)));
+      rulerLineList4.push(Number((i * 0.5).toFixed(1)));
     }
 
     return {

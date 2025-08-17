@@ -65,7 +65,7 @@
             </view>
 
             <view class="chart-data">
-              <text>70</text>
+              <text>{{ lastPlanData.body_score }}</text>
               <text>身体评分</text>
             </view>
           </view>
@@ -87,7 +87,7 @@
 
               <view class="info">
                 <text>性别: {{ userDetailInfo.gender === 1 ? '男' : '女' }}</text>
-                <text>年龄: {{ realAge }}岁</text>
+                <text>年龄: {{ lastPlanData.actual_age }}岁</text>
                 <text>身高: {{ userDetailInfo.height }}cm</text>
                 <text>体重: {{ lastPlanData.current_weight }}公斤</text>
               </view>
@@ -95,33 +95,32 @@
 
             <view class="detail-info2">
               <view class="left">
-                <!-- TODO 体脂率计算 -->
                 <view class="left-item">
                   <text class="name">体脂率</text>
 
                   <view class="value">
-                    <text>23.44%</text>
-                    <text>标准</text>
+                    <text>{{ lastPlanData.body_fat_percentage }}%</text>
+                    <text>{{ bodyStatus.fatStatus }}</text>
                   </view>
                 </view>
 
-                <!-- TODO 身体年龄计算 -->
                 <view class="left-item">
                   <text class="name">身体年龄</text>
 
                   <view class="value">
-                    <text>26岁</text>
-                    <text>标准</text>
+                    <text>{{ lastPlanData.body_age }}岁</text>
+                    <text>{{ bodyStatus.ageStatus }}</text>
                   </view>
                 </view>
 
-                <!-- TODO 基础代谢率计算 -->
                 <view class="left-item">
                   <text class="name">基础代谢率</text>
 
                   <view class="value">
-                    <text>1155千卡/日</text>
-                    <text>标准</text>
+                    <text>{{ lastPlanData.plan_initial_bmr }}千卡/日</text>
+                    <text v-if="realBMIScore === 1">偏低</text>
+                    <text v-else-if="realBMIScore === 2">正常</text>
+                    <text v-else>偏高</text>
                   </view>
                 </view>
               </view>
@@ -523,17 +522,6 @@ export default {
       };
     },
 
-    realAge() {
-      if (this.userDetailInfo) {
-        let nowTime = new Date().getFullYear();
-        let birthYear = this.userDetailInfo.birth_year.slice(0, 4);
-
-        return Math.floor(Number(nowTime) - Number(birthYear));
-      }
-
-      return undefined;
-    },
-
     realBMI() {
       if (this.userDetailInfo) {
         return Number(
@@ -557,6 +545,39 @@ export default {
       } else {
         return 4;
       }
+    },
+
+    bodyStatus() {
+      let result = {};
+
+      if (this.userDetailInfo) {
+        if (this.lastPlanData.body_age <= this.lastPlanData.actual_age) {
+          result.ageStatus = '正常';
+        } else {
+          result.ageStatus = '偏高';
+        }
+
+        // 男
+        if (this.userDetailInfo.gender === 1) {
+          if (this.lastPlanData.body_fat_percentage < 10) {
+            result.fatStatus = '偏低';
+          } else if (this.lastPlanData.body_fat_percentage >= 10 && this.lastPlanData.body_fat_percentage <= 20) {
+            result.fatStatus = '正常';
+          } else {
+            result.fatStatus = '偏高';
+          }
+        } else {
+          if (this.lastPlanData.body_fat_percentage < 10) {
+            result.fatStatus = '偏低';
+          } else if (this.lastPlanData.body_fat_percentage >= 10 && this.lastPlanData.body_fat_percentage <= 20) {
+            result.fatStatus = '正常';
+          } else {
+            result.fatStatus = '偏高';
+          }
+        }
+      }
+
+      return result;
     },
   },
 
@@ -633,15 +654,12 @@ export default {
 
           dateList[dateListKey] = foodList;
 
-          // TODO 图表数据处理
-          let bodyRating = 70;
-
-          this.option1.series[0].data[0].value = bodyRating;
+          this.option1.series[0].data[0].value = res.data.body_score;
 
           let color = [];
 
-          for (let i = 0; i < 101; i++) {
-            if (i < bodyRating) {
+          for (let i = 0; i < 100; i++) {
+            if (i <= res.data.body_score) {
               color.push([i / 100, '#5664E5']);
             } else {
               color.push([i / 100, '#F2F5FF']);
@@ -954,6 +972,8 @@ page {
         margin-bottom: 22rpx;
 
         .card-title {
+          position: relative;
+          z-index: 9;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -984,7 +1004,6 @@ page {
           position: relative;
 
           .chart {
-            z-index: -1;
             position: relative;
             top: -350rpx;
           }

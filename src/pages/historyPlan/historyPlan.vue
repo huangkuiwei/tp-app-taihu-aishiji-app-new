@@ -22,7 +22,7 @@
 
       <view class="plan-box-wrap">
         <view class="plan-box" v-for="item of historyPlanList.filter((x) => x.state === 1)" :key="item.plan_id">
-          <view class="user">
+          <view class="user" @click="$toBack()">
             <image
               mode="aspectFill"
               :src="
@@ -32,7 +32,7 @@
 
             <text>{{ userInfo.uname }}</text>
 
-            <uni-icons class="back" color="#999999" type="right" size="18" @click="$toBack()"></uni-icons>
+            <uni-icons class="back" color="#999999" type="right" size="18"></uni-icons>
           </view>
 
           <view class="value">
@@ -88,7 +88,7 @@
 
       <view class="plan-box-wrap">
         <view class="plan-box" v-for="item of historyPlanList.filter((x) => x.state !== 1)" :key="item.plan_id">
-          <view class="user">
+          <view class="user" @click="previewPlan(item)">
             <image
               mode="aspectFill"
               :src="
