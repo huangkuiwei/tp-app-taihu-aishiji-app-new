@@ -1,90 +1,172 @@
 <template>
-  <view class="weight-management-plan-page">
+  <view class="history-weight-management-plan-page">
     <view class="page-title">
-      <text>体重管理方案</text>
+      <text>历史体重管理方案</text>
 
       <view class="back" @click="$toBack">
         <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
       </view>
     </view>
 
-    <view class="banner"> </view>
+    <view class="banner"></view>
 
     <view class="plan-box">
-      <view class="plan-title">我的定制体重管理方案</view>
-      <view class="plan-tip">
-        <text>目标在</text>
-        <text>{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>
-        <text>达到</text>
-        <text>{{ lastPlanData.plan_target_weight }}KG</text>
+      <view class="plan-title">
+        <view class="left">
+          <image
+            class="word-icon"
+            mode="widthFix"
+            src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/word.png"
+          />
+
+          <view class="des">
+            <view class="des-item">
+              <image
+                mode="widthFix"
+                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/icon1.png"
+              />
+
+              <text>智能定制</text>
+            </view>
+
+            <view class="des-item">
+              <image
+                mode="widthFix"
+                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/icon1.png"
+              />
+
+              <text>真实有效</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="right">
+          <image
+            mode="widthFix"
+            src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/icon2.png"
+          />
+        </view>
       </view>
 
-      <view class="chart-box">
-        <view class="chart-item1">
-          <view class="chart-title">
-            <text>初始BMI值为：{{ lastPlanData.plan_initial_bmi }}</text>
+      <view class="card-box">
+        <view class="card-item1">
+          <view class="card-title">
+            <text>您的身体评测报告</text>
           </view>
 
-          <view class="chart-title">
-            <text>初始体重值为：{{ lastPlanData.plan_initial_weight }}KG</text>
+          <view class="card-title2">
+            <text>根据您的身高体重测算，推荐BMI范围： </text>
           </view>
 
-          <view class="chart-title">
-            <text>当前体重值为：{{ lastPlanData.current_weight }}KG</text>
+          <view class="chart-box">
+            <view class="chart">
+              <l-echart ref="chartRef1" @finished="init1" />
+            </view>
+
+            <view class="chart-data">
+              <text>{{ lastPlanData.body_score }}</text>
+              <text>身体评分</text>
+            </view>
           </view>
 
-          <view class="chart-title">
-            <text style="color: #ffa537">
-              {{ isWeightLoss ? '已减重：' : '已增重：' }}
-              <template v-if="isWeightLoss">
-                {{ Number((lastPlanData.plan_initial_weight - lastPlanData.current_weight).toFixed(2)) }}KG
-              </template>
-
-              <template v-else>
-                {{ -Number((lastPlanData.plan_initial_weight - lastPlanData.current_weight).toFixed(2)) }}KG
-              </template>
-            </text>
+          <view class="bmi">
+            初始BMI值为：
+            <text>{{ lastPlanData.plan_initial_bmi }}</text>
           </view>
 
-          <view class="chart-tip">
-            根据您的身高体重测算，推荐BMI范围：
-            <text>18.5-24.9</text>
+          <view class="detail-box">
+            <image
+              class="icon"
+              mode="widthFix"
+              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/icon3.png"
+            />
+
+            <view class="detail-info1">
+              <view class="title">指标详情</view>
+
+              <view class="info">
+                <text>性别: {{ userDetailInfo.gender === 1 ? '男' : '女' }}</text>
+                <text>年龄: {{ lastPlanData.actual_age }}岁</text>
+                <text>身高: {{ userDetailInfo.height }}cm</text>
+                <text>体重: {{ lastPlanData.current_weight }}公斤</text>
+              </view>
+            </view>
+
+            <view class="detail-info2">
+              <view class="left">
+                <view class="left-item">
+                  <text class="name">体脂率</text>
+
+                  <view class="value">
+                    <text>{{ lastPlanData.body_fat_percentage }}%</text>
+                    <text>{{ bodyStatus.fatStatus }}</text>
+                  </view>
+                </view>
+
+                <view class="left-item">
+                  <text class="name">身体年龄</text>
+
+                  <view class="value">
+                    <text>{{ lastPlanData.body_age }}岁</text>
+                    <text>{{ bodyStatus.ageStatus }}</text>
+                  </view>
+                </view>
+
+                <view class="left-item">
+                  <text class="name">基础代谢率</text>
+
+                  <view class="value">
+                    <text>{{ lastPlanData.plan_initial_bmr }}千卡/日</text>
+                    <text v-if="realBMIScore === 1">偏低</text>
+                    <text v-else-if="realBMIScore === 2">正常</text>
+                    <text v-else>偏高</text>
+                  </view>
+                </view>
+              </view>
+
+              <view class="middle">
+                <image
+                  class="icon"
+                  mode="widthFix"
+                  src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/icon4.png"
+                />
+              </view>
+
+              <view class="right">
+                <view class="right-item">
+                  <text class="name">BMI</text>
+
+                  <view class="value">
+                    <text>{{ realBMI }}</text>
+                  </view>
+                </view>
+
+                <view class="evaluate">
+                  <view class="measure">
+                    <view class="line">
+                      <view class="line-item" v-for="(item, index) of scoreList" :key="item">
+                        <text :style="{ visibility: realBMIScore === index + 1 ? '' : 'hidden' }"></text>
+                        <text></text>
+                        <text>{{ item }}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
           </view>
         </view>
 
         <view class="chart-item2">
-          <view class="time">
-            <text class="time1">{{ lastPlanData.start_date && lastPlanData.start_date.slice(0, 10) }}</text>
-
-            <text class="line"></text>
-            <text class="tip">
-              每周{{
-                isWeightLoss ? `减重${lastPlanData.weekly_loss_weight}` : `增重${-lastPlanData.weekly_loss_weight}`
-              }}kg
-            </text>
-            <text class="line"></text>
-
-            <view class="time2">
-              <text class="value">{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>
-              <!--<uni-icons color="#666666" type="right" size="18"></uni-icons>-->
-            </view>
+          <view class="card-title">
+            <text>瘦身目标</text>
           </view>
 
-          <!-- 历史计划折线图显示逻辑存在问题，先不做显示 -->
-          <!--<view class="chart">-->
-          <!--  <l-echart ref="chartRef" @finished="init" />-->
-          <!--</view>-->
-
-          <!--<view class="expected">-->
-          <!--  <text>一周后</text>-->
-          <!--  <text>的理想变化</text>-->
-          <!--  <text>-{{ lastPlanData.weekly_loss_weight }}kg</text>-->
-          <!--</view>-->
-
-          <!--<view class="recode" @click="$toRouter('/pages/weightData/weightData')">记录体重》</view>-->
-
-          <view class="options">
-            <text @click="deletePlan">删除方案</text>
+          <view class="card-title2">
+            预计在
+            <text>{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>
+            达到
+            <text>{{ lastPlanData.plan_target_weight }}KG</text>
           </view>
         </view>
       </view>
@@ -93,56 +175,67 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
-import $http from '@/utils/http';
 
-let chart = null;
+let chart1 = null;
 
 export default {
-  name: 'weightManagementPlan',
+  name: 'historyWeightManagementPlan',
 
   data() {
     return {
       lastPlanData: {},
-      weighData: {},
-      option: {
-        title: {
-          show: false,
-        },
-        tooltip: {
-          trigger: 'axis',
-        },
-        legend: {
-          bottom: 0,
-        },
-        grid: {
-          top: '5%',
-          left: '5%',
-          right: '5%',
-          bottom: '10%',
-          containLabel: true,
-        },
-        xAxis: {
-          type: 'category',
-          data: [],
-          boundaryGap: false,
-        },
-        yAxis: {
-          type: 'value',
-        },
+      scoreList: ['偏瘦', '正常', '偏胖', '超胖'],
+      option1: {
         series: [
           {
-            name: '体重',
-            data: [],
-            type: 'line',
-            color: '#FFA537',
-            areaStyle: {
-              color: '#FFEDD7',
+            type: 'gauge',
+            startAngle: 180,
+            endAngle: 0,
+            min: 0,
+            max: 100,
+            center: ['50%', '100%'], // 水平居中，垂直方向下移一点（默认是 '50%', '50%'）
+            radius: '75%',
+            axisLine: {
+              lineStyle: {
+                width: 15,
+              },
             },
+            pointer: {
+              show: false,
+            },
+            axisTick: {
+              distance: -17,
+              length: 19,
+              lineStyle: {
+                color: '#fff',
+                width: 4,
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            detail: {
+              show: false,
+            },
+            data: [
+              {
+                value: 0,
+              },
+            ],
           },
         ],
       },
     };
+  },
+
+  onShow() {
+    this.getLastPlanData();
+    this._getUserInfo();
   },
 
   onLoad() {
@@ -150,8 +243,64 @@ export default {
   },
 
   computed: {
-    isWeightLoss() {
-      return this.lastPlanData.plan_initial_weight - this.lastPlanData.plan_target_weight > 0;
+    ...mapState('app', ['userInfo', 'userDetailInfo']),
+
+    realBMI() {
+      if (this.userDetailInfo) {
+        return Number(
+          (
+            this.userDetailInfo.current_weight /
+            ((this.userDetailInfo.height * this.userDetailInfo.height) / 10000)
+          ).toFixed(1),
+        );
+      }
+
+      return undefined;
+    },
+
+    realBMIScore() {
+      if (this.realBMI < 18.5) {
+        return 1;
+      } else if (this.realBMI >= 18.5 && this.realBMI <= 24.9) {
+        return 2;
+      } else if (this.realBMI > 24.9) {
+        return 3;
+      } else {
+        return 4;
+      }
+    },
+
+    bodyStatus() {
+      let result = {};
+
+      if (this.userDetailInfo) {
+        if (this.lastPlanData.body_age <= this.lastPlanData.actual_age) {
+          result.ageStatus = '正常';
+        } else {
+          result.ageStatus = '偏高';
+        }
+
+        // 男
+        if (this.userDetailInfo.gender === 1) {
+          if (this.lastPlanData.body_fat_percentage < 10) {
+            result.fatStatus = '偏低';
+          } else if (this.lastPlanData.body_fat_percentage >= 10 && this.lastPlanData.body_fat_percentage <= 20) {
+            result.fatStatus = '正常';
+          } else {
+            result.fatStatus = '偏高';
+          }
+        } else {
+          if (this.lastPlanData.body_fat_percentage < 10) {
+            result.fatStatus = '偏低';
+          } else if (this.lastPlanData.body_fat_percentage >= 10 && this.lastPlanData.body_fat_percentage <= 20) {
+            result.fatStatus = '正常';
+          } else {
+            result.fatStatus = '偏高';
+          }
+        }
+      }
+
+      return result;
     },
   },
 
@@ -164,9 +313,11 @@ export default {
   },
 
   methods: {
-    async init() {
-      chart = await this.$refs.chartRef.init(echarts);
-      chart.setOption(this.option);
+    ...mapActions('app', ['_getUserInfo']),
+
+    async init1() {
+      chart1 = await this.$refs.chartRef1.init(echarts);
+      chart1.setOption(this.option1);
     },
 
     /**
@@ -174,63 +325,6 @@ export default {
      */
     getLastPlanData() {
       this.lastPlanData = uni.getStorageSync('lastPlanData');
-      // this.getRecodeWeightData(this.lastPlanData.plan_id);
-    },
-
-    /**
-     * 获取当前计划已记录的体重数据
-     */
-    getRecodeWeightData(plan_id) {
-      $http
-        .post('api/diet-info/weight-plan-data', {
-          plan_id,
-        })
-        .then((res) => {
-          res.data.weight_list = res.data.weight_list || [];
-          this.weighData = res.data;
-
-          // this.option.xAxis.data = res.data.weight_list.map((item) => item.date_time.slice(6, 10));
-          // this.option.series[0].data = res.data.weight_list.map((item) => item.weight);
-          //
-          // setTimeout(() => {
-          //   chart.setOption(this.option);
-          // }, 1000);
-        });
-    },
-
-    /**
-     * 删除计划
-     */
-    deletePlan() {
-      uni.showModal({
-        title: '温馨提示',
-        content: '确定要删除计划吗？',
-        success: (res) => {
-          if (res.confirm) {
-            uni.showLoading({
-              title: '删除中...',
-            });
-
-            $http
-              .post('api/diet-info/weight-plan/delete', {
-                plan_id: this.lastPlanData.plan_id,
-              })
-              .then(() => {
-                uni.hideLoading();
-
-                uni.showToast({
-                  title: '删除成功',
-                  icon: 'none',
-                  mask: true,
-                });
-
-                setTimeout(() => {
-                  this.$toBack();
-                }, 1000);
-              });
-          }
-        },
-      });
     },
   },
 };
@@ -238,65 +332,89 @@ export default {
 
 <style lang="scss">
 page {
-  background: #f6f7fb;
+  height: 100%;
+  background: #f6f7fb url('https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/weightManagementPlan/bg.png')
+    left top/100% auto no-repeat;
 }
 </style>
 
 <style scoped lang="scss">
-.weight-management-plan-page {
+.history-weight-management-plan-page {
   .page-title {
     background: #ffffff;
   }
 
   .banner {
-    padding: calc(var(--page-title-height)) 0 0;
+    padding: calc(var(--page-title-height) + 9rpx) 0 0;
     background: #ffffff;
   }
 
   .plan-box {
-    background: linear-gradient(to bottom, #ffdecf, #fcebbf, #e3ffcf) left top/100% 620rpx no-repeat;
-    padding: 64rpx 30rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 43rpx 30rpx 100rpx;
 
     .plan-title {
-      font-weight: bold;
-      font-size: 46rpx;
-      color: #333333;
-      margin-bottom: 24rpx;
-    }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 54rpx;
+      margin-bottom: 29rpx;
 
-    .plan-tip {
-      font-size: 30rpx;
-      color: #1a1a1a;
-      margin-bottom: 67rpx;
+      .left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 28rpx;
 
-      text {
-        &:nth-child(2) {
-          color: #b36408;
+        .word-icon {
+          width: 436rpx;
         }
 
-        &:nth-child(4) {
-          color: #b36408;
-          font-size: 40rpx;
-          font-weight: bold;
+        .des {
+          height: 48rpx;
+          padding: 0 16rpx;
+          background: linear-gradient(90deg, #fbf6ff 0%, #f1f3ff 100%);
+          border-radius: 24rpx;
+          border: 1px solid #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 21rpx;
+
+          .des-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            image {
+              width: 26rpx;
+              margin-right: 9rpx;
+            }
+
+            text {
+              font-size: 26rpx;
+              color: #1a1a1a;
+            }
+          }
+        }
+      }
+
+      .right {
+        image {
+          width: 197rpx;
         }
       }
     }
 
-    .chart-box {
-      background: #ffffff;
-      box-shadow: 0 2rpx 23rpx 7rpx rgba(241, 203, 151, 0.24);
-      border-radius: 20rpx;
-      align-self: stretch;
-      margin-bottom: 22rpx;
+    .card-box {
+      .card-item1 {
+        background: #ffffff;
+        padding: 36rpx 19rpx;
+        border-radius: 20rpx;
+        margin-bottom: 22rpx;
 
-      .chart-item1 {
-        padding: 32rpx 25rpx 34rpx;
-        border-bottom: 2rpx dashed #dddddd;
-
-        .chart-title {
+        .card-title {
+          position: relative;
+          z-index: 9;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -305,133 +423,298 @@ page {
           text {
             &:nth-child(1) {
               font-weight: 500;
-              font-size: 28rpx;
+              font-size: 30rpx;
               color: #1a1a1a;
             }
 
             &:nth-child(2) {
               font-size: 26rpx;
-              color: #b97420;
+              color: #5168e6;
             }
           }
         }
 
-        .chart-tip {
+        .card-title2 {
           font-size: 22rpx;
           color: #999999;
+          margin-bottom: 55rpx;
+        }
+
+        .chart-box {
+          height: 280rpx;
+          position: relative;
+
+          .chart {
+            position: relative;
+            top: -350rpx;
+          }
+
+          .chart-data {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 50rpx;
+            z-index: 9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14rpx;
+
+            text {
+              &:nth-child(1) {
+                font-weight: 500;
+                font-size: 76rpx;
+                color: #5664e5;
+              }
+
+              &:nth-child(2) {
+                font-size: 22rpx;
+                color: #999999;
+              }
+            }
+          }
+        }
+
+        .bmi {
+          width: 580rpx;
+          height: 60rpx;
+          margin: 0 auto 18rpx;
+          background: #f2f5ff;
+          border-radius: 30rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28rpx;
+          color: #333333;
 
           text {
-            color: #ffa537;
+            color: #5664e5;
+          }
+        }
+
+        .detail-box {
+          .icon {
+            width: 100%;
+            margin-bottom: 12rpx;
+          }
+
+          .detail-info1 {
+            padding: 17rpx 12rpx;
+            margin-bottom: 48rpx;
+
+            .title {
+              font-weight: 500;
+              font-size: 30rpx;
+              color: #111111;
+              margin-bottom: 31rpx;
+            }
+
+            .info {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10rpx;
+
+              text {
+                width: 150px;
+                height: 52rpx;
+                background: #ffffff;
+                border-radius: 10rpx;
+                white-space: nowrap;
+                border: 1px solid #e7e7e7;
+                font-size: 22rpx;
+                color: #666666;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
+          }
+
+          .detail-info2 {
+            display: flex;
+            align-items: center;
+
+            .left {
+              display: flex;
+              flex-direction: column;
+              gap: 55rpx;
+            }
+
+            .left-item,
+            .right-item {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 12rpx;
+              position: relative;
+
+              .name {
+                color: #333333;
+                font-size: 22rpx;
+              }
+
+              .value {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 30rpx;
+
+                text {
+                  &:nth-child(1) {
+                    color: #5664e5;
+                    font-size: 30rpx;
+                  }
+
+                  &:nth-child(2) {
+                    height: 32rpx;
+                    background: #5664e5;
+                    border-radius: 5rpx;
+                    font-size: 22rpx;
+                    color: #ffffff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0 6rpx;
+                  }
+                }
+              }
+            }
+
+            .middle {
+              flex-grow: 1;
+
+              .icon {
+                width: 178rpx;
+              }
+            }
+
+            .right {
+              .right-item {
+                margin-bottom: 30rpx;
+
+                .name {
+                  align-self: flex-end;
+                }
+
+                .value {
+                  align-self: flex-end;
+                }
+              }
+
+              .evaluate {
+                .measure {
+                  .line {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 4rpx;
+
+                    .line-item {
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+
+                      text {
+                        &:nth-child(1) {
+                          border-left: 12rpx solid #666666;
+                          border-right: 12rpx solid transparent;
+                          border-top: 12rpx solid transparent;
+                          border-bottom: 12rpx solid transparent;
+                        }
+
+                        &:nth-child(2) {
+                          width: 12rpx;
+                          height: 48rpx;
+                          margin-right: 5rpx;
+                        }
+
+                        &:nth-child(3) {
+                          font-size: 22rpx;
+                          color: #999999;
+                          white-space: nowrap;
+                        }
+                      }
+
+                      &:nth-child(1) {
+                        text {
+                          &:nth-child(2) {
+                            background: linear-gradient(0deg, #5aff8a 0%, #83dff4 100%);
+                            border-radius: 6rpx 6rpx 0rpx 0rpx;
+                          }
+                        }
+                      }
+
+                      &:nth-child(2) {
+                        text {
+                          &:nth-child(2) {
+                            width: 12rpx;
+                            height: 68rpx;
+                            background: linear-gradient(0deg, #f4c839 0%, #64fd83 100%);
+                          }
+                        }
+                      }
+
+                      &:nth-child(3) {
+                        text {
+                          &:nth-child(2) {
+                            background: linear-gradient(0deg, #ff725a 0%, #fcbd35 100%);
+                          }
+                        }
+                      }
+
+                      &:nth-child(4) {
+                        text {
+                          &:nth-child(2) {
+                            background: #fe6e61;
+                            border-radius: 0rpx 0rpx 6rpx 6rpx;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
 
       .chart-item2 {
-        padding: 32rpx 14rpx;
+        background: #ffffff;
+        padding: 29rpx 19rpx;
+        border-radius: 20rpx;
+        margin-bottom: 20rpx;
 
-        .time {
+        .card-title {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 35rpx;
-          font-size: 26rpx;
-
-          .time1 {
-            color: #333333;
-          }
-
-          .line {
-            flex-grow: 1;
-            border-bottom: 2rpx dashed #dddddd;
-          }
-
-          .tip {
-            font-size: 22rpx;
-            background: #fef7dd;
-            color: #b46408;
-            padding: 8rpx 30rpx;
-            border-radius: 20rpx;
-          }
-
-          .time2 {
-            display: flex;
-            align-items: center;
-
-            .value {
-              font-size: 26rpx;
-              color: #333333;
-            }
-          }
-        }
-
-        .chart {
-          margin-bottom: 35rpx;
-        }
-
-        .expected {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 45rpx;
+          margin-bottom: 50rpx;
 
           text {
             &:nth-child(1) {
-              width: 120rpx;
-              height: 51rpx;
-              background: #ffa537;
-              border-radius: 15rpx;
               font-weight: 500;
               font-size: 30rpx;
-              color: #ffffff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-right: 22rpx;
+              color: #1a1a1a;
             }
 
             &:nth-child(2) {
-              color: #1a1a1a;
-              font-size: 28rpx;
-              margin-right: 10rpx;
-            }
-
-            &:nth-child(3) {
-              color: #b56505;
-              font-size: 32rpx;
+              font-size: 26rpx;
+              color: #5168e6;
             }
           }
         }
 
-        .recode {
-          width: 100%;
-          height: 86rpx;
-          background: #fef7dd;
-          border-radius: 40rpx;
-          font-weight: bold;
-          font-size: 32rpx;
-          color: #b46408;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 42rpx;
-        }
-
-        .options {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 20rpx;
+        .card-title2 {
+          color: #1a1a1a;
+          font-size: 26rpx;
 
           text {
-            width: 274rpx;
-            height: 85rpx;
-            background: #f7f6fb;
-            border-radius: 20rpx;
-            font-size: 28rpx;
-            color: #333333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #5664e5;
+            font-size: 30rpx;
           }
         }
       }
