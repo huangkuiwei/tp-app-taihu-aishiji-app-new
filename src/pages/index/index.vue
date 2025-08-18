@@ -244,41 +244,9 @@
       />
     </view>
 
-    <uni-popup ref="updateWeightDataDialog">
-      <view class="update-weight-data-dialog">
-        <view class="title">选择当前体重</view>
-
-        <view class="weight-list">
-          <picker-view
-            indicator-style="height: 50px;"
-            style="width: 100%; height: 500rpx"
-            :value="weightValue"
-            @change="weightValue = $event.detail.value"
-          >
-            <picker-view-column>
-              <view
-                class="item"
-                :class="{
-                  active: weightValue[0] === index,
-                  adjacent: weightValue[0] === index - 1 || weightValue[0] === index + 1,
-                  adjacent1: weightValue[0] === index - 2 || weightValue[0] === index + 2,
-                }"
-                v-for="(item, index) in weightList"
-                :key="index"
-              >
-                <text class="value">{{ item }}</text>
-                <text class="unit" v-show="weightValue[0] === index">KG</text>
-              </view>
-            </picker-view-column>
-          </picker-view>
-        </view>
-
-        <view class="btn" @click="recodeWeight">记录</view>
-      </view>
-    </uni-popup>
-
     <add-food-recode-dialog ref="addFoodRecodeDialog" :type="selectFoodType" @addRecode="addRecode" />
     <add-motion-recode-dialog ref="addMotionRecodeDialog" @addRecode="addMotionRecode" />
+    <update-weight-data-dialog ref="updateWeightDataDialog" @updateSuccess="initData" />
   </view>
 </template>
 
@@ -288,6 +256,7 @@ import * as echarts from '@/uni_modules/lime-echart/static/echarts.min';
 import $http from '@/utils/http';
 import AddFoodRecodeDialog from '@/components/addFoodRecodeDialog.vue';
 import AddMotionRecodeDialog from '@/components/addMotionRecodeDialog.vue';
+import UpdateWeightDataDialog from '@/components/updateWeightDataDialog.vue';
 
 let chart1 = null;
 
@@ -295,17 +264,12 @@ export default {
   name: 'indexPage',
 
   components: {
+    UpdateWeightDataDialog,
     AddMotionRecodeDialog,
     AddFoodRecodeDialog,
   },
 
   data() {
-    let weightList = [];
-
-    for (let i = 0; i < 601; i++) {
-      weightList.push(Number((i * 0.5).toFixed(1)));
-    }
-
     return {
       homeWeightPlanData: null,
       option1: {
@@ -395,8 +359,6 @@ export default {
       ],
       motionRecodeList: [],
       selectFoodType: undefined,
-      weightList: weightList,
-      weightValue: [0],
     };
   },
 
@@ -525,11 +487,6 @@ export default {
     getHomeWeightPlan() {
       return $http.get('api/diet-info/weight-plan/home').then((res) => {
         this.homeWeightPlanData = res.data;
-        let index = this.weightList.findIndex((item) => item === this.homeWeightPlanData.current_weight);
-
-        if (index) {
-          this.weightValue = [index];
-        }
       });
     },
 
@@ -649,28 +606,6 @@ export default {
       }
 
       this.$refs.updateWeightDataDialog.open();
-    },
-
-    recodeWeight() {
-      uni.showLoading({
-        title: '加载中...',
-        mask: true,
-      });
-
-      $http
-        .post('api/diet-info/user-weight/update', {
-          weight: this.weightList[this.weightValue],
-        })
-        .then(() => {
-          this.$refs.updateWeightDataDialog.close();
-          uni.hideLoading();
-          this.initData();
-
-          uni.showToast({
-            title: '更新成功',
-            icon: 'none',
-          });
-        });
     },
 
     goWeightManagementPlan() {
@@ -1279,84 +1214,6 @@ page {
 
     image {
       width: 100%;
-    }
-  }
-
-  .update-weight-data-dialog {
-    width: 690rpx;
-    background: #ffffff;
-    border-radius: 30rpx;
-    padding: 31rpx 30rpx 42rpx;
-
-    .title {
-      font-weight: 500;
-      font-size: 30rpx;
-      color: #111111;
-      margin-bottom: 69rpx;
-    }
-
-    .weight-list {
-      picker-view {
-        margin-bottom: 37rpx;
-
-        picker-view-column {
-          .item {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            &.active {
-              .value {
-                font-weight: bold;
-                font-size: 50rpx;
-                color: #5664e5;
-                margin-right: 17rpx;
-              }
-
-              .unit {
-                font-weight: 500;
-                font-size: 24rpx;
-                color: #5664e5;
-              }
-            }
-
-            &.adjacent {
-              font-size: 40rpx;
-              color: #111111;
-            }
-
-            &.adjacent1 {
-              font-size: 30rpx;
-              color: #999999;
-            }
-
-            .value {
-              margin-right: 17rpx;
-            }
-
-            .unit {
-              position: relative;
-              top: 10rpx;
-            }
-          }
-        }
-      }
-    }
-
-    .btn {
-      width: 420rpx;
-      height: 90rpx;
-      margin: 0 auto;
-      background: linear-gradient(90deg, #4f69e6 0%, #6b56e3 100%);
-      border-radius: 45rpx;
-      font-weight: bold;
-      font-size: 28rpx;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 }

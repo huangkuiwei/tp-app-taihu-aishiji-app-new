@@ -46,7 +46,7 @@ export default {
       });
 
       $http
-        .post('api/sunshine/points-record', {
+        .post('api/lucky-bag/points-record', {
           pageIndex: 1,
           pageSize: 9999,
         })

@@ -31,11 +31,11 @@
       }
     },
     {
-      "path": "pages/sunshine/sunshine",
+      "path": "pages/goldenBeans/goldenBeans",
       "style": {
         "navigationStyle": "custom",
         // #ifndef H5
-        "navigationBarTitleText": "攒阳光",
+        "navigationBarTitleText": "攒金豆",
         // #endif
         "h5": {
           "titleNView": false
@@ -111,21 +111,6 @@
         "navigationStyle": "custom",
         // #ifndef H5
         "navigationBarTitleText": "数据报告",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
-      "path": "pages/dataStatistics/dataStatistics",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "数据统计",
         // #endif
         "h5": {
           "titleNView": false
@@ -562,7 +547,7 @@
         "selectedIconPath": "static/tabBar/discover1.png"
       },
       {
-        "pagePath": "pages/sunshine/sunshine",
+        "pagePath": "pages/goldenBeans/goldenBeans",
         "text": "福袋",
         "iconPath": "static/tabBar/blessingBag.png",
         "selectedIconPath": "static/tabBar/blessingBag1.png"

@@ -65,7 +65,7 @@
 <script>
 import $http from '@/utils/http';
 import ExchangeDialog from '@/pages/exchangeCenter/exchangeDialog.vue';
-import RecodeDialog from '@/pages/sunshine/recodeDialog.vue';
+import RecodeDialog from '@/components/recodeDialog.vue';
 
 export default {
   name: 'exchangeCenter',
