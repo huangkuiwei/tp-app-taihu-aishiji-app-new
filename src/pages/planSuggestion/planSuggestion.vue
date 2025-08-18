@@ -14,8 +14,9 @@
       <view class="plan-title">你的专属计划已生成</view>
 
       <view class="plan-time">
-        计划将持续 <text>{{ Math.ceil(planDays / 7) }}</text> 周，每周平均减重
-        <text>{{ planSuggestion.weekly_loss_weight }}</text
+        计划将持续 <text>{{ Math.ceil(planDays / 7) }}</text> 周，每周平均{{
+          planSuggestion.weekly_loss_weight >= 0 ? '减重' : '增肌'
+        }}<text>{{ Math.abs(planSuggestion.weekly_loss_weight) }}</text
         >kg
       </view>
 
