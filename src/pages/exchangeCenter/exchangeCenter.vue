@@ -48,8 +48,7 @@
                 src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/exchangeCenter/icno2.png"
               />
 
-              <!-- TODO 后端需要加 points 字段 -->
-              <text>{{ item.points }}</text>
+              <text>{{ item.flowers_required }}</text>
             </view>
             <text class="btn">去兑换</text>
           </view>
@@ -97,7 +96,7 @@ export default {
 
   methods: {
     getSignInfo() {
-      return $http.get('api/sunshine/account-info').then((res) => {
+      return $http.get('api/lucky-bag/account-info').then((res) => {
         this.signInfo = res.data;
       });
     },
@@ -108,7 +107,7 @@ export default {
         mask: true,
       });
 
-      $http.get('api/sunshine/available-exchanges').then((res) => {
+      $http.get('api/lucky-bag/available-exchanges').then((res) => {
         uni.hideLoading();
 
         this.exchangeList = res.data;
@@ -127,7 +126,7 @@ export default {
             });
 
             $http
-              .post('api/sunshine/exchange-vip', {
+              .post('api/lucky-bag/exchange-vip', {
                 exchange_type: item.exchange_type,
               })
               .then(() => {
