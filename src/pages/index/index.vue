@@ -633,6 +633,11 @@ export default {
         return;
       }
 
+      if (!this.userDetailInfo) {
+        this.$toRouter('/pages/evaluation/evaluation');
+        return;
+      }
+
       this.selectFoodType = type;
 
       setTimeout(() => {

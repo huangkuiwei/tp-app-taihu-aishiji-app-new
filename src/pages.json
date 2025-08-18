@@ -121,21 +121,6 @@
       }
     },
     {
-      "path": "pages/weightData/weightData",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "体重数据",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
       "path": "pages/feedback/feedback",
       "style": {
         "navigationStyle": "custom",

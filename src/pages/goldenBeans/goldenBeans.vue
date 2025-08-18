@@ -278,7 +278,7 @@ export default {
       verifyIsLogin();
 
       // 每日体重记录
-      if (item.task_id === 10012) {
+      if (item.task_id === 10008) {
         if (!this.userDetailInfo) {
           this.$toRouter('/pages/evaluation/evaluation');
         } else {

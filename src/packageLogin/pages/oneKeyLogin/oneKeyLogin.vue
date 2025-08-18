@@ -11,8 +11,6 @@
     <view class="banner"> </view>
 
     <view class="container">
-      <!--<view class="title">慧食搭子 记录美好生活</view>-->
-
       <view class="input-box">
         <text>{{ phone.slice(0, 3) }}****{{ phone.slice(-4) }}</text>
       </view>

@@ -67,21 +67,6 @@ const $http = {
 
               if (!hasShowLoginModal && !config.hideLoginBox) {
                 hasShowLoginModal = true;
-
-                // uni.showModal({
-                //   title: '提示',
-                //   content: '您当前未登录或登录已失效，为了您有更好的体验，慧食搭子需要您进行授权登录',
-                //   showCancel: true,
-                //   success: (res) => {
-                //     hasShowLoginModal = false;
-                //
-                //     if (res.confirm) {
-                //       toRouter('/packageLogin/pages/login/login');
-                //     } else if (res.cancel) {
-                //       console.log('用户点击取消');
-                //     }
-                //   },
-                // });
               }
 
               reject(res.data);
@@ -156,21 +141,6 @@ const $http = {
 
               if (!hasShowLoginModal && !config.hideLoginBox) {
                 hasShowLoginModal = true;
-
-                // uni.showModal({
-                //   title: '提示',
-                //   content: '您当前未登录或登录已失效，为了您有更好的体验，慧食搭子需要您进行授权登录',
-                //   showCancel: true,
-                //   success: (res) => {
-                //     hasShowLoginModal = false;
-                //
-                //     if (res.confirm) {
-                //       toRouter('/packageLogin/pages/login/login');
-                //     } else if (res.cancel) {
-                //       console.log('用户点击取消');
-                //     }
-                //   },
-                // });
               }
 
               reject(res.data);
@@ -241,21 +211,6 @@ const $http = {
 
               if (!hasShowLoginModal && !config.hideLoginBox) {
                 hasShowLoginModal = true;
-
-                // uni.showModal({
-                //   title: '提示',
-                //   content: '您当前未登录或登录已失效，为了您有更好的体验，慧食搭子需要您进行授权登录',
-                //   showCancel: true,
-                //   success: (res) => {
-                //     hasShowLoginModal = false;
-                //
-                //     if (res.confirm) {
-                //       toRouter('/packageLogin/pages/login/login');
-                //     } else if (res.cancel) {
-                //       console.log('用户点击取消');
-                //     }
-                //   },
-                // });
               }
 
               reject(res.data);

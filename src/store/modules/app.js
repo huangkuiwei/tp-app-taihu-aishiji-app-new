@@ -7,6 +7,11 @@ const appStore = {
     userInfo: {},
     userDetailInfo: null,
     lifestylePlanData: [],
+    appInfo: {
+      // TODO 小程序信息修改
+      appName: '慧食搭子',
+      companyName: '广州泰湖科技有限公司',
+    },
   },
 
   getters: {

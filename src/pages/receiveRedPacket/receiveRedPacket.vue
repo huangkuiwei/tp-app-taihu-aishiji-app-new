@@ -7,7 +7,7 @@
           src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/scantool/static/assets/receiveRedPacket/logo.png"
         />
 
-        <text>慧食搭子发出的红包</text>
+        <text>{{ appInfo.appName }}发出的红包</text>
       </view>
 
       <view class="bottom">恭喜发财，大吉大利！</view>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'receiveRedPacket',
 
@@ -36,6 +38,10 @@ export default {
 
   onLoad() {
     this.sign_order_no = uni.getStorageSync('sign_order_no');
+  },
+
+  computed: {
+    ...mapState('app', ['appInfo']),
   },
 
   onShareAppMessage() {

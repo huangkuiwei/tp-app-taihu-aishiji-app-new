@@ -11,7 +11,7 @@
     <view class="banner"></view>
 
     <view class="tip">
-      *账户注销后，您将无法正常登录慧食搭子，并清空当前账号的所有数据，对应相关权益将同时全部作废
+      *账户注销后，您将无法正常登录{{ appInfo.appName }}，并清空当前账号的所有数据，对应相关权益将同时全部作废
     </view>
 
     <view class="container">
@@ -56,7 +56,7 @@ export default {
   },
 
   computed: {
-    ...mapState('app', ['userInfo']),
+    ...mapState('app', ['userInfo', 'appInfo']),
 
     disabled() {
       return !!this.countdown;

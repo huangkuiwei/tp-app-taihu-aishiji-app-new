@@ -36,7 +36,7 @@
           <view class="renew-info">
             <view>
               <text>续订产品</text>
-              <text>慧食搭子月会员</text>
+              <text>{{ appInfo.appName }}月会员</text>
             </view>
 
             <view>
@@ -135,7 +135,7 @@ export default {
   },
 
   computed: {
-    ...mapState('app', ['userInfo']),
+    ...mapState('app', ['userInfo', 'appInfo']),
 
     disabled() {
       return !!this.countdown;
