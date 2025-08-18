@@ -325,6 +325,24 @@ export default {
      */
     getLastPlanData() {
       this.lastPlanData = uni.getStorageSync('lastPlanData');
+
+      this.option1.series[0].data[0].value = this.lastPlanData.body_score;
+
+      let color = [];
+
+      for (let i = 0; i < 100; i++) {
+        if (i <= this.lastPlanData.body_score) {
+          color.push([i / 100, '#5664E5']);
+        } else {
+          color.push([i / 100, '#F2F5FF']);
+        }
+      }
+
+      this.option1.series[0].axisLine.lineStyle.color = color;
+
+      setTimeout(() => {
+        chart1.setOption(this.option1);
+      }, 500);
     },
   },
 };

@@ -73,20 +73,20 @@
           <towxml v-else :nodes="item.content"></towxml>
         </view>
       </view>
-
-      <view class="message-box" v-show="tabValue === 1">
-        <view class="input-box">
-          <input
-            type="text"
-            :placeholder="tabValue === 1 ? '有什么饮食运动问题需要问我吗？' : '说点什么...'"
-            :value="questionText"
-            @input="questionText = $event.detail.value"
-          />
-        </view>
-
-        <view class="send" :class="{ disabled: answering }" @click="sendMessage">发送</view>
-      </view>
     </scroll-view>
+
+    <view class="message-box" v-show="tabValue === 1">
+      <view class="input-box">
+        <input
+          type="text"
+          :placeholder="tabValue === 1 ? '有什么饮食运动问题需要问我吗？' : '说点什么...'"
+          :value="questionText"
+          @input="questionText = $event.detail.value"
+        />
+      </view>
+
+      <view class="send" :class="{ disabled: answering }" @click="sendMessage">发送</view>
+    </view>
   </view>
 </template>
 
@@ -690,41 +690,41 @@ page {
         }
       }
     }
+  }
 
-    .message-box {
-      position: fixed;
-      bottom: 60rpx;
-      left: 56rpx;
-      right: 56rpx;
+  .message-box {
+    position: fixed;
+    bottom: 60rpx;
+    left: 56rpx;
+    right: 56rpx;
+    display: flex;
+    align-items: center;
+
+    .input-box {
+      flex-grow: 1;
+      height: 80rpx;
+      background: #ffffff;
+      box-shadow: 5rpx 9rpx 20rpx 0rpx rgba(185, 189, 203, 0.3);
+      border-radius: 20rpx;
       display: flex;
       align-items: center;
+      margin-right: 15rpx;
 
-      .input-box {
+      input {
+        padding: 0 38rpx;
         flex-grow: 1;
-        height: 80rpx;
-        background: #ffffff;
-        box-shadow: 5rpx 9rpx 20rpx 0rpx rgba(185, 189, 203, 0.3);
-        border-radius: 20rpx;
-        display: flex;
-        align-items: center;
-        margin-right: 15rpx;
-
-        input {
-          padding: 0 38rpx;
-          flex-grow: 1;
-          font-size: 26rpx;
-        }
+        font-size: 26rpx;
       }
+    }
 
-      .send {
-        flex-shrink: 0;
-        font-weight: 500;
-        font-size: 32rpx;
-        color: #5664e5;
+    .send {
+      flex-shrink: 0;
+      font-weight: 500;
+      font-size: 32rpx;
+      color: #5664e5;
 
-        &.disabled {
-          color: #aaaaaa;
-        }
+      &.disabled {
+        color: #aaaaaa;
       }
     }
   }
