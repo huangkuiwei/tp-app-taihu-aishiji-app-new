@@ -205,7 +205,7 @@ export default {
         return;
       }
 
-      this.$toRouter('/pages/healthAssistant/healthAssistant', `agent_id=${item.id}&name=${item.name}`);
+      this.$toRouter('/pages/aiChat/aiChat', `agent_id=${item.id}&name=${item.name}`);
     },
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <view class="ai-chat-page">
+  <view class="health-assistant">
     <view class="page-title">
       <text></text>
 
@@ -95,7 +95,7 @@ import $http from '@/utils/http';
 import { concatenateArrayBuffers, verifyIsLogin } from '@/utils';
 
 export default {
-  name: 'aiChat',
+  name: 'healthAssistant',
 
   data() {
     return {
@@ -527,7 +527,7 @@ page {
 </style>
 
 <style scoped lang="scss">
-.ai-chat-page {
+.health-assistant {
   height: 100%;
   display: flex;
   flex-direction: column;
