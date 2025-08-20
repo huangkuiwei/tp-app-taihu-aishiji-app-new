@@ -22,7 +22,7 @@
             <view class="gender-item" :class="{ active: gender === 1 }" @click="gender = 1">
               <image
                 mode="widthFix"
-                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/evaluation/gender1.png"
+                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/evaluation/gender1.png"
               />
               <text>男生</text>
             </view>
@@ -30,7 +30,7 @@
             <view class="gender-item" :class="{ active: gender === 2 }" @click="gender = 2">
               <image
                 mode="widthFix"
-                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app/evaluation/gender2.png"
+                src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/evaluation/gender2.png"
               />
               <text>女生</text>
             </view>
@@ -585,12 +585,15 @@ page {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 56rpx;
+            width: 198rpx;
+            height: 198rpx;
+            background: #fafafa;
+            border-radius: 50%;
             position: relative;
+            border: 10rpx solid transparent;
 
             &.active {
-              image {
-              }
+              border: 10rpx solid #5664e5;
 
               text {
                 background: #5664e5;
@@ -600,11 +603,15 @@ page {
             }
 
             image {
-              width: 198rpx;
+              position: absolute;
+              bottom: 0rpx;
+              width: 145rpx;
               border-radius: 50%;
             }
 
             text {
+              position: absolute;
+              top: calc(198rpx + 56rpx);
               width: 140rpx;
               height: 56rpx;
               background: #ffffff;

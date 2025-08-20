@@ -77,10 +77,9 @@
 
     <view class="history-plan">
       <view class="plan-title">
-        <!-- TODO icon -->
         <image
           mode="widthFix"
-          src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/historyPlan/icon1.png"
+          src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/historyPlan/icon2.png"
         />
 
         <text>历史方案</text>

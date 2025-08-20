@@ -54,13 +54,12 @@
           <text>体重记录提醒</text>
         </view>
 
-        <!-- TODO 体重记录提醒 -->
         <view @click="toggleSwitch">
           <switch
             color="#5664E5"
             :disabled="!reminderData.is_wx_subscribed"
-            :checked="reminderData.is_exercise_remind_enabled"
-            @change="onChange2"
+            :checked="reminderData.is_weight_remind_enabled"
+            @change="onChange3"
           />
         </view>
       </view>
@@ -138,6 +137,10 @@ export default {
       this.reminderData.is_exercise_remind_enabled = $event.detail.value;
     },
 
+    onChange3($event) {
+      this.reminderData.is_weight_remind_enabled = $event.detail.value;
+    },
+
     /**
      * 更新订阅状态
      */
@@ -146,6 +149,7 @@ export default {
         .post('api/user/profile/update-remind-settings', {
           is_diet_remind_enabled: this.reminderData.is_diet_remind_enabled,
           is_exercise_remind_enabled: this.reminderData.is_exercise_remind_enabled,
+          is_weight_remind_enabled: this.reminderData.is_weight_remind_enabled,
         })
         .then(() => {
           uni.showToast({

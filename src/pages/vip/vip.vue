@@ -63,9 +63,11 @@
 
           <view class="bottom">每日低至{{ item.unitPrice }}元</view>
 
-          <!-- TODO 推荐 icon; 新增 recommend 字段 -->
           <view class="recommend" v-if="item.recommend">
-            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon1.png" />
+            <image
+              mode="widthFix"
+              src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/recommend.png"
+            />
           </view>
         </view>
       </view>
@@ -107,15 +109,13 @@
       <view class="pay-type">
         <radio-group @change="payType = $event.detail.value">
           <label>
-            <!-- TODO 微信 icon -->
-            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/wx.png" />
             <text class="name">微信</text>
             <radio class="type" value="wx" :checked="payType === 'wx'"></radio>
           </label>
 
           <!--<label>-->
-          <!--  &lt;!&ndash; TODO 支付宝 icon &ndash;&gt;-->
-          <!--  <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/icon2.png" />-->
+          <!--  <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/zfb.png" />-->
           <!--  <text class="name">支付宝</text>-->
           <!--  <radio class="type" value="zfb" :checked="payType === 'zfb'"></radio>-->
           <!--</label>-->
@@ -235,7 +235,11 @@ export default {
       $http.get('api/global/product/get').then((res) => {
         uni.hideLoading();
 
-        res.data.forEach((item) => {
+        res.data.forEach((item, index) => {
+          if (index === 0) {
+            item.recommend = true;
+          }
+
           item.price = Number((item.price / 100).toFixed(2));
           item.original_price = Number((item.original_price / 100).toFixed(2));
 
