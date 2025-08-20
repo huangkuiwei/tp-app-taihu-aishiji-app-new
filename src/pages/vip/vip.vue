@@ -125,7 +125,7 @@
       <view class="buy-box">
         <template v-if="showShopInfo">
           <view class="btn" style="margin-bottom: 24rpx" @click="submit(selectedVip, openid, userInfo.phone)">
-            立即购买
+            {{ isVip ? '立即续费' : '立即购买' }}
           </view>
           <view class="agreement">
             <checkbox-group @change="agree = $event.detail.value">

@@ -26,7 +26,9 @@
           </template>
 
           <template v-else>
-            <view class="btn" @click="addPlan">新建计划</view>
+            <view class="btn" @click="addPlan">
+              {{ userDetailInfo ? '新建计划' : '完善个人信息' }}
+            </view>
           </template>
         </view>
 
@@ -781,7 +783,7 @@ page {
         right: 20rpx;
 
         .btn {
-          width: 120rpx;
+          padding: 0 20rpx;
           height: 45rpx;
           margin-bottom: 20rpx;
 

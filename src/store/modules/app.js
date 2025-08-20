@@ -22,6 +22,26 @@ const appStore = {
     isVip(state) {
       return state.userInfo.vip_info && state.userInfo.vip_info.vip_type;
     },
+
+    vipName(state) {
+      let vipInfo = state.userInfo.vip_info;
+
+      if (vipInfo.vip_type === 0) {
+        return '普通用户';
+      } else if (vipInfo.vip_type === 2) {
+        return '体验3天会员';
+      } else if (vipInfo.vip_type === 3) {
+        return '体验7天会员';
+      } else if (vipInfo.vip_type === 4) {
+        return '体验30天会员';
+      } else if (vipInfo.vip_type === 5) {
+        return '月会员';
+      } else if (vipInfo.vip_type === 6) {
+        return '季会员';
+      } else if (vipInfo.vip_type === 7) {
+        return '年会员';
+      }
+    },
   },
 
   mutations: {

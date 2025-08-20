@@ -26,11 +26,7 @@
           </view>
 
           <template v-if="isLogin">
-            <view class="time" v-if="isVip">
-              <text>会员到期：{{ userInfo.vip_info.vip_end_time.slice(0, 10) }}</text>
-              <text class="renewal" @click="$toRouter('/pages/renewalManage/renewalManage')">续订管理</text>
-            </view>
-            <view class="time" v-else>普通用户</view>
+            <view class="time">{{ vipName }}</view>
           </template>
         </view>
 
@@ -43,27 +39,22 @@
         </view>
       </view>
 
-      <view class="vip-icon" @click="!isVip && $toRouter('/pages/vip/vip')">
-        <!-- TODO VIP 图片更换 -->
+      <view class="vip-icon" @click="$toRouter('/pages/vip/vip')">
         <image
           class="bg"
           mode="widthFix"
-          :src="
-            isVip
-              ? 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/vip-icon.png'
-              : 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/vip-icon.png'
-          "
+          src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/vip-icon1.png"
         />
 
-        <image
-          class="btn"
-          mode="widthFix"
-          :src="
-            isVip
-              ? 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/btn1.png'
-              : 'https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/btn1.png'
-          "
-        />
+        <view class="content-box">
+          <text>权益中心</text>
+          <text>{{
+            isVip ? `会员到期日期：${userInfo.vip_info.vip_end_time.slice(0, 10)}` : '加入会员畅享更多权益'
+          }}</text>
+        </view>
+
+        <view class="btn" v-if="isVip" @click.stop="$toRouter('/pages/renewalManage/renewalManage')">管理续费</view>
+        <view class="btn" v-else>立即开通</view>
       </view>
 
       <view class="data">
@@ -264,7 +255,7 @@ export default {
 
   computed: {
     ...mapState('app', ['userInfo', 'userDetailInfo']),
-    ...mapGetters('app', ['isLogin', 'isVip']),
+    ...mapGetters('app', ['isLogin', 'isVip', 'vipName']),
 
     isWeightLoss() {
       if (!this.isLogin || !this.userDetailInfo) {
@@ -498,11 +489,45 @@ page {
         width: 100%;
       }
 
+      .content-box {
+        position: absolute;
+        left: 114rpx;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 17rpx;
+
+        text {
+          &:nth-child(1) {
+            font-weight: 500;
+            font-size: 26rpx;
+            color: #f5c08c;
+          }
+
+          &:nth-child(2) {
+            font-size: 22rpx;
+            color: #9e764f;
+          }
+        }
+      }
+
       .btn {
-        width: 160rpx;
         position: absolute;
         top: 33rpx;
         right: 43rpx;
+        width: 160rpx;
+        height: 54rpx;
+        background: linear-gradient(180deg, #ffab37 0%, #fe7b35 100%);
+        border-radius: 27rpx;
+        font-weight: bold;
+        font-size: 26rpx;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
 

@@ -41,7 +41,6 @@ export default {
   data() {
     return {
       content: '',
-      contact_info: '',
     };
   },
 
@@ -78,12 +77,9 @@ export default {
         mask: true,
       });
 
-      // TODO contact_info 可为空，现在后端提示不能为空
       $http
         .post('api/user/profile/submit-suggestion', {
           content: this.content,
-          contact_info: this.contact_info,
-          images: [],
         })
         .then(() => {
           uni.hideLoading();
