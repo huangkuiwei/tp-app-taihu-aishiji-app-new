@@ -68,9 +68,29 @@
             </view>
           </view>
         </view>
-      </view>
 
-      <!-- TODO 是否新增开始日期和目标日期是否编辑 -->
+        <view class="item">
+          <text class="label">开始日期</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed">{{ userDetailInfo.end_date && userDetailInfo.begin_date.slice(0, 10) }}</text>
+              <!--<uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>-->
+            </view>
+          </view>
+        </view>
+
+        <view class="item" @click="$refs.updateEndDateDialog.open()">
+          <text class="label">目标日期</text>
+
+          <view class="picker">
+            <view class="value">
+              <text class="filed">{{ userDetailInfo.end_date && userDetailInfo.end_date.slice(0, 10) }}</text>
+              <uni-icons class="back" color="#999999" type="right" size="16"></uni-icons>
+            </view>
+          </view>
+        </view>
+      </view>
 
       <view class="box">
         <view class="item" @click="$refs.updateHabitsDialog.open()">
@@ -129,6 +149,12 @@
       :userDetailInfo="userDetailInfo"
       @submit="Object.assign(userDetailInfo, $event)"
     />
+
+    <update-end-date-dialog
+      ref="updateEndDateDialog"
+      :userDetailInfo="userDetailInfo"
+      @submit="Object.assign(userDetailInfo, $event)"
+    />
   </view>
 </template>
 
@@ -141,11 +167,13 @@ import UpdateHeightDialog from '@/pages/userCenter/updateHeightDialog.vue';
 import UpdateCurrentWeightDialog from '@/pages/userCenter/updateCurrentWeightDialog.vue';
 import UpdateTargetWeightDialog from '@/pages/userCenter/updateTargetWeightDialog.vue';
 import UpdateHabitsDialog from '@/pages/userCenter/updateHabitsDialog.vue';
+import UpdateEndDateDialog from '@/pages/userCenter/updateEndDateDialog.vue';
 
 export default {
   name: 'userCenter',
 
   components: {
+    UpdateEndDateDialog,
     UpdateHabitsDialog,
     UpdateTargetWeightDialog,
     UpdateCurrentWeightDialog,

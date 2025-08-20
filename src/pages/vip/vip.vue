@@ -63,7 +63,7 @@
 
           <view class="bottom">每日低至{{ item.unitPrice }}元</view>
 
-          <view class="recommend" v-if="item.recommend">
+          <view class="recommend" v-if="item.is_recommend">
             <image
               mode="widthFix"
               src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/vip/recommend.png"
@@ -236,10 +236,6 @@ export default {
         uni.hideLoading();
 
         res.data.forEach((item, index) => {
-          if (index === 0) {
-            item.recommend = true;
-          }
-
           item.price = Number((item.price / 100).toFixed(2));
           item.original_price = Number((item.original_price / 100).toFixed(2));
 
