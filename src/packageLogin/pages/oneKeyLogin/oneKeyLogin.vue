@@ -11,6 +11,10 @@
     <view class="banner"> </view>
 
     <view class="container">
+      <view class="title">
+        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/logo2.png" />
+      </view>
+
       <view class="input-box">
         <text>{{ phone.slice(0, 3) }}****{{ phone.slice(-4) }}</text>
       </view>
@@ -162,10 +166,12 @@ page {
     justify-content: center;
 
     .title {
-      font-weight: 500;
-      font-size: 38rpx;
-      color: #1a1a1a;
-      margin-bottom: 128rpx;
+      margin-bottom: 79rpx;
+
+      image {
+        width: 120rpx;
+        height: 120rpx;
+      }
     }
 
     .input-box {

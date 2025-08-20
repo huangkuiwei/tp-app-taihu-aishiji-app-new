@@ -13,8 +13,9 @@
     <view class="about-container">
       <view class="icon-box">
         <view class="icon1">
-          <!-- TODO 公司logo修改 -->
-          <view class="img"></view>
+          <view class="img">
+            <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/logo.png" />
+          </view>
           <view class="name">减肥记录</view>
           <view class="version" v-if="version">当前版本{{ version }}</view>
         </view>
@@ -99,9 +100,12 @@ page {
         .img {
           width: 120rpx;
           height: 120rpx;
-          background: #5664e5;
-          border-radius: 23rpx;
           margin-bottom: 39rpx;
+
+          image {
+            width: 100%;
+            border-radius: 23rpx;
+          }
         }
 
         .name {

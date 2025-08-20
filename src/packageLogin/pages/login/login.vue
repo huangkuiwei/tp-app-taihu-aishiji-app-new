@@ -11,6 +11,10 @@
     <view class="banner"> </view>
 
     <view class="container">
+      <view class="title">
+        <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/logo2.png" />
+      </view>
+
       <view class="input-box">
         <view class="phone">
           <input
@@ -26,31 +30,15 @@
 
         <view class="sms-code">
           <view class="code-input-container">
-            <input
-              v-for="(code, index) in 3"
-              :key="index"
-              v-model="codeArray[index].value"
-              :focus="codeArray[index].focus"
-              type="number"
-              class="code-input"
-              :class="{ 'code-input-focused': currentIndex === index }"
-              @focus="currentIndex = index"
-              @input="handleInput(index, $event)"
-            />
-
+            <view v-for="(code, index) in 3" :key="index" class="code-input" @click="onInputClick">
+              {{ formState.sms_code[index] || '' }}
+            </view>
             <text class="line"></text>
+            <view v-for="(code, index) in 3" :key="index" class="code-input" @click="onInputClick">
+              {{ formState.sms_code[index + 3] || '' }}
+            </view>
 
-            <input
-              v-for="(code, index) in 3"
-              :key="index"
-              v-model="codeArray[index + 3].value"
-              :focus="codeArray[index + 3].focus"
-              type="number"
-              class="code-input"
-              :class="{ 'code-input-focused': currentIndex === index + 3 }"
-              @focus="currentIndex = index + 3"
-              @input="handleInput(index + 3, $event)"
-            />
+            <input type="number" maxlength="6" :focus="inputFocus" :value="formState.sms_code" @input="handleInput" />
           </view>
         </view>
       </view>
@@ -91,16 +79,6 @@ export default {
 
   data() {
     return {
-      codeLength: 6, // 验证码长度
-      codeArray: [
-        { value: '', focus: false },
-        { value: '', focus: false },
-        { value: '', focus: false },
-        { value: '', focus: false },
-        { value: '', focus: false },
-        { value: '', focus: false },
-      ], // 存储每个输入框的值
-      currentIndex: 0, // 当前聚焦的输入框索引
       formState: {
         mobile: '',
         sms_sign: '',
@@ -108,6 +86,7 @@ export default {
       },
       countdown: '',
       agree: [],
+      inputFocus: false,
     };
   },
 
@@ -124,14 +103,6 @@ export default {
           }
         }
       }, 1000);
-    },
-
-    codeArray: {
-      handler() {
-        this.formState.sms_code = this.codeArray.map((item) => item.value).join('');
-      },
-
-      deep: true,
     },
   },
 
@@ -201,33 +172,24 @@ export default {
         });
     },
 
-    // TODO 验证码填入存在bug，待修复
-    handleInput(index, event) {
+    handleInput($event) {
+      this.formState.sms_code = $event.detail.value;
+
+      if (this.formState.sms_code.length > 6) {
+        this.formState.sms_code = this.formState.sms_code.slice(0, 6);
+      }
+
+      if (this.formState.sms_code.length === 6) {
+        this.inputFocus = false;
+      }
+    },
+
+    onInputClick() {
+      this.inputFocus = false;
+
       setTimeout(() => {
-        // 获取当前输入框的值
-        const value = event.detail.value;
-
-        if (value.length > 1) {
-          this.codeArray.forEach((item, i) => {
-            item.focus = false;
-            item.value = value[i];
-          });
-        } else if (value.length === 1) {
-          // 如果输入了内容且不是删除操作，并且不是最后一个输入框，则自动聚焦到下一个
-          if (value && index < this.codeLength - 1) {
-            this.codeArray[index + 1].focus = true;
-          } else {
-            this.codeArray.forEach((item) => (item.focus = false));
-          }
-        } else if (value.length === 0) {
-          // 删除操作
-          let index = this.codeArray.findIndex((item) => !item.value);
-
-          if (index > 0) {
-            this.codeArray[index - 1].focus = true;
-          }
-        }
-      });
+        this.inputFocus = true;
+      }, 0);
     },
 
     /**
@@ -375,10 +337,12 @@ page {
     justify-content: center;
 
     .title {
-      font-weight: 500;
-      font-size: 38rpx;
-      color: #1a1a1a;
-      margin-bottom: 86rpx;
+      margin-bottom: 79rpx;
+
+      image {
+        width: 120rpx;
+        height: 120rpx;
+      }
     }
 
     .input-box {
@@ -422,6 +386,7 @@ page {
           display: flex;
           align-items: center;
           justify-content: space-around;
+          position: relative;
 
           .line {
             font-size: 28rpx;
@@ -436,9 +401,17 @@ page {
             background: #f2f5ff;
             border-radius: 15rpx;
             border: 2rpx solid #5664e5;
-            text-align: center;
             font-size: 18px;
-            outline: none; /* 移除默认聚焦轮廓 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          input {
+            z-index: -99;
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
           }
         }
       }

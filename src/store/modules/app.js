@@ -9,7 +9,7 @@ const appStore = {
     lifestylePlanData: [],
     appInfo: {
       // TODO 小程序信息修改
-      appName: '慧食搭子',
+      appName: 'AI饭友',
       companyName: '广州泰湖科技有限公司',
     },
   },

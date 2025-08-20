@@ -235,7 +235,7 @@ export default {
       $http.get('api/global/product/get').then((res) => {
         uni.hideLoading();
 
-        res.data.forEach((item, index) => {
+        res.data.forEach((item) => {
           item.price = Number((item.price / 100).toFixed(2));
           item.original_price = Number((item.original_price / 100).toFixed(2));
 
