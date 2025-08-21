@@ -210,7 +210,7 @@ export default {
       .get-code {
         flex-shrink: 0;
         font-size: 24rpx;
-        color: #0abf92;
+        color: #5664e5;
       }
     }
   }
@@ -235,15 +235,15 @@ export default {
 
       &.btn1 {
         width: 100%;
-        background: #0abf92;
+        background: #5664e5;
         color: #ffffff;
       }
 
       &.btn2 {
         width: 100%;
         background: #ffffff;
-        color: #0abf92;
-        border: 2rpx solid #0abf92;
+        color: #5664e5;
+        border: 2rpx solid #5664e5;
       }
     }
   }

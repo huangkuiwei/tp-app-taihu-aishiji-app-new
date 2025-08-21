@@ -102,7 +102,7 @@
         </view>
 
         <view class="add-food" @click="$refs.addFoodRecodeDialog.open()">
-          <uni-icons color="#0ABF92" type="plus-filled" size="22"></uni-icons>
+          <uni-icons color="#5664e5" type="plus-filled" size="22"></uni-icons>
           <text>继续添加食物</text>
         </view>
       </view>
@@ -449,7 +449,7 @@ page {
           line-height: 40rpx;
 
           &:not(:last-child) {
-            background: #0abf92;
+            background: #5664e5;
             border-radius: 25rpx 5rpx 25rpx 25rpx;
             color: #ffffff;
             align-self: flex-end;
@@ -666,7 +666,7 @@ page {
                 color: #999999;
 
                 text {
-                  color: #0abf92;
+                  color: #5664e5;
                 }
               }
 
@@ -688,7 +688,7 @@ page {
       .add-food {
         font-weight: 500;
         font-size: 28rpx;
-        color: #0abf92;
+        color: #5664e5;
         text-align: center;
         display: flex;
         align-items: center;
@@ -702,7 +702,7 @@ page {
     width: 590rpx;
     margin: 40rpx auto 60rpx;
     height: 100rpx;
-    background: #0abf92;
+    background: #5664e5;
     border-radius: 50rpx;
     font-weight: 500;
     font-size: 32rpx;

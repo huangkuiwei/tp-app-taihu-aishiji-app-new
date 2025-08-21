@@ -1399,7 +1399,7 @@ page {
           text {
             position: absolute;
             height: 18rpx;
-            background: #0abf92;
+            background: #5664e5;
             border-radius: 9rpx;
           }
         }

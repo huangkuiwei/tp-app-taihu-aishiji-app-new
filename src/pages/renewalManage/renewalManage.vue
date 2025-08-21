@@ -420,7 +420,7 @@ page {
         flex-shrink: 0;
         width: 180rpx;
         height: 55rpx;
-        background: #0abf92;
+        background: #5664e5;
         border-radius: 28rpx;
         font-weight: 400;
         font-size: 24rpx;
@@ -539,7 +539,7 @@ page {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #229bf7;
+      background: #5664e5;
       border-radius: 40rpx;
       color: #ffffff;
     }
@@ -565,7 +565,7 @@ page {
       }
 
       &:nth-child(2) {
-        color: #0abf92;
+        color: #5664e5;
       }
     }
   }

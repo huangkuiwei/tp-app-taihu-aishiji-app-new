@@ -630,7 +630,7 @@ page {
             align-items: center;
             justify-content: center;
             font-size: 22rpx;
-            color: #0abf92;
+            color: #5664e5;
           }
         }
       }
@@ -650,7 +650,7 @@ page {
 
           &:nth-child(1) {
             .title {
-              color: #0abf92;
+              color: #5664e5;
             }
           }
 
@@ -674,7 +674,7 @@ page {
     flex-shrink: 0;
     width: 592rpx;
     height: 103rpx;
-    background: #0abf92;
+    background: #5664e5;
     border-radius: 52rpx;
     display: flex;
     align-items: center;

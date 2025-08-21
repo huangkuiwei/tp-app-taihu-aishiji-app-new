@@ -458,18 +458,6 @@ page {
           display: flex;
           align-items: center;
           gap: 20rpx;
-
-          .renewal {
-            width: 105rpx;
-            height: 35rpx;
-            background: #0abf92;
-            border-radius: 18rpx;
-            font-size: 20rpx;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
         }
       }
 

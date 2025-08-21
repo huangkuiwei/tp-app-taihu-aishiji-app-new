@@ -30,7 +30,7 @@
             <view
               v-if="progress"
               class="progress-ring"
-              :style="{ background: `conic-gradient(#5664E5 calc(${progress} * 0.6deg), #0abf9220 0)` }"
+              :style="{ background: `conic-gradient(#5664E5 calc(${progress} * 0.6deg), #5664e520 0)` }"
             />
           </view>
         </view>
