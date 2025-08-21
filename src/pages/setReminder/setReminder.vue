@@ -80,8 +80,7 @@ export default {
   data() {
     return {
       reminderData: {},
-      // TODO 推文地址修改
-      link: 'https://mp.weixin.qq.com/s/TsRPYgh5yjosYiIGK7_XtA',
+      link: '',
     };
   },
 

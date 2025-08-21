@@ -77,7 +77,7 @@
         <view>1、会员商品包含自动续费和单次购买项目，自动续费商品包括“连续包月”、“年会员”，开通时请按需购买；</view>
         <view>2、如需取消自动续费可在个人中心页面管理自动续费；</view>
         <view>2、会员到期前1小时可取消自动续费，超时系统将自动续订；</view>
-        <view>3、如有疑问可咨询在线客服或拨打客服电话：400-0000-0000。</view>
+        <view>3、如有疑问可咨询在线客服或拨打客服电话：4009989618。</view>
       </view>
 
       <view class="introduce">
@@ -217,6 +217,7 @@ export default {
       }
     },
 
+    // TODO 客服修改
     openContact() {
       uni.openCustomerServiceChat({
         corpId: 'wwa09afa94a53c191b',

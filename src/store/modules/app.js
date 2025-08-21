@@ -8,9 +8,8 @@ const appStore = {
     userDetailInfo: null,
     lifestylePlanData: [],
     appInfo: {
-      // TODO 小程序信息修改
       appName: 'AI饭友',
-      companyName: '广州泰湖科技有限公司',
+      companyName: '长沙数织科技有限公司',
     },
   },
 

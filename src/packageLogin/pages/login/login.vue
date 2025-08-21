@@ -64,8 +64,7 @@
     <view class="kefu">
       <text @click="callPhone">联系客服</text>
       <text class="line">｜</text>
-      <!-- TODO 客服电话修改 -->
-      <text>客服电话：4009989759</text>
+      <text>客服电话：4009989618</text>
     </view>
   </view>
 </template>
@@ -298,7 +297,7 @@ export default {
 
     callPhone() {
       uni.makePhoneCall({
-        phoneNumber: '4009989759',
+        phoneNumber: '4009989618',
       });
     },
   },

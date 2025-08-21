@@ -48,6 +48,7 @@ export default {
       this.$refs.redemptionDialog.close();
     },
 
+    // TODO 客服修改
     openContact() {
       uni.openCustomerServiceChat({
         corpId: 'wwa09afa94a53c191b',

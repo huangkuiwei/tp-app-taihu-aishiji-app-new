@@ -108,7 +108,7 @@
       </view>
     </view>
 
-    <view class="know-btn" @click="$toSwitch('/pages/index/index')">我知道了</view>
+    <view class="know-btn" v-if="analysisData" @click="$toSwitch('/pages/index/index')">我知道了</view>
   </view>
 </template>
 

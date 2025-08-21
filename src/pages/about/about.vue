@@ -21,8 +21,7 @@
         </view>
       </view>
 
-      <!-- TODO 公司名称修改 -->
-      <view class="company">湖南******有限公司</view>
+      <view class="company">长沙数织科技有限公司</view>
     </view>
   </view>
 </template>
