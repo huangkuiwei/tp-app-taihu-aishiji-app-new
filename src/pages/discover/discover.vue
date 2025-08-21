@@ -31,7 +31,7 @@
               </view>
             </view>
           </view>
-          <view class="ask-btn" @click="jumpAi(jkzsChat)">
+          <view class="ask-btn" v-if="aiChartList.length" @click="jumpAi(jkzsChat)">
             <image
               mode="widthFix"
               src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/discover/ask-btn.png"

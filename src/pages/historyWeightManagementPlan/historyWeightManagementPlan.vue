@@ -4,7 +4,7 @@
       <text>历史体重管理方案</text>
 
       <view class="back" @click="$toBack">
-        <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
+        <uni-icons class="back" color="#1A1A1A" type="arrow-left" size="22"></uni-icons>
       </view>
     </view>
 
@@ -157,18 +157,18 @@
           </view>
         </view>
 
-        <view class="chart-item2">
-          <view class="card-title">
-            <text>瘦身目标</text>
-          </view>
+        <!--<view class="chart-item2">-->
+        <!--  <view class="card-title">-->
+        <!--    <text>瘦身目标</text>-->
+        <!--  </view>-->
 
-          <view class="card-title2">
-            预计在
-            <text>{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>
-            达到
-            <text>{{ lastPlanData.plan_target_weight }}KG</text>
-          </view>
-        </view>
+        <!--  <view class="card-title2">-->
+        <!--    预计在-->
+        <!--    <text>{{ lastPlanData.end_date && lastPlanData.end_date.slice(0, 10) }}</text>-->
+        <!--    达到-->
+        <!--    <text>{{ lastPlanData.plan_target_weight }}KG</text>-->
+        <!--  </view>-->
+        <!--</view>-->
       </view>
     </view>
   </view>

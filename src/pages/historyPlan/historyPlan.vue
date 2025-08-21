@@ -4,7 +4,7 @@
       <text>历史方案</text>
 
       <view class="back" @click="$toBack">
-        <uni-icons class="back" color="#1A1A1A" type="left" size="22"></uni-icons>
+        <uni-icons class="back" color="#1A1A1A" type="arrow-left" size="22"></uni-icons>
       </view>
     </view>
 
