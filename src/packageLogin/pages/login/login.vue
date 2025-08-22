@@ -54,9 +54,9 @@
         </checkbox-group>
         <view>
           我已阅读并同意
-          <text @click="$toRouter('/pages/protocol/protocol')">《用户协议》</text>
+          <text @click="$toRouter('/packageProtocol/pages/protocol/protocol')">《用户协议》</text>
           和
-          <text @click="$toRouter('/pages/privacy/privacy')">《隐私政策》</text>
+          <text @click="$toRouter('/packageProtocol/pages/privacy/privacy')">《隐私政策》</text>
         </view>
       </view>
     </view>

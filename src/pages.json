@@ -121,21 +121,6 @@
       }
     },
     {
-      "path": "pages/feedback/feedback",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "意见反馈",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
       "path": "pages/weightManagementPlan/weightManagementPlan",
       "style": {
         "navigationStyle": "custom",
@@ -286,49 +271,6 @@
       }
     },
     {
-      "path": "pages/webview/webview",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
-      "path": "pages/protocol/protocol",
-      "style": {
-        // #ifndef H5
-        "navigationBarTitleText": "用户协议",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
-      "path": "pages/privacy/privacy",
-      "style": {
-        // #ifndef H5
-        "navigationBarTitleText": "隐私政策",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
       "path": "pages/aiChat/aiChat",
       "style": {
         // #ifdef MP-WEIXIN
@@ -402,21 +344,6 @@
       }
     },
     {
-      "path": "pages/changePhone/changePhone",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "更改手机号",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
       "path": "pages/renewalManage/renewalManage",
       "style": {
         "navigationStyle": "custom",
@@ -437,21 +364,6 @@
         "navigationStyle": "custom",
         // #ifndef H5
         "navigationBarTitleText": "兑换",
-        // #endif
-        "h5": {
-          "titleNView": false
-        },
-        "app-plus": {
-          "softinputMode": "adjustResize"
-        }
-      }
-    },
-    {
-      "path": "pages/about/about",
-      "style": {
-        "navigationStyle": "custom",
-        // #ifndef H5
-        "navigationBarTitleText": "关于我们",
         // #endif
         "h5": {
           "titleNView": false
@@ -503,6 +415,100 @@
             "navigationStyle": "custom",
             // #ifndef H5
             "navigationBarTitleText": "注销账户",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "pages/about/about",
+          "style": {
+            "navigationStyle": "custom",
+            // #ifndef H5
+            "navigationBarTitleText": "关于我们",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "pages/feedback/feedback",
+          "style": {
+            "navigationStyle": "custom",
+            // #ifndef H5
+            "navigationBarTitleText": "意见反馈",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "pages/webview/webview",
+          "style": {
+            "navigationStyle": "custom",
+            // #ifndef H5
+            "navigationBarTitleText": "",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "pages/changePhone/changePhone",
+          "style": {
+            "navigationStyle": "custom",
+            // #ifndef H5
+            "navigationBarTitleText": "更改手机号",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "root": "packageProtocol",
+      "name": "packageProtocol",
+      "pages": [
+        {
+          "path": "pages/protocol/protocol",
+          "style": {
+            // #ifndef H5
+            "navigationBarTitleText": "用户协议",
+            // #endif
+            "h5": {
+              "titleNView": false
+            },
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        },
+        {
+          "path": "pages/privacy/privacy",
+          "style": {
+            // #ifndef H5
+            "navigationBarTitleText": "隐私政策",
             // #endif
             "h5": {
               "titleNView": false

@@ -134,7 +134,7 @@
               </label>
 
               <text class="part1">支付即视为阅读并同意</text>
-              <text class="part2" @click="$toRouter('/pages/protocol/protocol')">《会员服务协议》</text>
+              <text class="part2" @click="$toRouter('/packageProtocol/pages/protocol/protocol')">《会员服务协议》</text>
             </checkbox-group>
           </view>
         </template>

@@ -116,7 +116,7 @@ export default {
     },
 
     goWebview() {
-      this.$toRouter('/pages/webview/webview', `src=${encodeURIComponent(this.link)}`);
+      this.$toRouter('/packageLogin/pages/webview/webview', `src=${encodeURIComponent(this.link)}`);
     },
 
     toggleSwitch() {

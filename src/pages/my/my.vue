@@ -151,7 +151,7 @@
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
           </view>
 
-          <view class="nav-item" @click="jumpAuthPage('/pages/feedback/feedback')">
+          <view class="nav-item" @click="jumpAuthPage('/packageLogin/pages/feedback/feedback')">
             <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu4.png" />
             <text class="nav-title">意见和反馈</text>
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
@@ -163,7 +163,7 @@
             <uni-icons color="#999999" type="right" size="14"></uni-icons>
           </view>
 
-          <view class="nav-item" @click="$toRouter('/pages/about/about')">
+          <view class="nav-item" @click="$toRouter('/packageLogin/pages/about/about')">
             <image mode="widthFix" src="https://hnenjoy.oss-cn-shanghai.aliyuncs.com/food-diary-app2/my/menu6.png" />
             <text class="nav-title">关于我们</text>
             <uni-icons color="#999999" type="right" size="14"></uni-icons>

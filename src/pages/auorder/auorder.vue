@@ -174,7 +174,7 @@ export default {
 
             if (res.data.data.startsWith('http')) {
               uni.navigateTo({
-                url: `/pages/webview/webview?src=${encodeURIComponent(res.data.data)}`,
+                url: `/packageLogin/pages/webview/webview?src=${encodeURIComponent(res.data.data)}`,
               });
             } else {
               let params = JSON.parse(res.data.data);

@@ -45,7 +45,7 @@
       <view class="box-title">账户</view>
 
       <view class="box">
-        <view class="item" @click="$toRouter('/pages/changePhone/changePhone')">
+        <view class="item" @click="$toRouter('/packageLogin/pages/changePhone/changePhone')">
           <text class="label">更换手机号</text>
 
           <view class="picker">
@@ -59,7 +59,7 @@
       <view class="box-title">其他</view>
 
       <view class="box">
-        <view class="item" @click="$toRouter('/pages/protocol/protocol')">
+        <view class="item" @click="$toRouter('/packageProtocol/pages/protocol/protocol')">
           <text class="label">用户协议</text>
 
           <view class="picker">
@@ -70,7 +70,7 @@
           </view>
         </view>
 
-        <view class="item" @click="$toRouter('/pages/privacy/privacy')">
+        <view class="item" @click="$toRouter('/packageProtocol/pages/privacy/privacy')">
           <text class="label">隐私政策</text>
 
           <view class="picker">

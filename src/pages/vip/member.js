@@ -44,7 +44,7 @@ export const onPay = (price, openid, mobile) => {
   //           if (res.data.code === 0 || res.data.Code === 0) {
   //             if (res.data.data.startsWith('http')) {
   //               uni.navigateTo({
-  //                 url: `/pages/webview/webview?src=${encodeURIComponent(res.data.data)}`,
+  //                 url: `/packageLogin/pages/webview/webview?src=${encodeURIComponent(res.data.data)}`,
   //               });
   //             } else {
   //               let params = JSON.parse(res.data.data);
