@@ -56,7 +56,7 @@
       </view>
     </view>
 
-    <exchange-dialog ref="exchangeDialog" />
+    <exchange-dialog ref="exchangeDialog" :exchangeCenter="1" />
     <recode-dialog ref="recodeDialog" />
   </view>
 </template>

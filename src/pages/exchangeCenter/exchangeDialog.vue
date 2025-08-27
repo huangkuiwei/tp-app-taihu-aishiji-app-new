@@ -26,6 +26,12 @@ import $http from '@/utils/http';
 export default {
   name: 'exchangeDialog',
 
+  props: {
+    exchangeCenter: {
+      type: Number,
+    },
+  },
+
   components: {
     customDialog,
   },
@@ -47,6 +53,7 @@ export default {
         .post('api/lucky-bag/exchange-records', {
           pageIndex: 1,
           pageSize: 9999,
+          exchangeCenter: this.exchangeCenter,
         })
         .then((res) => {
           uni.hideLoading();

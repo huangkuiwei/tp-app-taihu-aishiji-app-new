@@ -137,7 +137,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('app', ['_getUserDetailInfo']),
+    ...mapActions('app', ['_getUserDetailInfo', '_getUserInfo']),
 
     editHeaderImg() {
       uni.chooseMedia({

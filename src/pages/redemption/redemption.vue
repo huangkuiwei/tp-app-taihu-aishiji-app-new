@@ -41,7 +41,7 @@
       </view>
     </view>
 
-    <exchange-dialog ref="exchangeDialog" />
+    <exchange-dialog ref="exchangeDialog" :exchangeCenter="3" />
   </view>
 </template>
 
