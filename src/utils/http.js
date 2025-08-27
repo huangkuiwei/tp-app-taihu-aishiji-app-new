@@ -59,7 +59,7 @@ const $http = {
 
               reject(res.data);
             } else {
-              if (url.includes('tool.laketay.com')) {
+              if (url.includes('fandaapi.cshuz.cn')) {
                 // 清除过期 token
                 uni.removeStorageSync('foodDiaryToken');
                 store.commit('app/_setUserInfo', {});
@@ -133,7 +133,7 @@ const $http = {
 
               reject(res.data);
             } else {
-              if (url.includes('tool.laketay.com')) {
+              if (url.includes('fandaapi.cshuz.cn')) {
                 // 清除过期 token
                 uni.removeStorageSync('foodDiaryToken');
                 store.commit('app/_setUserInfo', {});
@@ -203,7 +203,7 @@ const $http = {
 
               reject(res.data);
             } else {
-              if (url.includes('tool.laketay.com')) {
+              if (url.includes('fandaapi.cshuz.cn')) {
                 // 清除过期 token
                 uni.removeStorageSync('foodDiaryToken');
                 store.commit('app/_setUserInfo', {});
