@@ -174,7 +174,7 @@ export default {
     getShopInfo() {
       $http
         .post(
-          'https://hsdzapi.laketay.com/api/microapp/order/query_user_order_sign',
+          'https://fyapi.cshuz.cn/api/microapp/order/query_user_order_sign',
           {
             appid: 'wx230d5641dd96fcc9',
           },
@@ -212,7 +212,7 @@ export default {
       });
 
       $http
-        .post('https://hsdzapi.laketay.com/api/global/sms/send_code', {
+        .post('https://fyapi.cshuz.cn/api/global/sms/send_code', {
           mobile: this.userInfo.phone,
           appid: 'wx230d5641dd96fcc9',
         })
@@ -245,7 +245,7 @@ export default {
 
       $http
         .post(
-          'https://hsdzapi.laketay.com/api/sms/sendcode',
+          'https://fyapi.cshuz.cn/api/sms/sendcode',
           {
             mobile: this.userInfo.phone,
             item_type: this.shopInfo.businessType,
@@ -304,7 +304,7 @@ export default {
       });
 
       $http
-        .post('https://hsdzapi.laketay.com/api/user/auth/login', {
+        .post('https://fyapi.cshuz.cn/api/user/auth/login', {
           ...this.formState,
           mobile: this.userInfo.phone,
           appid: 'wx230d5641dd96fcc9',
@@ -333,7 +333,7 @@ export default {
 
       $http
         .post(
-          'https://hsdzapi.laketay.com/api/user/order/unsign',
+          'https://fyapi.cshuz.cn/api/user/order/unsign',
           {
             external_agreement_no: this.shopInfo.external_agreement_no,
             mobile: this.userInfo.phone,
