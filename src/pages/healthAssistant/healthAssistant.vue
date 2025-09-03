@@ -132,13 +132,20 @@ export default {
       activeDanmus: [], // 当前屏幕上显示的弹幕
       containerHeight: 160, // 容器高度
       danmuIndex: 0, // 用于循环取弹幕数据的索引
+      sendTimeout: null, // 定时器ID
       sendInterval: null, // 定时器ID
     };
   },
 
-  onLoad(options) {
+  onShow() {
     this.startDanmu();
+  },
 
+  onHide() {
+    this.initDanmu();
+  },
+
+  onLoad(options) {
     this.agent_id = options.agent_id;
 
     if (this.agent_id === '10000') {
@@ -287,10 +294,23 @@ export default {
   },
 
   methods: {
+    initDanmu() {
+      if (typeof this.sendInterval === 'number') {
+        clearTimeout(this.sendTimeout);
+        clearInterval(this.sendInterval);
+        this.sendTimeout = null;
+        this.sendInterval = null;
+      }
+
+      this.activeDanmus = [];
+      this.danmuIndex = 0;
+    },
+
     startDanmu() {
+      this.initDanmu();
       this.sendSingleDanmu();
 
-      setTimeout(() => {
+      this.sendTimeout = setTimeout(() => {
         this.sendSingleDanmu();
       }, 1000);
 
@@ -322,10 +342,15 @@ export default {
     },
 
     changeTab(value) {
+      if (this.tabValue === value) {
+        return;
+      }
+
       this.tabValue = value;
 
       if (value === 1) {
         this.agent_id = '10000';
+        this.startDanmu();
       } else {
         this.agent_id = this.org_agent_id;
       }

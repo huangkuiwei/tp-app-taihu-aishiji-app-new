@@ -103,10 +103,16 @@ export default {
 
   onShow() {
     this.initData();
+    this.startDanmu();
   },
 
-  onLoad() {
-    this.startDanmu();
+  onHide() {
+    this.activeDanmus = [];
+
+    if (typeof this.sendInterval === 'number') {
+      clearInterval(this.sendInterval);
+      this.sendInterval = null;
+    }
   },
 
   computed: {
