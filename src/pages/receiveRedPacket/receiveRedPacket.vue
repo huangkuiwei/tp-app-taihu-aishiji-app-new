@@ -65,69 +65,86 @@ export default {
         data: {
           external_agreement_no: this.sign_order_no,
         },
-        success: (res) => {
+        success: async (res) => {
           console.log('res', res);
 
           if (res.data.Code === 0 || res.data.code === 0) {
+            let packages = res.data.data.packages || [];
+            console.log('packages', packages);
+
+            if (!packages.length) {
+              uni.showToast({
+                title: '暂无红包可领取',
+                icon: 'none',
+              });
+
+              return;
+            }
+
             let mchId = res.data.data.mch_id;
-            let package1 = res.data.data.package;
             let appid = res.data.data.appid;
 
-            uni.requestMerchantTransfer({
-              mchId: mchId,
-              appId: appid,
-              package: package1,
-              success: (res1) => {
-                console.log('res1:', res1);
+            for (let i = 0; i < packages.length; i++) {
+              await this.merchantTransfer(mchId, appid, packages[i]).catch(() => {});
+            }
 
-                // res.err_msg将在页面展示成功后返回应用时返回ok，并不代表付款成功
-                if (res1.errMsg === 'requestMerchantTransfer:ok') {
-                  this.redPacket = false;
-                  uni.removeStorageSync('sign_order_no');
+            uni.hideLoading();
+            uni.removeStorageSync('sign_order_no');
 
-                  uni.showModal({
-                    title: '温馨提示',
-                    content: '红包领取成功',
-                    showCancel: false,
-                    confirmText: '进入首页',
-                    closable: false,
-                    success: (res2) => {
-                      if (res2.confirm) {
-                        uni.switchTab({
-                          url: '/pages/index/index',
-                        });
-                      }
-                    },
+            uni.showModal({
+              title: '温馨提示',
+              content: '红包领取成功',
+              showCancel: false,
+              confirmText: '进入首页',
+              closable: false,
+              success: (res2) => {
+                if (res2.confirm) {
+                  uni.switchTab({
+                    url: '/pages/index/index',
                   });
                 }
               },
-              fail: (error) => {
-                console.log('error:', error);
-
-                uni.showModal({
-                  title: '温馨提示',
-                  content: error.errMsg || '领取失败',
-                });
-              },
             });
           } else {
-            uni.showModal({
-              title: '温馨提示',
-              content: res.data.Msg || '领取失败',
+            uni.hideLoading();
+            uni.showToast({
+              title: res.msg || res.Msg,
+              icon: 'none',
+              mask: true,
             });
           }
         },
 
         fail: () => {
-          uni.showModal({
-            title: '温馨提示',
-            content: '领取失败',
-          });
-        },
-
-        complete: () => {
           uni.hideLoading();
         },
+      });
+    },
+
+    merchantTransfer(mchId, appid, package1) {
+      return new Promise((resolve, reject) => {
+        uni.requestMerchantTransfer({
+          mchId: mchId,
+          appId: appid,
+          package: package1,
+          success: (res1) => {
+            console.log('res1:', res1);
+
+            // res.err_msg将在页面展示成功后返回应用时返回ok，并不代表付款成功
+            if (res1.errMsg === 'requestMerchantTransfer:ok') {
+            }
+            resolve(res1);
+          },
+          fail: (error) => {
+            console.log('error:', error, mchId, appid, package1);
+            uni.showToast({
+              title: error.errMsg,
+              icon: 'none',
+            });
+
+            reject(error);
+          },
+        });
       });
     },
   },
