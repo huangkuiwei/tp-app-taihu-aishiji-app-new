@@ -86,6 +86,8 @@
       </view>
 
       <view class="send" :class="{ disabled: answering }" @click="sendMessage">发送</view>
+
+      <view class="ai-tip"> 本服务为AI生成内容，结果仅供参考 </view>
     </view>
   </view>
 </template>
@@ -720,7 +722,7 @@ page {
   .message-box {
     position: fixed;
     z-index: 999;
-    bottom: 60rpx;
+    bottom: 70rpx;
     left: 56rpx;
     right: 56rpx;
     display: flex;
@@ -752,6 +754,16 @@ page {
       &.disabled {
         color: #aaaaaa;
       }
+    }
+
+    .ai-tip {
+      position: absolute;
+      bottom: -40rpx;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 20rpx;
+      color: #aaaaaa;
     }
   }
 }
